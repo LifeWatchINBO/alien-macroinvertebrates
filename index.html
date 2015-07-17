@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>Alien macroinvertebrate occurrences</title>
+    <meta name="author" content="INBO">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.2.0/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.2.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="http://libs.cartocdn.com/cartodb.js/v3/3.15/themes/css/cartodb.css" />
+    <link rel="stylesheet" type="text/css" href="css/main.css">
+</head>
+<body>
+<div id="intro">
+    <div class="container">
+        <div class="page-header">
+            <h1>Alien macroinvertebrate occurrences</h1>
+        </div>
+        <p class="lead">This website allows you to explore our alien macroinvertebrate dataset.</p>
+    </div>
+</div>
+
+<div id="controls">
+    <div class="container">
+        <form class="form-inline" role="form">
+            <div class="form-group">
+                <div >
+                    <label for="select-species" class="control-label">Select a species</label>
+                    <select id="select-species" class="form-control"></select>
+                </div>
+            </div>
+            <button id="clear-select" type="button" class="btn btn-primary">Clear selection</button>
+        </form>
+    </div>
+</div>
+
+<div id="map">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div id="map-canvas"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Scripts -->
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.7.0/underscore-min.js"></script>
+<script src="http://libs.cartocdn.com/cartodb.js/v3/3.15/cartodb.js"></script>
+<Script src='http://api.tiles.mapbox.com/mapbox.js/v1.2.0/mapbox.standalone.js'></Script>
+<script type="text/javascript" src="js/app.js"></script>
+
+</body>
+</html>

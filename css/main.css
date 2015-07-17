@@ -1,0 +1,7 @@
+#map {
+    padding-bottom: 20px;
+}
+#map-canvas {
+    background-color: #313131;
+    height: 450px;
+}
