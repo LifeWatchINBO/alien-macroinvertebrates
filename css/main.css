@@ -1,7 +1,16 @@
-#map {
-    padding-bottom: 20px;
+html {
+    position: relative;
+    min-height: 100%;
+}
+body {
+    margin-bottom: 70px; /* 50 for footer + 20 margin */
+}
+
+#controls {
+    margin-bottom: 20px;
 }
 #map-canvas {
-    background-color: #313131;
+    background-color: #dddddd;
     height: 450px;
 }
+
