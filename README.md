@@ -1,2 +1,3 @@
-# alien-macroinv-website
-Website to search for alien macroinvertebrate occurrences
+# Alien macroinvertebrates
+
+Website accompanying the **Alien macroinvertebrates in Flanders (Belgium)** article (under review) and dataset, allowing user to explore the occurrence data.
