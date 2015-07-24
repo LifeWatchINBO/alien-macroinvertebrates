@@ -4,7 +4,7 @@
         vizlayers;
 
     var fetchSpecies = function () {
-      var sql = "SELECT distinct scientificname from alien_macroinvertebrates_cartodb";
+      var sql = "SELECT distinct scientificname from alien_macroinvertebrates";
       return $.get("https://lifewatch.cartodb.com/api/v2/sql?q=" + sql);
     };
 
@@ -24,11 +24,11 @@
     };
 
     var clearSelection = function() {
-        vizlayers[1].getSubLayer(0).set({"sql": "SELECT * FROM alien_macroinvertebrates_cartodb"});
+        vizlayers[1].getSubLayer(0).set({"sql": "SELECT * FROM alien_macroinvertebrates"});
     };
 
     var loadSpecies = function() {
-        vizlayers[1].getSubLayer(0).set({"sql": "SELECT * FROM alien_macroinvertebrates_cartodb WHERE scientificname='" + selectedSpecies + "'"});
+        vizlayers[1].getSubLayer(0).set({"sql": "SELECT * FROM alien_macroinvertebrates WHERE scientificname='" + selectedSpecies + "'"});
     };
 
 
