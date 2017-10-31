@@ -1,5 +1,3 @@
-.DS_Store
-
 # History files
 .Rhistory
 .Rapp.history
@@ -18,7 +16,6 @@
 
 # RStudio files
 .Rproj.user/
-.Rproj*
 
 # produced vignettes
 vignettes/*.html
@@ -35,5 +32,8 @@ vignettes/*.pdf
 *.utf8.md
 *.knit.md
 
-# ignore draft testfiles
+# Mac OS X
+.DS_Store
+
+# Draft testfiles
 draft*
