@@ -1,6 +1,6 @@
 #' # Darwin Core mapping
 #' 
-#' Peter Desmet, Quentin Groom, Lien Reyserhove
+#' Lien Reyserhove, Dimitri Brosens, Peter Desmet
 #' 
 #' `r Sys.Date()`
 #'
