@@ -68,6 +68,9 @@ occurrence <- raw_data
 #' #### informationWithheld
 #' #### dataGeneralizations
 #' #### dynamicProperties
+#' 
+#' ---
+#' 
 #' #### occurrenceID
 #' #### catalogNumber
 #' #### recordNumber
@@ -89,6 +92,9 @@ occurrence <- raw_data
 #' #### associatedTaxa
 #' #### otherCatalogNumbers
 #' #### occurrenceRemarks
+#' 
+#' ---
+#' 
 #' #### organismID
 #' #### organismName
 #' #### organismScope
@@ -96,7 +102,13 @@ occurrence <- raw_data
 #' #### associatedOrganisms
 #' #### previousIdentifications
 #' #### organismRemarks
+#' 
+#' ---
+#' 
 #' #### materialSampleID
+#' 
+#' ---
+#' 
 #' #### eventID
 #' #### parentEventID
 #' #### fieldNumber
@@ -115,6 +127,9 @@ occurrence <- raw_data
 #' #### samplingEffort
 #' #### fieldNotes
 #' #### eventRemarks
+#' 
+#' ---
+#' 
 #' #### locationID
 #' #### higherGeographyID
 #' #### higherGeography
@@ -159,6 +174,9 @@ occurrence <- raw_data
 #' #### georeferenceSources
 #' #### georeferenceVerificationStatus
 #' #### georeferenceRemarks
+#' 
+#' ---
+#' 
 #' #### geologicalContextID
 #' #### earliestEonOrLowestEonothem
 #' #### latestEonOrHighestEonothem
@@ -177,6 +195,9 @@ occurrence <- raw_data
 #' #### formation
 #' #### member
 #' #### bed
+#' 
+#' ---
+#' 
 #' #### identificationID
 #' #### identificationQualifier
 #' #### typeStatus
@@ -185,6 +206,9 @@ occurrence <- raw_data
 #' #### identificationReferences
 #' #### identificationVerificationStatus
 #' #### identificationRemarks
+#' 
+#' ---
+#' 
 #' #### taxonID
 #' #### scientificNameID
 #' #### acceptedNameUsageID
