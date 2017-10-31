@@ -33,3 +33,6 @@ raw_data_file = "../data/raw/alien_macroinvertebrates_occurences.tsv"
 #' 
 #' Read the source data:
 raw_data <- read.table(raw_data_file, header = TRUE, sep = "\t", quote="", fileEncoding = "UTF-8-BOM") 
+
+#' Clean data somewhat: remove empty rows if present
+raw_data %<>%  remove_empty_rows() 
