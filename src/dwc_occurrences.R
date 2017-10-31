@@ -15,6 +15,17 @@ knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
 # This works on Mac OS X, might not work on other OS
 Sys.setlocale("LC_CTYPE", 'English_Australia.1252')
 
+
+#' Load libraries:
+library(tidyverse) # For data transformations
+
+# None core tidyverse packages:
+library(magrittr)  # For %<>% pipes
+
+# Other packages
+library(janitor)   # For cleaning input data
+library(knitr)     # For nicer (kable) tables
+
 #' Set file paths (all paths should be relative to this script):
 raw_data_file = "../data/raw/alien_macroinvertebrates_occurences.tsv"
 
