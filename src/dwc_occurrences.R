@@ -21,4 +21,4 @@ raw_data_file = "../data/raw/alien_macroinvertebrates_occurences.tsv"
 #' ## Read data
 #' 
 #' Read the source data:
-raw_data <- read.table(raw_data_file, header = TRUE, sep = "\t") 
+raw_data <- read.table(raw_data_file, header = TRUE, sep = "\t", quote="") 
