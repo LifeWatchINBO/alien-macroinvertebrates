@@ -27,6 +27,8 @@ library(knitr)     # For nicer (kable) tables
 
 #' Set file paths (all paths should be relative to this script):
 raw_data_file = "../data/raw/alien_macroinvertebrates_occurrences.tsv"
+dwc_occurrence_file = "../data/processed/occurrences/occurrence.csv"
+
 
 #' ## Read data
 #' 
@@ -310,3 +312,6 @@ occurrence %<>% mutate(nomenclaturalCode = "ICZN")
 #' #### taxonomicStatus
 #' #### nomenclaturalStatus
 #' #### taxonRemarks
+#' Save to CSV:
+write.csv(occurrence, file = dwc_occurrence_file, na = "", row.names = FALSE, fileEncoding = "UTF-8")
+
