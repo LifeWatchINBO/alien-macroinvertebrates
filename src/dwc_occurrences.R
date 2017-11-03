@@ -50,21 +50,43 @@ occurrence <- raw_data
 #' Map the source data to [Darwin Core Occurrence](http://rs.gbif.org/core/dwc_occurrence_2015-07-02.xml) (but in the classic Darwin Core order):
 #' 
 #' #### type
+occurrence %<>% mutate(type = "Event")
+#' 
 #' #### modified
 #' #### language
+occurrence %<>% mutate(language = "en")
+
 #' #### license
+occurrence %<>% mutate(license = "http://creativecommons.org/publicdomain/zero/1.0/")
+
 #' #### rightsHolder
+occurrence %<>% mutate(rightsHolder = "Ugent; Aquatic ecolo")
+
 #' #### accessRights
+occurrence %<>% mutate(accessRights = "http://www.inbo.be/en/norms-for-data-use")
+
 #' #### bibliographicCitation
+occurrence %<>% mutate(bibliographicCitation = "http://dx.doi.o")
+
 #' #### references
 #' #### institutionID
+occurrence %<>% mutate(institutionID = "INBO")
+
 #' #### collectionID
 #' #### datasetID
+occurrence %<>% mutate(datasetID = "http://dataset.inbo.be/alien-macro-invertebrates-flanders-occurrences")
+
 #' #### institutionCode
 #' #### collectionCode
 #' #### datasetName
+occurrence %<>% mutate(datasetName = "Alien macro-invertebrates in Flanders, Belgium")
+
 #' #### ownerInstitutionCode
+occurrence %<>% mutate(ownerInstitutionCode = "UGENT; Aquatic ecolo")
+
 #' #### basisOfRecord
+occurrence %<>% mutate(basisOfRecord = "HumanObservation")
+
 #' #### informationWithheld
 #' #### dataGeneralizations
 #' #### dynamicProperties
@@ -72,9 +94,13 @@ occurrence <- raw_data
 #' ---
 #' 
 #' #### occurrenceID
+occurrence %<>% mutate(occurrenceID = raw_occurrenceID)
+
 #' #### catalogNumber
 #' #### recordNumber
 #' #### recordedBy
+occurrence %<>% mutate(recordedBy = raw_recordedBy)
+
 #' #### individualCount
 #' #### organismQuantity
 #' #### organismQuantityType
@@ -91,6 +117,8 @@ occurrence <- raw_data
 #' #### associatedSequences
 #' #### associatedTaxa
 #' #### otherCatalogNumbers
+occurrence %<>% mutate(otherCatalogNumbers = raw_otherCatalogNumbers)
+
 #' #### occurrenceRemarks
 #' 
 #' ---
@@ -113,6 +141,8 @@ occurrence <- raw_data
 #' #### parentEventID
 #' #### fieldNumber
 #' #### eventDate
+occurrence %<>% mutate(eventDate = raw_eventDate)
+
 #' #### eventTime
 #' #### startDayOfYear
 #' #### endDayOfYear
@@ -120,6 +150,8 @@ occurrence <- raw_data
 #' #### month
 #' #### day
 #' #### verbatimEventDate
+occurrence %<>% mutate(verbatimEventDate = raw_eventDate)
+
 #' #### habitat
 #' #### samplingProtocol
 #' #### sampleSizeValue
@@ -134,16 +166,24 @@ occurrence <- raw_data
 #' #### higherGeographyID
 #' #### higherGeography
 #' #### continent
+occurrence %<>% mutate(continent = "Europe")
+
 #' #### waterBody
 #' #### islandGroup
 #' #### island
 #' #### country
 #' #### countryCode
+occurrence %<>% mutate(countryCode = "BE")
+
 #' #### stateProvince
 #' #### county
 #' #### municipality
+occurrence %<>% mutate(municipality = raw_municipality)
+
 #' #### locality
 #' #### verbatimLocality
+occurrence %<>% mutate(verbatimLocality = raw_verbatimLocality)
+
 #' #### minimumElevationInMeters
 #' #### maximumElevationInMeters
 #' #### verbatimElevation
@@ -155,16 +195,32 @@ occurrence <- raw_data
 #' #### locationAccordingTo
 #' #### locationRemarks
 #' #### decimalLatitude
+occurrence %<>% mutate(decimalLatitude = raw_decimalLatitude)
+
 #' #### decimalLongitude
+occurrence %<>% mutate(decimalLongitude = raw_decimalLongitude)
+
 #' #### geodeticDatum
+occurrence %<>% mutate(geodeticDatum = raw_geodeticDatum)
+
 #' #### coordinateUncertaintyInMeters
+occurrence %<>% mutate(coordinateUncertaintyInMeters = raw_coordinateUncertaintyInMeters)
+
 #' #### coordinatePrecision
 #' #### pointRadiusSpatialFit
 #' #### verbatimCoordinates
 #' #### verbatimLatitude
+occurrence %<>% mutate(verbatimLatitude = raw_verbatimLatitude)
+
 #' #### verbatimLongitude
+occurrence %<>% mutate(verbatimLongitude = raw_verbatimLongitude) 
+  
 #' #### verbatimCoordinateSystem
+occurrence %<>% mutate(verbatimCoordinateSystem = "Belgium Lambert 72")
+
 #' #### verbatimSRS
+occurrence %<>% mutate(verbatimSRS = "Belgium Datum 1972")
+
 #' #### footprintWKT
 #' #### footprintSRS
 #' #### footprintSpatialFit
@@ -202,6 +258,8 @@ occurrence <- raw_data
 #' #### identificationQualifier
 #' #### typeStatus
 #' #### identifiedBy
+occurrence %<>% mutate(identifiedBy = raw_identifiedBy)
+
 #' #### dateIdentified
 #' #### identificationReferences
 #' #### identificationVerificationStatus
@@ -218,6 +276,8 @@ occurrence <- raw_data
 #' #### namePublishedInID
 #' #### taxonConceptID
 #' #### scientificName
+occurrence %<>% mutate(scientificName = raw_scientificName)
+
 #' #### acceptedNameUsage
 #' #### parentNameUsage
 #' #### originalNameUsage
@@ -226,6 +286,8 @@ occurrence <- raw_data
 #' #### namePublishedInYear
 #' #### higherClassification
 #' #### kingdom
+occurrence %<>% mutate(kingdom = "Animalia")
+
 #' #### phylum
 #' #### class
 #' #### order
@@ -235,10 +297,16 @@ occurrence <- raw_data
 #' #### specificEpithet
 #' #### infraspecificEpithet
 #' #### taxonRank
+occurrence %<>% mutate(taxonRank = raw_taxonRank)
+
 #' #### verbatimTaxonRank
 #' #### scientificNameAuthorship
-#' #### vernacularName
+occurrence %<>% mutate(scientificNameAuthorship = raw_scientificNameAuthorship)
+
+#' #### vernacularName 
 #' #### nomenclaturalCode
+occurrence %<>% mutate(nomenclaturalCode = "ICZN")
+
 #' #### taxonomicStatus
 #' #### nomenclaturalStatus
 #' #### taxonRemarks
