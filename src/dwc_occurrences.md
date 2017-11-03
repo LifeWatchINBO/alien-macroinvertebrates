@@ -2,7 +2,7 @@
 
 Lien Reyserhove, Dimitri Brosens, Peter Desmet
 
-2017-10-31
+2017-11-03
 
 This document describes how we map the checklist data to Darwin Core.
 
@@ -20,7 +20,7 @@ Sys.setlocale("LC_CTYPE", "English_Australia.1252")
 ```
 
 ```
-## [1] ""
+## [1] "English_Australia.1252"
 ```
 
 Load libraries:
@@ -42,6 +42,7 @@ Set file paths (all paths should be relative to this script):
 
 ```r
 raw_data_file = "../data/raw/alien_macroinvertebrates_occurrences.tsv"
+dwc_occurrence_file = "../data/processed/occurrences/occurrence.csv"
 ```
 
 ## Read data
@@ -67,6 +68,13 @@ Add prefix `raw_` to all column names. Although the column names already contain
 colnames(raw_data) <- paste0("raw_", colnames(raw_data))
 ```
 
+Save those column names as a list (makes it easier to remove them all later):
+
+
+```r
+raw_colnames <- colnames(raw_data)
+```
+
 Preview data:
 
 
@@ -76,14 +84,14 @@ kable(head(raw_data))
 
 
 
-|raw_occurrenceID  |raw_recordedBy |raw_otherCatalogNumbers   |raw_eventDate |raw_municipality |raw_verbatimLocality | raw_verbatimLongitude| raw_verbatimLatitude| raw_decimalLatitude| raw_decimalLongitude|raw_geodeticDatum | raw_coordinateUncertaintyInMeters|raw_identifiedBy |raw_scientificName |raw_taxonRank |raw_scientificNameAuthorship |
-|:-----------------|:--------------|:-------------------------|:-------------|:----------------|:--------------------|---------------------:|--------------------:|-------------------:|--------------------:|:-----------------|---------------------------------:|:----------------|:------------------|:-------------|:----------------------------|
-|PB:Ugent:AqE:1815 |T. Warmoes     |INBO:NBN:BFN0017900009QRS |2002-08-13    |Weert            |                     |                234845|               212540|            51.21656|              5.58311|WGS84             |                                30|T. Warmoes       |Orconectes limosus |species       |(Rafinesque, 1817)           |
-|PB:Ugent:AqE:1831 |T. Warmoes     |INBO:NBN:BFN0017900009QRT |2003-06-04    |Dilsen-Stokkem   |                     |                246938|               191042|            51.02145|              5.75043|WGS84             |                                30|T. Warmoes       |Orconectes limosus |species       |(Rafinesque, 1817)           |
-|PB:Ugent:AqE:1806 |T. Warmoes     |INBO:NBN:BFN0017900009QRW |2002-05-28    |Ham              |                     |                203772|               199046|            51.09901|              5.13642|WGS84             |                                30|T. Warmoes       |Orconectes limosus |species       |(Rafinesque, 1817)           |
-|PB:Ugent:AqE:1808 |T. Warmoes     |INBO:NBN:BFN0017900009QRX |2002-06-03    |Lanaken          |                     |                238936|               175218|            50.88051|              5.63255|WGS84             |                                30|T. Warmoes       |Orconectes limosus |species       |(Rafinesque, 1817)           |
-|PB:Ugent:AqE:1834 |T. Warmoes     |INBO:NBN:BFN0017900009QRZ |2003-06-18    |Lanaken          |                     |                242465|               176457|            50.89109|              5.68300|WGS84             |                                30|T. Warmoes       |Orconectes limosus |species       |(Rafinesque, 1817)           |
-|PB:Ugent:AqE:1833 |T. Warmoes     |INBO:NBN:BFN0017900009QS0 |2003-06-18    |Lanaken          |                     |                242676|               177913|            50.90414|              5.68637|WGS84             |                                30|T. Warmoes       |Orconectes limosus |species       |(Rafinesque, 1817)           |
+|raw_occurrenceID  |raw_recordedBy |raw_otherCatalogNumbers   |raw_eventDate |raw_municipality |raw_verbatimLocality |raw_verbatimLongitude | raw_verbatimLatitude| raw_decimalLatitude| raw_decimalLongitude|raw_geodeticDatum | raw_coordinateUncertaintyInMeters|raw_identifiedBy |raw_scientificName |raw_taxonRank |raw_scientificNameAuthorship |
+|:-----------------|:--------------|:-------------------------|:-------------|:----------------|:--------------------|:---------------------|--------------------:|-------------------:|--------------------:|:-----------------|---------------------------------:|:----------------|:------------------|:-------------|:----------------------------|
+|PB:Ugent:AqE:1815 |T. Warmoes     |INBO:NBN:BFN0017900009QRS |2002-08-13    |Weert            |                     |234845.0              |               212540|            51.21656|              5.58311|WGS84             |                                30|T. Warmoes       |Orconectes limosus |species       |(Rafinesque, 1817)           |
+|PB:Ugent:AqE:1831 |T. Warmoes     |INBO:NBN:BFN0017900009QRT |2003-06-04    |Dilsen-Stokkem   |                     |246938.0              |               191042|            51.02145|              5.75043|WGS84             |                                30|T. Warmoes       |Orconectes limosus |species       |(Rafinesque, 1817)           |
+|PB:Ugent:AqE:1806 |T. Warmoes     |INBO:NBN:BFN0017900009QRW |2002-05-28    |Ham              |                     |203772.0              |               199046|            51.09901|              5.13642|WGS84             |                                30|T. Warmoes       |Orconectes limosus |species       |(Rafinesque, 1817)           |
+|PB:Ugent:AqE:1808 |T. Warmoes     |INBO:NBN:BFN0017900009QRX |2002-06-03    |Lanaken          |                     |238936.0              |               175218|            50.88051|              5.63255|WGS84             |                                30|T. Warmoes       |Orconectes limosus |species       |(Rafinesque, 1817)           |
+|PB:Ugent:AqE:1834 |T. Warmoes     |INBO:NBN:BFN0017900009QRZ |2003-06-18    |Lanaken          |                     |242465.0              |               176457|            50.89109|              5.68300|WGS84             |                                30|T. Warmoes       |Orconectes limosus |species       |(Rafinesque, 1817)           |
+|PB:Ugent:AqE:1833 |T. Warmoes     |INBO:NBN:BFN0017900009QS0 |2003-06-18    |Lanaken          |                     |242676.0              |               177913|            50.90414|              5.68637|WGS84             |                                30|T. Warmoes       |Orconectes limosus |species       |(Rafinesque, 1817)           |
 
 ## Create occurrence core
 
@@ -97,21 +105,88 @@ occurrence <- raw_data
 Map the source data to [Darwin Core Occurrence](http://rs.gbif.org/core/dwc_occurrence_2015-07-02.xml) (but in the classic Darwin Core order):
 
 #### type
+
+
+```r
+occurrence %<>% mutate(type = "Event")
+```
+
+
 #### modified
 #### language
+
+
+```r
+occurrence %<>% mutate(language = "en")
+```
+
 #### license
+
+
+```r
+occurrence %<>% mutate(license = "http://creativecommons.org/publicdomain/zero/1.0/")
+```
+
 #### rightsHolder
+
+
+```r
+occurrence %<>% mutate(rightsHolder = "Ugent; Aquatic ecolo")
+```
+
 #### accessRights
+
+
+```r
+occurrence %<>% mutate(accessRights = "http://www.inbo.be/en/norms-for-data-use")
+```
+
 #### bibliographicCitation
+
+
+```r
+occurrence %<>% mutate(bibliographicCitation = "http://dx.doi.o")
+```
+
 #### references
 #### institutionID
+
+
+```r
+occurrence %<>% mutate(institutionID = "INBO")
+```
+
 #### collectionID
 #### datasetID
+
+
+```r
+occurrence %<>% mutate(datasetID = "http://dataset.inbo.be/alien-macro-invertebrates-flanders-occurrences")
+```
+
 #### institutionCode
 #### collectionCode
 #### datasetName
+
+
+```r
+occurrence %<>% mutate(datasetName = "Alien macro-invertebrates in Flanders, Belgium")
+```
+
 #### ownerInstitutionCode
+
+
+```r
+occurrence %<>% mutate(ownerInstitutionCode = "UGENT; Aquatic ecolo")
+```
+
 #### basisOfRecord
+
+
+```r
+occurrence %<>% mutate(basisOfRecord = "HumanObservation")
+```
+
 #### informationWithheld
 #### dataGeneralizations
 #### dynamicProperties
@@ -119,9 +194,21 @@ Map the source data to [Darwin Core Occurrence](http://rs.gbif.org/core/dwc_occu
 ---
 
 #### occurrenceID
+
+
+```r
+occurrence %<>% mutate(occurrenceID = raw_occurrenceID)
+```
+
 #### catalogNumber
 #### recordNumber
 #### recordedBy
+
+
+```r
+occurrence %<>% mutate(recordedBy = raw_recordedBy)
+```
+
 #### individualCount
 #### organismQuantity
 #### organismQuantityType
@@ -138,6 +225,12 @@ Map the source data to [Darwin Core Occurrence](http://rs.gbif.org/core/dwc_occu
 #### associatedSequences
 #### associatedTaxa
 #### otherCatalogNumbers
+
+
+```r
+occurrence %<>% mutate(otherCatalogNumbers = raw_otherCatalogNumbers)
+```
+
 #### occurrenceRemarks
 
 ---
@@ -160,6 +253,12 @@ Map the source data to [Darwin Core Occurrence](http://rs.gbif.org/core/dwc_occu
 #### parentEventID
 #### fieldNumber
 #### eventDate
+
+
+```r
+occurrence %<>% mutate(eventDate = raw_eventDate)
+```
+
 #### eventTime
 #### startDayOfYear
 #### endDayOfYear
@@ -167,6 +266,12 @@ Map the source data to [Darwin Core Occurrence](http://rs.gbif.org/core/dwc_occu
 #### month
 #### day
 #### verbatimEventDate
+
+
+```r
+occurrence %<>% mutate(verbatimEventDate = raw_eventDate)
+```
+
 #### habitat
 #### samplingProtocol
 #### sampleSizeValue
@@ -181,16 +286,40 @@ Map the source data to [Darwin Core Occurrence](http://rs.gbif.org/core/dwc_occu
 #### higherGeographyID
 #### higherGeography
 #### continent
+
+
+```r
+occurrence %<>% mutate(continent = "Europe")
+```
+
 #### waterBody
 #### islandGroup
 #### island
 #### country
 #### countryCode
+
+
+```r
+occurrence %<>% mutate(countryCode = "BE")
+```
+
 #### stateProvince
 #### county
 #### municipality
+
+
+```r
+occurrence %<>% mutate(municipality = raw_municipality)
+```
+
 #### locality
 #### verbatimLocality
+
+
+```r
+occurrence %<>% mutate(verbatimLocality = raw_verbatimLocality)
+```
+
 #### minimumElevationInMeters
 #### maximumElevationInMeters
 #### verbatimElevation
@@ -202,16 +331,64 @@ Map the source data to [Darwin Core Occurrence](http://rs.gbif.org/core/dwc_occu
 #### locationAccordingTo
 #### locationRemarks
 #### decimalLatitude
+
+
+```r
+occurrence %<>% mutate(decimalLatitude = raw_decimalLatitude)
+```
+
 #### decimalLongitude
+
+
+```r
+occurrence %<>% mutate(decimalLongitude = raw_decimalLongitude)
+```
+
 #### geodeticDatum
+
+
+```r
+occurrence %<>% mutate(geodeticDatum = raw_geodeticDatum)
+```
+
 #### coordinateUncertaintyInMeters
+
+
+```r
+occurrence %<>% mutate(coordinateUncertaintyInMeters = raw_coordinateUncertaintyInMeters)
+```
+
 #### coordinatePrecision
 #### pointRadiusSpatialFit
 #### verbatimCoordinates
 #### verbatimLatitude
+
+
+```r
+occurrence %<>% mutate(verbatimLatitude = raw_verbatimLatitude)
+```
+
 #### verbatimLongitude
+
+
+```r
+occurrence %<>% mutate(verbatimLongitude = raw_verbatimLongitude) 
+```
+
 #### verbatimCoordinateSystem
+
+
+```r
+occurrence %<>% mutate(verbatimCoordinateSystem = "Belgium Lambert 72")
+```
+
 #### verbatimSRS
+
+
+```r
+occurrence %<>% mutate(verbatimSRS = "Belgium Datum 1972")
+```
+
 #### footprintWKT
 #### footprintSRS
 #### footprintSpatialFit
@@ -249,6 +426,12 @@ Map the source data to [Darwin Core Occurrence](http://rs.gbif.org/core/dwc_occu
 #### identificationQualifier
 #### typeStatus
 #### identifiedBy
+
+
+```r
+occurrence %<>% mutate(identifiedBy = raw_identifiedBy)
+```
+
 #### dateIdentified
 #### identificationReferences
 #### identificationVerificationStatus
@@ -265,6 +448,12 @@ Map the source data to [Darwin Core Occurrence](http://rs.gbif.org/core/dwc_occu
 #### namePublishedInID
 #### taxonConceptID
 #### scientificName
+
+
+```r
+occurrence %<>% mutate(scientificName = raw_scientificName)
+```
+
 #### acceptedNameUsage
 #### parentNameUsage
 #### originalNameUsage
@@ -273,6 +462,12 @@ Map the source data to [Darwin Core Occurrence](http://rs.gbif.org/core/dwc_occu
 #### namePublishedInYear
 #### higherClassification
 #### kingdom
+
+
+```r
+occurrence %<>% mutate(kingdom = "Animalia")
+```
+
 #### phylum
 #### class
 #### order
@@ -282,10 +477,67 @@ Map the source data to [Darwin Core Occurrence](http://rs.gbif.org/core/dwc_occu
 #### specificEpithet
 #### infraspecificEpithet
 #### taxonRank
+
+
+```r
+occurrence %<>% mutate(taxonRank = raw_taxonRank)
+```
+
 #### verbatimTaxonRank
 #### scientificNameAuthorship
-#### vernacularName
+
+
+```r
+occurrence %<>% mutate(scientificNameAuthorship = raw_scientificNameAuthorship)
+```
+
+#### vernacularName 
 #### nomenclaturalCode
+
+
+```r
+occurrence %<>% mutate(nomenclaturalCode = "ICZN")
+```
+
 #### taxonomicStatus
 #### nomenclaturalStatus
 #### taxonRemarks
+
+#' Remove the original columns:
+
+
+```r
+occurrence %<>% select(-one_of(raw_colnames))
+```
+
+Preview data:
+
+
+```r
+kable(head(occurrence))
+```
+
+
+
+|type  |language |license                                           |rightsHolder         |accessRights                             |bibliographicCitation |institutionID |datasetID                                                             |datasetName                                    |ownerInstitutionCode |basisOfRecord    |occurrenceID      |recordedBy |otherCatalogNumbers       |eventDate  |verbatimEventDate |continent |countryCode |municipality   |verbatimLocality | decimalLatitude| decimalLongitude|geodeticDatum | coordinateUncertaintyInMeters| verbatimLatitude|verbatimLongitude |verbatimCoordinateSystem |verbatimSRS        |identifiedBy |scientificName     |kingdom  |taxonRank |scientificNameAuthorship |nomenclaturalCode |
+|:-----|:--------|:-------------------------------------------------|:--------------------|:----------------------------------------|:---------------------|:-------------|:---------------------------------------------------------------------|:----------------------------------------------|:--------------------|:----------------|:-----------------|:----------|:-------------------------|:----------|:-----------------|:---------|:-----------|:--------------|:----------------|---------------:|----------------:|:-------------|-----------------------------:|----------------:|:-----------------|:------------------------|:------------------|:------------|:------------------|:--------|:---------|:------------------------|:-----------------|
+|Event |en       |http://creativecommons.org/publicdomain/zero/1.0/ |Ugent; Aquatic ecolo |http://www.inbo.be/en/norms-for-data-use |http://dx.doi.o       |INBO          |http://dataset.inbo.be/alien-macro-invertebrates-flanders-occurrences |Alien macro-invertebrates in Flanders, Belgium |UGENT; Aquatic ecolo |HumanObservation |PB:Ugent:AqE:1815 |T. Warmoes |INBO:NBN:BFN0017900009QRS |2002-08-13 |2002-08-13        |Europe    |BE          |Weert          |                 |        51.21656|          5.58311|WGS84         |                            30|           212540|234845.0          |Belgium Lambert 72       |Belgium Datum 1972 |T. Warmoes   |Orconectes limosus |Animalia |species   |(Rafinesque, 1817)       |ICZN              |
+|Event |en       |http://creativecommons.org/publicdomain/zero/1.0/ |Ugent; Aquatic ecolo |http://www.inbo.be/en/norms-for-data-use |http://dx.doi.o       |INBO          |http://dataset.inbo.be/alien-macro-invertebrates-flanders-occurrences |Alien macro-invertebrates in Flanders, Belgium |UGENT; Aquatic ecolo |HumanObservation |PB:Ugent:AqE:1831 |T. Warmoes |INBO:NBN:BFN0017900009QRT |2003-06-04 |2003-06-04        |Europe    |BE          |Dilsen-Stokkem |                 |        51.02145|          5.75043|WGS84         |                            30|           191042|246938.0          |Belgium Lambert 72       |Belgium Datum 1972 |T. Warmoes   |Orconectes limosus |Animalia |species   |(Rafinesque, 1817)       |ICZN              |
+|Event |en       |http://creativecommons.org/publicdomain/zero/1.0/ |Ugent; Aquatic ecolo |http://www.inbo.be/en/norms-for-data-use |http://dx.doi.o       |INBO          |http://dataset.inbo.be/alien-macro-invertebrates-flanders-occurrences |Alien macro-invertebrates in Flanders, Belgium |UGENT; Aquatic ecolo |HumanObservation |PB:Ugent:AqE:1806 |T. Warmoes |INBO:NBN:BFN0017900009QRW |2002-05-28 |2002-05-28        |Europe    |BE          |Ham            |                 |        51.09901|          5.13642|WGS84         |                            30|           199046|203772.0          |Belgium Lambert 72       |Belgium Datum 1972 |T. Warmoes   |Orconectes limosus |Animalia |species   |(Rafinesque, 1817)       |ICZN              |
+|Event |en       |http://creativecommons.org/publicdomain/zero/1.0/ |Ugent; Aquatic ecolo |http://www.inbo.be/en/norms-for-data-use |http://dx.doi.o       |INBO          |http://dataset.inbo.be/alien-macro-invertebrates-flanders-occurrences |Alien macro-invertebrates in Flanders, Belgium |UGENT; Aquatic ecolo |HumanObservation |PB:Ugent:AqE:1808 |T. Warmoes |INBO:NBN:BFN0017900009QRX |2002-06-03 |2002-06-03        |Europe    |BE          |Lanaken        |                 |        50.88051|          5.63255|WGS84         |                            30|           175218|238936.0          |Belgium Lambert 72       |Belgium Datum 1972 |T. Warmoes   |Orconectes limosus |Animalia |species   |(Rafinesque, 1817)       |ICZN              |
+|Event |en       |http://creativecommons.org/publicdomain/zero/1.0/ |Ugent; Aquatic ecolo |http://www.inbo.be/en/norms-for-data-use |http://dx.doi.o       |INBO          |http://dataset.inbo.be/alien-macro-invertebrates-flanders-occurrences |Alien macro-invertebrates in Flanders, Belgium |UGENT; Aquatic ecolo |HumanObservation |PB:Ugent:AqE:1834 |T. Warmoes |INBO:NBN:BFN0017900009QRZ |2003-06-18 |2003-06-18        |Europe    |BE          |Lanaken        |                 |        50.89109|          5.68300|WGS84         |                            30|           176457|242465.0          |Belgium Lambert 72       |Belgium Datum 1972 |T. Warmoes   |Orconectes limosus |Animalia |species   |(Rafinesque, 1817)       |ICZN              |
+|Event |en       |http://creativecommons.org/publicdomain/zero/1.0/ |Ugent; Aquatic ecolo |http://www.inbo.be/en/norms-for-data-use |http://dx.doi.o       |INBO          |http://dataset.inbo.be/alien-macro-invertebrates-flanders-occurrences |Alien macro-invertebrates in Flanders, Belgium |UGENT; Aquatic ecolo |HumanObservation |PB:Ugent:AqE:1833 |T. Warmoes |INBO:NBN:BFN0017900009QS0 |2003-06-18 |2003-06-18        |Europe    |BE          |Lanaken        |                 |        50.90414|          5.68637|WGS84         |                            30|           177913|242676.0          |Belgium Lambert 72       |Belgium Datum 1972 |T. Warmoes   |Orconectes limosus |Animalia |species   |(Rafinesque, 1817)       |ICZN              |
+
+Save to CSV:
+
+
+```r
+write.csv(occurrence, file = dwc_occurrence_file, na = "", row.names = FALSE, fileEncoding = "UTF-8")
+
+knitr::spin("dwc_occurrences.R")
+```
+
+```
+## Error in parse_block(g[-1], g[1], params.src): duplicate label 'configure_knitr'
+```
+
