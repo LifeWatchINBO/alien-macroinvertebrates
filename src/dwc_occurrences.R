@@ -4,7 +4,7 @@
 #' 
 #' `r Sys.Date()`
 #'
-#' This document describes how we map the checklist data to Darwin Core.
+#' This document describes how we map the occurrence data to Darwin Core.
 #' 
 #' ## Setup
 #' 
