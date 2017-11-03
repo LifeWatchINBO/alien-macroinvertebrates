@@ -41,6 +41,9 @@ raw_data %<>%  remove_empty_rows()
 #' Add prefix `raw_` to all column names. Although the column names already contain Darwin Core terms, new columns will have to be added between the current columns. To put all columns in the right order, it is easier to create new columns (some of them will be copies of the columns in the raw dataset) and then remove the columns of the raw occurrences dataset:
 colnames(raw_data) <- paste0("raw_", colnames(raw_data))
 
+#' Save those column names as a list (makes it easier to remove them all later):
+raw_colnames <- colnames(raw_data)
+
 #' Preview data:
 kable(head(raw_data))
 
@@ -312,6 +315,13 @@ occurrence %<>% mutate(nomenclaturalCode = "ICZN")
 #' #### taxonomicStatus
 #' #### nomenclaturalStatus
 #' #### taxonRemarks
+#' 
+#' #' Remove the original columns:
+occurrence %<>% select(-one_of(raw_colnames))
+
+#' Preview data:
+kable(head(occurrence))
+
 #' Save to CSV:
 write.csv(occurrence, file = dwc_occurrence_file, na = "", row.names = FALSE, fileEncoding = "UTF-8")
 
