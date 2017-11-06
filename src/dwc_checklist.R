@@ -138,3 +138,51 @@ kable(head(taxon))
 
 #' Save to CSV:
 write.csv(taxon, file = dwc_taxon_file, na = "", row.names = FALSE, fileEncoding = "UTF-8")
+
+#' ## Create distribution extension
+#' 
+#' ### Pre-processing
+distribution <- raw_data
+
+#' #### id
+distribution %<>% mutate(id = raw_occurrenceID)
+
+#' #### locationID
+distribution %<>% mutate(locationID = "ISO_3166-2:BE-VLG")
+
+#' #### locality
+distribution %<>% mutate(locality = "Flandres")
+
+
+#' #### countryCode
+distribution %<>% mutate(countrCode = "BE")
+
+#' #### lifeStage
+#' #### occurrenceStatus
+distribution %<>% mutate(occurrenceStatus = "present")
+
+#' #### threatStatus
+#' #### establishmentMeans
+#' #### appendixCITES
+#' #### eventDate
+distribution %<>% mutate(eventDate = raw_eventDate)
+
+#' #### startDayOfYear
+#' #### endDayOfYear
+#' #### source
+#' #### occurrenceRemarks
+#' #### datasetID
+distribution %<>% mutate(datasetID = "http://dataset.inbo.be/alien-macro-invertebrates-flanders-occurrences")
+
+#' ### Post-processing
+#' 
+#' Remove the original columns:
+
+distribution %<>% select(-one_of(raw_colnames))
+
+
+#' Preview data:
+kable(head(distribution))
+
+#' Save to CSV:
+write.csv(distribution, file = dwc_distribution_file, na = "", row.names = FALSE, fileEncoding = "UTF-8")
