@@ -1,4 +1,4 @@
-#' # Darwin Core mapping
+#' # Darwin Core mapping for checklist dataset
 #' 
 #' Lien Reyserhove, Dimitri Brosens, Peter Desmet
 #' 
@@ -13,7 +13,7 @@ knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
 
 #' Set locale (so we use UTF-8 character encoding):
 # This works on Mac OS X, might not work on other OS
-Sys.setlocale("LC_CTYPE", "English_Australia.1252")
+Sys.setlocale("LC_CTYPE", "en_US.UTF-8")
 
 #' Load libraries:
 library(tidyverse) # For data transformations
@@ -27,9 +27,9 @@ library(knitr)     # For nicer (kable) tables
 
 #' Set file paths (all paths should be relative to this script):
 raw_data_file = "../data/raw/alien_macroinvertebrates_occurrences.tsv"
-dwc_taxon_file = "../data/processed/checklist/taxon.csv"
-dwc_distribution_file = "../data/processed/checklist/distribution.csv"
-dwc_description_file = "../data/processed/checklist/description.csv"
+dwc_taxon_file = "../data/processed/dwc_checklist/taxon.csv"
+dwc_distribution_file = "../data/processed/dwc_checklist/distribution.csv"
+dwc_description_file = "../data/processed/dwc_checklist/description.csv"
 
 #' ## Read data
 #' 
@@ -39,25 +39,35 @@ raw_data <- read.table(raw_data_file, header = TRUE, sep = "\t", quote="", fileE
 #' Clean data somewhat: remove empty rows if present
 raw_data %<>%  remove_empty_rows() 
 
-#' Add prefix `raw_` to all column names. Although the column names already contain Darwin Core terms, new columns will have to be added between the current columns. To put all columns in the right order, it is easier to create new columns (some of them will be copies of the columns in the raw dataset) and then remove the columns of the raw occurrences dataset:
+#' Add prefix `raw_` to all column names. Although the column names already contain Darwin Core terms, new columns will have to be added between the current columns. To put all columns in the right order, it is easier to create new columns (some of them will be copies of the columns in the raw dataset) and then remove the columns of the raw occurrence dataset:
 colnames(raw_data) <- paste0("raw_", colnames(raw_data))
-
-#' Save those column names as a list (makes it easier to remove them all later):
-raw_colnames <- colnames(raw_data)
 
 #' Preview data:
 kable(head(raw_data))
 
+#' ## Group by species
+#' 
+#' Group the occurrence data as species data (= one record for each scientific name):
+raw_species <- raw_data # replace by dplyr groupby on taxonID, scientificName, taxonRank and scientificNameAuthorship
+
+#' Order by raw_taxonID:
+# raw_species %<>% arrange(raw_taxonID)
+
+#' Save the raw column names as a list (makes it easier to remove them all later):
+raw_colnames <- colnames(raw_species)
+
+#' Preview data:
+kable(head(raw_species))
+
 #' ## Create taxon core
-taxon <- raw_data
+#' 
+#' ### Pre-processing
+taxon <- raw_species
 
 #' ### Term mapping
 #' 
 #' Map the source data to [Darwin Core Taxon](http://rs.gbif.org/core/dwc_taxon_2015-04-24.xml):
 #' 
-#' #### id
-taxon %<>% mutate(id = raw_occurrenceID) 
-
 #' #### modified
 #' #### language
 taxon %<>% mutate(language = "en")
@@ -72,18 +82,16 @@ taxon %<>% mutate(rightsHolder = "Ugent; Aquatic ecolo")
 taxon %<>% mutate(accessRights = "http://www.inbo.be/en/norms-for-data-use")
 
 #' #### bibliographicCitation
-taxon %<>% mutate(bibliographicCitation = "http://dx.doi.o")
-
 #' #### informationWithheld
 #' #### datasetID
-taxon %<>% mutate(datasetID = "http://dataset.inbo.be/alien-macro-invertebrates-flanders-occurrences")
+taxon %<>% mutate(datasetID = "")
 
 #' #### datasetName
-taxon %<>% mutate(datasetName = "Alien macro-invertebrates in Flanders, Belgium")
+taxon %<>% mutate(datasetName = "Alien macroinvertebrates checklist for Flanders, Belgium")
 
 #' #### references
 #' #### taxonID
-taxon %<>% mutate(taxonID = raw_occurrenceID)
+taxon %<>% mutate(taxonID = "") # Should be taken from source
 
 #' #### scientificNameID
 #' #### acceptedNameUsageID
@@ -127,7 +135,7 @@ taxon %<>% mutate(nomenclaturalCode = "ICZN")
 #' #### taxonomicStatus
 #' #### nomenclaturalStatus
 #' #### taxonRemarks
-#'
+#' 
 #' ### Post-processing
 #' 
 #' Remove the original columns:
@@ -142,20 +150,21 @@ write.csv(taxon, file = dwc_taxon_file, na = "", row.names = FALSE, fileEncoding
 #' ## Create distribution extension
 #' 
 #' ### Pre-processing
-distribution <- raw_data
+distribution <- raw_species
+
+#' ### Term mapping
 
 #' #### id
-distribution %<>% mutate(id = raw_occurrenceID)
+distribution %<>% mutate(id = "")
 
 #' #### locationID
 distribution %<>% mutate(locationID = "ISO_3166-2:BE-VLG")
 
 #' #### locality
-distribution %<>% mutate(locality = "Flandres")
-
+distribution %<>% mutate(locality = "Flanders")
 
 #' #### countryCode
-distribution %<>% mutate(countrCode = "BE")
+distribution %<>% mutate(countryCode = "BE")
 
 #' #### lifeStage
 #' #### occurrenceStatus
@@ -165,14 +174,11 @@ distribution %<>% mutate(occurrenceStatus = "present")
 #' #### establishmentMeans
 #' #### appendixCITES
 #' #### eventDate
-distribution %<>% mutate(eventDate = raw_eventDate)
-
 #' #### startDayOfYear
 #' #### endDayOfYear
 #' #### source
 #' #### occurrenceRemarks
 #' #### datasetID
-distribution %<>% mutate(datasetID = "http://dataset.inbo.be/alien-macro-invertebrates-flanders-occurrences")
 
 #' ### Post-processing
 #' 
@@ -180,9 +186,27 @@ distribution %<>% mutate(datasetID = "http://dataset.inbo.be/alien-macro-inverte
 
 distribution %<>% select(-one_of(raw_colnames))
 
-
 #' Preview data:
 kable(head(distribution))
 
 #' Save to CSV:
 write.csv(distribution, file = dwc_distribution_file, na = "", row.names = FALSE, fileEncoding = "UTF-8")
+
+#' ## Summary
+#' 
+#' ### Number of records
+#' 
+#' * Source file: `r nrow(raw_data)`
+#' * Taxon core: `r nrow(taxon)`
+#' * Distribution extension: `r nrow(distribution)`
+#' * Description extension: `TODO`
+#'
+#' ### Taxon core
+#' 
+#' Number of duplicates: `r anyDuplicated(taxon[["taxonID"]])` (should be 0)
+#' 
+#' The following numbers are expected to be the same:
+#' 
+#' * Number of records: `r nrow(taxon)`
+#' * Number of distinct `taxonID`: `r n_distinct(taxon[["taxonID"]], na.rm = TRUE)`
+#' * Number of distinct `scientificName`: `r n_distinct(taxon[["scientificName"]], na.rm = TRUE)`
