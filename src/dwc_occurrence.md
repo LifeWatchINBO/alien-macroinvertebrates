@@ -95,6 +95,8 @@ kable(head(raw_data))
 
 ## Create occurrence core
 
+### Pre-processing
+
 
 ```r
 occurrence <- raw_data
@@ -491,7 +493,9 @@ occurrence %<>% mutate(nomenclaturalCode = "ICZN")
 #### nomenclaturalStatus
 #### taxonRemarks
 
-#' Remove the original columns:
+### Post-processing
+
+Remove the original columns:
 
 
 ```r

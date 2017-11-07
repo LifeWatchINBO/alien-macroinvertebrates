@@ -47,6 +47,8 @@ raw_colnames <- colnames(raw_data)
 kable(head(raw_data))
 
 #' ## Create occurrence core
+#' 
+#' ### Pre-processing
 occurrence <- raw_data
 
 #' ### Term mapping
@@ -310,7 +312,9 @@ occurrence %<>% mutate(nomenclaturalCode = "ICZN")
 #' #### nomenclaturalStatus
 #' #### taxonRemarks
 #' 
-#' #' Remove the original columns:
+#' ### Post-processing
+#' 
+#' Remove the original columns:
 occurrence %<>% select(-one_of(raw_colnames))
 
 #' Preview data:
