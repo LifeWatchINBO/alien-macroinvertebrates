@@ -1,4 +1,4 @@
-#' # Darwin Core mapping
+#' # Darwin Core mapping for occurrence dataset
 #' 
 #' Lien Reyserhove, Dimitri Brosens, Peter Desmet
 #' 
@@ -13,7 +13,7 @@ knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
 
 #' Set locale (so we use UTF-8 character encoding):
 # This works on Mac OS X, might not work on other OS
-Sys.setlocale("LC_CTYPE", "English_Australia.1252")
+Sys.setlocale("LC_CTYPE", "en_US.UTF-8")
 
 #' Load libraries:
 library(tidyverse) # For data transformations
@@ -27,8 +27,7 @@ library(knitr)     # For nicer (kable) tables
 
 #' Set file paths (all paths should be relative to this script):
 raw_data_file = "../data/raw/alien_macroinvertebrates_occurrences.tsv"
-dwc_occurrence_file = "../data/processed/occurrences/occurrences.csv"
-
+dwc_occurrence_file = "../data/processed/dwc_occurrence/occurrence.csv"
 
 #' ## Read data
 #' 
@@ -71,24 +70,19 @@ occurrence %<>% mutate(rightsHolder = "Ugent; Aquatic ecolo")
 occurrence %<>% mutate(accessRights = "http://www.inbo.be/en/norms-for-data-use")
 
 #' #### bibliographicCitation
-occurrence %<>% mutate(bibliographicCitation = "http://dx.doi.o")
-
 #' #### references
 #' #### institutionID
-occurrence %<>% mutate(institutionID = "INBO")
-
 #' #### collectionID
 #' #### datasetID
-occurrence %<>% mutate(datasetID = "http://dataset.inbo.be/alien-macro-invertebrates-flanders-occurrences")
+occurrence %<>% mutate(datasetID = "https://doi.org/10.15468/xjtfoo")
 
 #' #### institutionCode
+occurrence %<>% mutate(institutionCode = "INBO")
 #' #### collectionCode
 #' #### datasetName
-occurrence %<>% mutate(datasetName = "Alien macro-invertebrates in Flanders, Belgium")
+occurrence %<>% mutate(datasetName = "Alien macroinvertebrates in Flanders, Belgium")
 
 #' #### ownerInstitutionCode
-occurrence %<>% mutate(ownerInstitutionCode = "UGENT; Aquatic ecolo")
-
 #' #### basisOfRecord
 occurrence %<>% mutate(basisOfRecord = "HumanObservation")
 
@@ -206,7 +200,7 @@ occurrence %<>% mutate(decimalLatitude = raw_decimalLatitude)
 occurrence %<>% mutate(decimalLongitude = raw_decimalLongitude)
 
 #' #### geodeticDatum
-occurrence %<>% mutate(geodeticDatum = raw_geodeticDatum)
+occurrence %<>% mutate(geodeticDatum = "WGS84")
 
 #' #### coordinateUncertaintyInMeters
 occurrence %<>% mutate(coordinateUncertaintyInMeters = raw_coordinateUncertaintyInMeters)
@@ -218,8 +212,8 @@ occurrence %<>% mutate(coordinateUncertaintyInMeters = raw_coordinateUncertainty
 occurrence %<>% mutate(verbatimLatitude = raw_verbatimLatitude)
 
 #' #### verbatimLongitude
-occurrence %<>% mutate(verbatimLongitude = raw_verbatimLongitude) 
-  
+occurrence %<>% mutate(verbatimLongitude = raw_verbatimLongitude)
+
 #' #### verbatimCoordinateSystem
 occurrence %<>% mutate(verbatimCoordinateSystem = "Belgium Lambert 72")
 
@@ -324,4 +318,3 @@ kable(head(occurrence))
 
 #' Save to CSV:
 write.csv(occurrence, file = dwc_occurrence_file, na = "", row.names = FALSE, fileEncoding = "UTF-8")
-
