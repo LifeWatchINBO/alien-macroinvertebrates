@@ -8,8 +8,8 @@ This repository contains 1) the source data for the _Alien macroinvertebrates in
 
 ### Occurrence dataset
 
-* Description of the [Darwin Core mapping](src/dwc_occurrences.md) (= a rendition of the [mapping script](src/dwc_occurrences.R))
-* Generated [Darwin Core files](data/processed/occurrences/)
+* Description of the [Darwin Core mapping](src/dwc_occurrence.md) (= a rendition of the [mapping script](src/dwc_occurrence.R))
+* Generated [Darwin Core files](data/processed/dwc_occurrence/)
 * Published [dataset on the IPT](http://data.inbo.be/ipt/resource?r=http://data.inbo.be/ipt/resource?r=alien-macroinvertebrate-occurrences)
 * Published [dataset on GBIF](https://www.gbif.org/dataset/3c428404-893c-44da-bb4a-6c19d8fb676a)
 * Article for this dataset:
@@ -36,12 +36,12 @@ The repository structure is based on [Cookiecutter Data Science](http://drivenda
 │   ├── raw                 : Source occurrence data, not maintained elsewhere,
 |   |                         input for both mapping scripts and CARTO 
 │   └── processed
-|       ├── occurrences     : Darwin Core output of occurrence mapping script GENERATED
-|       └── checklist       : Darwin Core output of checklist mapping script GENERATED
+|       ├── dwc_occurrence  : Darwin Core output of occurrence mapping script GENERATED
+|       └── dwc_checklist   : Darwin Core output of checklist mapping script GENERATED
 │
 ├── src
-│   ├── dwc_occurrences.R   : Darwin Core mapping script for occurrence dataset
-│   ├── dwc_occurrences.md  : Nicer rendition of above script, created by knitr::spin GENERATED
+│   ├── dwc_occurrence.R    : Darwin Core mapping script for occurrence dataset
+│   ├── dwc_occurrence.md   : Nicer rendition of above script, created by knitr::spin GENERATED
 │   ├── dwc_checklist.R     : Darwin Core mapping script for checklist dataset
 │   ├── dwc_checklist.md    : Nicer rendition of above script, created by knitr::spin GENERATED
 │   └── src.Rproj           : RStudio project file
