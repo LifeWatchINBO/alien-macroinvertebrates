@@ -61,7 +61,7 @@ Clean data somewhat: remove empty rows if present
 raw_data %<>%  remove_empty_rows() 
 ```
 
-Add prefix `raw_` to all column names. Although the column names already contain Darwin Core terms, new columns will have to be added between the current columns. To put all columns in the right order, it is easier to create new columns (some of them will be copies of the columns in the raw dataset) and then remove the columns of the raw occurrences dataset:
+Add prefix `raw_` to all column names. Although the column names already contain Darwin Core terms, new columns will have to be added between the current columns. To put all columns in the right order, it is easier to create new columns (some of them will be copies of the columns in the raw dataset) and then remove the columns of the raw occurrence dataset:
 
 
 ```r
@@ -523,3 +523,18 @@ Save to CSV:
 write.csv(occurrence, file = dwc_occurrence_file, na = "", row.names = FALSE, fileEncoding = "UTF-8")
 ```
 
+## Summary
+
+### Number of records
+
+* Source file: 2856
+* Occurrence core: 2856
+
+### Occurrence core
+
+Number of duplicates: 0 (should be 0)
+
+The following numbers are expected to be the same:
+
+* Number of records: 2856
+* Number of distinct `occurrenceID`: 2856
