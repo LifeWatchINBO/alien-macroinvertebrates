@@ -56,21 +56,39 @@ occurrence <- raw_data
 #' Map the source data to [Darwin Core Occurrence](http://rs.gbif.org/core/dwc_occurrence_2015-07-02.xml) (but in the classic Darwin Core order):
 #' 
 #' #### type
+occurrence %<>% mutate(type = "Event")
+  
 #' #### modified
 #' #### language
+occurrence %<>% mutate(language ="en")
+
 #' #### license
+occurrence %<>% mutate(license = "http://creativecommons.org/publicdomain/zero/1.0")
+
 #' #### rightsHolder
+occurrence %<>% mutate(rightsHolder = "Ghent University")
+
 #' #### accessRights
+occurrence %<>% mutate(accessRights = "http://www.inbo.be/en/norms-for-data-use")
+
 #' #### bibliographicCitation
 #' #### references
 #' #### institutionID
 #' #### collectionID
 #' #### datasetID
+occurrence %<>% mutate(datasetID = "https://doi.org/10.15468/xjtfoo")
+
 #' #### institutionCode
+occurrence %<>% mutate(institutionCode = "INBO")
+
 #' #### collectionCode
 #' #### datasetName
+occurrence %<>% mutate(datasetName = "Alien macroinvertebrates in Flanders, Belgium")
+
 #' #### ownerInstitutionCode
 #' #### basisOfRecord
+occurrence %<>% mutate(basisOfRecord = "HumanObservation")
+
 #' #### informationWithheld
 #' #### dataGeneralizations
 #' #### dynamicProperties
