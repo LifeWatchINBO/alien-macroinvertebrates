@@ -96,6 +96,10 @@ occurrence %<>% mutate(basisOfRecord = "HumanObservation")
 #' ---
 #' 
 #' #### occurrenceID
+n_distinct(occurrence $ raw_taxon_occurrence_comment)  # Checking whether occurrenceID is a unique code
+occurrence %<>% mutate(occurrenceID = raw_taxon_occurrence_comment)
+
+
 #' #### catalogNumber
 #' #### recordNumber
 #' #### recordedBy
