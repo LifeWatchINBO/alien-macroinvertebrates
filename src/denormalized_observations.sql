@@ -1,47 +1,47 @@
-USE [NBNData]
-GO
+use [nbndata]
+go
 
-SET ANSI_NULLS ON
-GO
+set ansi_nulls on
+go
 
-SET QUOTED_IDENTIFIER ON
-GO
+set quoted_identifier on
+go
 
-SELECT
-    TAO.TAXON_OCCURRENCE_KEY AS TAO_TAXON_OCCURRENCE_KEY,
-    TAO.COMMENT AS TAO_COMMENT,
-    NS.RECOMMENDED_SCIENTIFIC_NAME AS NS_RECOMMENDED_SCIENTIFIC_NAME, 
-    NS.RECOMMENDED_NAME_AUTHORITY AS NS_RECOMMENDED_NAME_AUTHORITY, 
-    NS.RECOMMENDED_NAME_RANK AS NS_RECOMMENDED_NAME_RANK, 
-    SA.VAGUE_DATE_START AS SA_VAGUE_DATE_START, 
-    SA.VAGUE_DATE_END AS SA_VAGUE_DATE_END, 
-    SA.VAGUE_DATE_TYPE AS SA_VAGUE_DATE_TYPE,
-    SUE.COMMENT AS SUE_COMMENT, 
-	LN.ITEM_NAME AS LN_ITEM_NAME,
-    SUE.LOCATION_NAME AS SUE_LOCATION_NAME,
-    SA.LAT AS SA_LAT,
-    SA.LONG AS SA_LONG,
-    SA.SPATIAL_REF AS SA_SPATIAL_REF,
-    SA.SPATIAL_REF_SYSTEM AS SA_SPATIAL_REF_SYSTEM,
-    SA.SPATIAL_REF_QUALIFIER AS SA_SPATIAL_REF_QUALIFIER
+select
+    tao.taxon_occurrence_key as taxon_occurrence_key,
+    tao.comment as taxon_occurrence_comment,
+    ns.recommended_scientific_name as nameserver_recommended_scientific_name, 
+    ns.recommended_name_authority as nameserver_recommended_name_authority, 
+    ns.recommended_name_rank as nameserver_recommended_name_rank, 
+    sa.vague_date_start as sample_vague_date_start, 
+    sa.vague_date_end as sample_vague_date_end, 
+    sa.vague_date_type as sample_vague_date_type,
+    sue.comment as survey_event_comment, 
+    ln.item_name as location_name_item_name,
+    sue.location_name as survey_event_location_name,
+    sa.lat as sample_lat,
+    sa.long as sample_long,
+    sa.spatial_ref as sample_spatial_ref,
+    sa.spatial_ref_system as sample_spatial_ref_system,
+    sa.spatial_ref_qualifier as sample_spatial_ref_qualifier
 
-FROM 
-    dbo.SURVEY SU
-	INNER JOIN dbo.SURVEY_EVENT SUE ON SUE.SURVEY_KEY = SU.SURVEY_KEY
-	INNER JOIN dbo.SAMPLE SA ON SA.SURVEY_EVENT_KEY = SUE.SURVEY_EVENT_KEY
-	INNER JOIN dbo.TAXON_OCCURRENCE TAO ON TAO.SAMPLE_KEY = SA.SAMPLE_KEY
-	INNER JOIN dbo.TAXON_DETERMINATION TD ON TD.TAXON_OCCURRENCE_KEY = TAO.TAXON_OCCURRENCE_KEY
-	INNER JOIN dbo.TAXON_LIST_ITEM TLI ON TLI.TAXON_LIST_ITEM_KEY = TD.TAXON_LIST_ITEM_KEY 
-	LEFT OUTER JOIN inbo.NameServer NS ON NS.INBO_TAXON_VERSION_KEY = TLI.TAXON_VERSION_KEY
-	LEFT OUTER JOIN dbo.TAXON_VERSION TV ON TV.TAXON_VERSION_KEY = TLI.TAXON_VERSION_KEY
-	LEFT OUTER JOIN dbo.TAXON T ON T.TAXON_KEY = TV.TAXON_KEY
-	INNER JOIN dbo.LOCATION L ON L.LOCATION_KEY = SA.LOCATION_KEY
-	INNER JOIN dbo.LOCATION_NAME LN ON LN.LOCATION_KEY = L.LOCATION_KEY
-	LEFT JOIN dbo.INDIVIDUAL I ON I.NAME_KEY = TD.DETERMINER
+from 
+    dbo.survey su
+    inner join dbo.survey_event sue on sue.survey_key = su.survey_key
+    inner join dbo.sample sa on sa.survey_event_key = sue.survey_event_key
+    inner join dbo.taxon_occurrence tao on tao.sample_key = sa.sample_key
+    inner join dbo.taxon_determination td on td.taxon_occurrence_key = tao.taxon_occurrence_key
+    inner join dbo.taxon_list_item tli on tli.taxon_list_item_key = td.taxon_list_item_key 
+    left outer join inbo.nameserver ns on ns.inbo_taxon_version_key = tli.taxon_version_key
+    left outer join dbo.taxon_version tv on tv.taxon_version_key = tli.taxon_version_key
+    left outer join dbo.taxon t on t.taxon_key = tv.taxon_key
+    inner join dbo.location l on l.location_key = sa.location_key
+    inner join dbo.location_name ln on ln.location_key = l.location_key
+    left join dbo.individual i on i.name_key = td.determiner
 
-WHERE
-	SU.ITEM_NAME = 'Alien macro-invertebrates in Flanders'
-	AND LN.PREFERRED = 1
-GO
+where
+    su.item_name = 'alien macro-invertebrates in flanders'
+    and ln.preferred = 1
+go
 
 
