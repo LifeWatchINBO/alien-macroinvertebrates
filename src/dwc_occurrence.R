@@ -60,7 +60,7 @@ occurrence %<>% mutate(type = "Event")
   
 #' #### modified
 #' #### language
-occurrence %<>% mutate(language ="en")
+occurrence %<>% mutate(language = "en")
 
 #' #### license
 occurrence %<>% mutate(license = "http://creativecommons.org/publicdomain/zero/1.0")
