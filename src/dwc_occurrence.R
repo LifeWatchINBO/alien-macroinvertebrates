@@ -32,7 +32,7 @@ dwc_occurrence_file = "../data/processed/dwc_occurrence/occurrence.csv"
 #' ## Read data
 #' 
 #' Read the source data:
-raw_data <- read.table(raw_data_file, header = TRUE, sep = "\t", quote="", fileEncoding = "UTF-8-BOM") 
+raw_data <- read.table(raw_data_file, header = TRUE, sep = "\t", quote="", fileEncoding = "UTF-8-BOM", stringsAsFactors = F) 
 
 #' Clean data somewhat: remove empty rows if present
 raw_data %<>%  remove_empty_rows() 
