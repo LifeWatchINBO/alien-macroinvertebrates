@@ -143,6 +143,34 @@ occurrence %<>% mutate(otherCatalogNumbers = raw_taxon_occurrence_key)
 #' #### parentEventID
 #' #### fieldNumber
 #' #### eventDate
+#' 
+#' `eventDate` data can be found both in `raw_sample_vague_date_start` and `raw_sample_vague_date_end`
+#'  Both variables are imported as character vectors and need to be converted to an object of class "date".
+
+occurrence %<>% 
+  mutate(eventDate_start = as.Date (raw_sample_vague_date_start,"%Y-%m-%d")) %<>% 
+  mutate(eventDate_end = as.Date (raw_sample_vague_date_end,"%Y-%m-%d")) 
+
+#' `eventDate_start` and `eventDate_end`are not always identical: 
+with (occurrence, identical(eventDate_start, eventDate_end))
+
+#' Thus: `eventDate`` will be expressed as: 
+#' yyy-mm-dd when `eventDate_start` = `eventDate_end`
+#' yyy-mm-dd / yy-mm-dd when `eventDate_start` != `eventDate_end`
+
+#' new column `eventDate_interval` for when `eventDate_start` != `eventDate_end`
+occurrence %<>% mutate(eventDate_interval = paste (eventDate_start, eventDate_end, sep ="/"))  
+
+#' Create `eventDate`, which contains `eventDate_start` when `eventDate_start` = `eventDate_end`, or else `eventDate_interval` when `eventDate_start` != `eventDate_end`
+occurrence %<>% mutate (eventDate =
+           case_when (
+             raw_sample_vague_date_start == raw_sample_vague_date_end ~ as.character (eventDate_start),
+             raw_sample_vague_date_start != raw_sample_vague_date_end ~ eventDate_interval
+           ))
+
+#' Remove the extra columns:
+occurrence %<>% select (- c(eventDate_start, eventDate_end, eventDate_interval))
+
 #' #### eventTime
 #' #### startDayOfYear
 #' #### endDayOfYear
