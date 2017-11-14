@@ -119,6 +119,8 @@ occurrence %<>% mutate(occurrenceID = raw_taxon_occurrence_comment)
 #' #### associatedSequences
 #' #### associatedTaxa
 #' #### otherCatalogNumbers
+occurrence %<>% mutate(otherCatalogNumbers = raw_taxon_occurrence_key)
+
 #' #### occurrenceRemarks
 #' 
 #' ---
