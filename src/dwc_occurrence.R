@@ -192,11 +192,15 @@ occurrence %<>% select (- c(eventDate_start, eventDate_end, eventDate_interval))
 #' #### higherGeographyID
 #' #### higherGeography
 #' #### continent
+occurrence %<>% mutate(continent = "Europe")
+  
 #' #### waterBody
 #' #### islandGroup
 #' #### island
 #' #### country
 #' #### countryCode
+occurrence %<>% mutate(countryCode = "BE")
+
 #' #### stateProvince
 #' #### county
 #' #### municipality
