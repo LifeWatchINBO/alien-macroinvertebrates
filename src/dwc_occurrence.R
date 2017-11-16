@@ -190,7 +190,8 @@ occurrence %<>% mutate (
 #' #### associatedSequences
 #' #### associatedTaxa
 #' #### otherCatalogNumbers
-occurrence %<>% mutate(otherCatalogNumbers = raw_taxon_occurrence_key)
+occurrence %<>% mutate(otherCatalogNumbers = 
+                         paste0("INBO:NBN:",raw_taxon_occurrence_key))
 
 #' #### occurrenceRemarks
 #' 
@@ -492,4 +493,4 @@ occurrence %<>% select(-one_of(raw_colnames))
 kable(head(occurrence))
 
 #' Save to CSV:
-write.csv(taxon, file = dwc_occurrence_file, na = "", row.names = FALSE, fileEncoding = "UTF-8")
+write.csv(occurrence, file = dwc_occurrence_file, na = "", row.names = FALSE, fileEncoding = "UTF-8")
