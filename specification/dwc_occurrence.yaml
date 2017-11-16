@@ -1,0 +1,148 @@
+# Dataset: alien-macroinvertebrate-occurrences
+# DOI: https://doi.org/10.15468/xjtfoo
+# 
+# Scope: dwc-occurrence
+# Author: Peter Desmet
+# Syntax version: 0.1
+
+type:
+  allowed: Event
+
+language:
+  allowed: en
+
+license:
+  allowed: http://creativecommons.org/publicdomain/zero/1.0/
+
+rightsHolder:
+  allowed: Ghent University Aquatic Ecology
+
+accessRights:
+  allowed: http://www.inbo.be/en/norms-for-data-use
+
+datasetID:
+  allowed: https://doi.org/10.15468/xjtfoo
+
+institutionCode:
+  allowed: INBO
+
+datasetName:
+  allowed: Alien macroinvertebrates in Flanders, Belgium
+
+basisOfRecord:
+  allowed: HumanObservation
+
+occurrenceID:
+  regex: 'PB:UGent:AqE:\d+'
+
+recordedBy:
+  delimitedvalues:
+    delimiter: ' | '
+    empty: false
+  empty: true
+
+otherCatalogNumbers:
+  regex: 'NBO:NBN:BFN0017900009[A-Z0-9]+' # e.g. INBO:NBN:BFN0017900009SX9
+
+eventDate:
+  dateformat: ['%Y-%m-%d'] # YYYY-MM-DD
+  mindate: 1977-07-19
+  maxdate: 2013-06-29
+
+verbatimEventDate:
+  delimitedvalues:
+    delimiter: '/'
+    dateformat: ['%Y-%m-%d'] # YYYY-MM-DD
+    mindate: 1977-07-19
+    maxdate: 2013-06-29
+  empty: true
+
+continent:
+  allowed: Europe
+
+countryCode:
+  allowed: BE
+
+municipality:
+  empty: false # Also contains UTM codes such as FS37A
+
+verbatimLocality:
+  empty: true
+
+decimalLatitude:
+  type: float
+  numberformat: '.5'
+  min: 50.67 # SE Flanders
+  max: 51.51 # NW Belgium
+
+decimalLongitude:
+  type: float
+  numberformat: '.5'
+  min: 2.53 # NW Belgium
+  max: 5.94 # SE Flanders
+
+2.53, 49.49
+
+6.41, , 51.51
+
+
+geodeticDatum:
+  allowed: WGS84
+
+coordinateUncertaintyInMeters:
+  allowed: 30 # both decimal degrees and Belgian Lambert considered GPS
+
+verbatimLatitude:
+  if:
+    - verbatimCoordinateSystem:
+        allowed: decimal degrees
+      regex: '\d\d.\d+N' # e.g. 51.12857222N
+    - verbatimCoordinateSystem:
+        allowed: Belgium Lambert 72
+      type: integer # e.g. 214233 (= Y)
+      min: 152221 # SE Flanders
+      max: 246072 # NW Belgium
+
+verbatimLongitude:
+  if:
+    - verbatimCoordinateSystem:
+        allowed: decimal degrees
+      regex: '\d.\d+E' # e.g. 4.432371E
+    - verbatimCoordinateSystem:
+        allowed: Belgium Lambert 72
+      type: integer # e.g. 166957 (= X)
+      min: 22344 # NW Belgium
+      max: 261064 # SE Flanders
+
+verbatimCoordinateSystem:
+  allowed: [decimal degrees, Belgian Lambert 72]
+
+verbatimSRS:
+  if:
+    - verbatimCoordinateSystem:
+        allowed: decimal degrees
+      allowed: WGS84
+    - verbatimCoordinateSystem:
+        allowed: Belgium Lambert 72
+      allowed: Belgian Datum 1972
+
+identifiedBy:
+  delimitedvalues:
+    delimiter: ' | '
+    empty: false
+  empty: true
+
+scientificName:
+  empty: false
+
+kingdom:
+  allowed: Animalia
+
+taxonRank:
+  allowed: [species, subspecies]
+
+scientificNameAuthorship:
+  empty: false
+
+nomenclaturalCode:
+  allowed: ICZN
