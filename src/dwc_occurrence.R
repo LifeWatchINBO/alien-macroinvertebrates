@@ -24,6 +24,7 @@ library(magrittr)  # For %<>% pipes
 # Other packages
 library(janitor)   # For cleaning input data
 library(knitr)     # For nicer (kable) tables
+library(stringr)   # For string manipulation
 
 #' Set file paths (all paths should be relative to this script):
 raw_data_file = "../data/raw/denormalized_observations.csv"
@@ -96,13 +97,83 @@ occurrence %<>% mutate(basisOfRecord = "HumanObservation")
 #' ---
 #' 
 #' #### occurrenceID
-n_distinct(occurrence $ raw_taxon_occurrence_comment)  # Checking whether occurrenceID is a unique code
-occurrence %<>% mutate(occurrenceID = raw_taxon_occurrence_comment)
+#' 
+#' Checking whether occurrenceID is a unique code (TRUE)
+n_distinct(occurrence $ raw_taxon_occurrence_comment) == nrow(occurrence)
 
+#' mapping:
+occurrence %<>% mutate(occurrenceID = raw_taxon_occurrence_comment)
 
 #' #### catalogNumber
 #' #### recordNumber
 #' #### recordedBy
+#' 
+#' give all unique name/group/organization records in raw_survey_event_comment (base column for recordedBy and identifiedBy)
+occurrence %>% select (raw_survey_event_comment) %>%
+  distinct(raw_survey_event_comment) %>%
+  arrange (raw_survey_event_comment) %>%
+  kable()
+
+#' replace these records by a (list of) person(s), in the recommended best format for [recordedBy](https://terms.tdwg.org/wiki/dwc:recordedBy)  
+occurrence %<>% mutate (
+  recordedBy = recode (raw_survey_event_comment,
+                       "2004_KreeftenBBICalc_Warmoes" = "Warmoes T", 
+                       "VMM, 2004_KreeftenBBICalc_Warmoes" = " ",
+                       "2004_niet_BBICacl - Warmoes" = " ",
+                       "Claudio Salvo" = "Salvo C",
+                       "D'udekem D'Acoz" = "d'Udekem d'Acoz",
+                       "databank VMM" = "VMM",
+                       "Dirk en Walda Hennebel" = "Hennebel D | Hennebel W",
+                       "eigen data VMM" = "VMM",
+                       "extra stalen" = "Boets P",
+                       "Frank de Block-Burij" = "de Block-Burij F",
+                       "Geert Vanloot" = "Vanloot G",
+                       "Gérard" = "Gérard",
+                       "Gérard, 1986" = "Gérard",
+                       "Gunter Flipkens" = "Flipkens G",
+                       "Hans de Blauwe" = "de Blauwe H",
+                       "Herwig Mees" = "Mees H",
+                       "IRSNB-Karel Wouters, 2002" = "Wouters K",
+                       "Johan Auwerx" = "Auwerx J",
+                       "Joost Mertens" = "Mertens J",
+                       "Kobe Janssen" = "Janssen K",
+                       "koen" = "Lock K",
+                       "Koen Maes" = "Maes K",
+                       "Leloup L." = "Leloup L",
+                       "LIN - Belpaire - Cammaerts" = "Belpaire | Cammaerts",
+                       "LISEC - Neven & Beckers" = "Neven | Beckers",
+                       "Lot Hebbelinck" = "Hebbelinck L",
+                       "Luc Van Assche" = "Van Assche L",
+                       "Marjolein" = "Messiaen M",
+                       "NULL" = "",
+                       "Paul van sanden" = "Van Sanden P",
+                       "Pieter Cox" = "Cox P",
+                       "Pieter Van Dorsselaer" = "Van Dorsselaer P",
+                       "Rik Clicque" = "Clique R",
+                       "Roeland Croket" = "Croket R",
+                       "Thomas Gyselinck" = "Gyselinck T",
+                       "Tom Van den Neucker" = "Van den Neucker T",
+                       "Verslycke Tim" = "Verslycke T",
+                       "VMM" = "VMM",
+                       "VMM - Joost" = "Mertens J",
+                       "VMM - Joost, 2004_KreeftenBBICalc_Warmoes" = "",
+                       "VMM - Wim Gabriels" = "Gabriels W",
+                       "VMM - Wim Gabriels, 2004_KreeftenBBICalc_Warmoes" = "Gabriels W",
+                       "VMM - Wim Gabriels, 2004_KreeftenBBICalc_Warmoes, VMM - Joost" = "Gabriels W",
+                       "waarnemingen" = "waarnemingen.be",
+                       "waarnemingen - Dirk Hennebel" = "Hennebel D",
+                       "waarnemingen - Hans de Blauwe" = "de Blauwe H",
+                       "waarnemingen - Hans De Blauwe" = "de Blauwe H",
+                       "Waarnemingen - Kevin Lambeets" = "Lambeets K",
+                       "waarnemingen - Tom Van de Neucker" = "Van de Neucker T",
+                       "Warmoes Thierry" = "Warmoes T",
+                       "Wouters" = "Wouters K",
+                       "Wouters, 2002" = "Wouters K",
+                       "Xavier Vermeersch" = "Vermeersch X",
+                       "zeehavens" = "Boets P",
+                       .default = "",
+                       .missing = ""))
+
 #' #### individualCount
 #' #### organismQuantity
 #' #### organismQuantityType
@@ -204,8 +275,12 @@ occurrence %<>% mutate(countryCode = "BE")
 #' #### stateProvince
 #' #### county
 #' #### municipality
+occurrence %<>% mutate(municipality = raw_location_name_item_name)
+
 #' #### locality
 #' #### verbatimLocality
+occurrence %<>% mutate(verbatimLocality = raw_survey_event_location_name)
+
 #' #### minimumElevationInMeters
 #' #### maximumElevationInMeters
 #' #### verbatimElevation
@@ -217,8 +292,20 @@ occurrence %<>% mutate(countryCode = "BE")
 #' #### locationAccordingTo
 #' #### locationRemarks
 #' #### decimalLatitude
+occurrence %<>% 
+  mutate (coordinate = str_replace (raw_sample_lat, ",", ".")) %>%  # Change "," to "."
+  mutate (decimalLatitude = round (as.numeric(coordinate), 5)) %>%  # round to 5 decimals
+  select (-coordinate)                                              # remove intermediary vector "coordinate"
+
 #' #### decimalLongitude
+occurrence %<>%
+  mutate (coordinate = str_replace (raw_sample_long, ",", ".")) %<>%  # Change "," to "."
+  mutate (decimalLongitude = round (as.numeric(coordinate), 5)) %<>%  # round to 5 decimals
+  select (-coordinate)                                                # remove intermediary vector "coordinate"
+
 #' #### geodeticDatum
+occurrence %<>% mutate (geodeticDatum = "WGS84")
+
 #' #### coordinateUncertaintyInMeters
 #' #### coordinatePrecision
 #' #### pointRadiusSpatialFit
@@ -226,6 +313,8 @@ occurrence %<>% mutate(countryCode = "BE")
 #' #### verbatimLatitude
 #' #### verbatimLongitude
 #' #### verbatimCoordinateSystem
+occurrence %<>% mutate(verbatimCoordinateSystem = "decimal degrees")
+
 #' #### verbatimSRS
 #' #### footprintWKT
 #' #### footprintSRS
@@ -264,6 +353,74 @@ occurrence %<>% mutate(countryCode = "BE")
 #' #### identificationQualifier
 #' #### typeStatus
 #' #### identifiedBy
+#' 
+#' give all unique name/group/organization records in raw_survey_event_comment (base for recordedBy and identifiedBy)
+occurrence %>% select (raw_survey_event_comment) %>%
+  distinct(raw_survey_event_comment) %>%
+  arrange (raw_survey_event_comment) %>%
+  kable()
+
+#' replace these records by a (list of) person(s), in the recommended best format for [identifiedBy](https://terms.tdwg.org/wiki/dwc:identifiedBy)  
+occurrence %<>% mutate (
+  identifiedBy = recode (raw_survey_event_comment,
+                         "2004_KreeftenBBICalc_Warmoes" = "Warmoes T", 
+                         "VMM, 2004_KreeftenBBICalc_Warmoes" = "",
+                         "2004_niet_BBICacl - Warmoes" = "",
+                         "Claudio Salvo" = "Salvo C",
+                         "D'udekem D'Acoz" = "d'Udekem d'Acoz",
+                         "databank VMM" = "Boets P",
+                         "Dirk en Walda Hennebel" = "Hennebel D | Hennebel W",
+                         "eigen data VMM" = "Boets P",
+                         "extra stalen" = "Boets P",
+                         "Frank de Block-Burij" = "de Block-Burij F",
+                         "Geert Vanloot" = "Vanloot G",
+                         "Gérard" = "Gérard",
+                         "Gérard, 1986" = "Gérard",
+                         "Gunter Flipkens" = "Flipkens G",
+                         "Hans de Blauwe" = "de Blauwe H",
+                         "Herwig Mees" = "Mees H",
+                         "IRSNB-Karel Wouters, 2002" = "Wouters K",
+                         "Johan Auwerx" = "Boets P",
+                         "Joost Mertens" = "Mertens J",
+                         "Kobe Janssen" = "Janssen K",
+                         "koen" = "Lock K",
+                         "Koen Maes" = "Maes K",
+                         "Leloup L." = "Leloup L",
+                         "LIN - Belpaire - Cammaerts" = "Belpaire | Cammaerts",
+                         "LISEC - Neven & Beckers" = "Neven | Beckers",
+                         "Lot Hebbelinck" = "Hebbelinck L",
+                         "Luc Van Assche" = "Van Assche L",
+                         "Marjolein" = "Messiaen M",
+                         "NULL" = "",
+                         "Paul van sanden" = "Van Sanden P",
+                         "Pieter Cox" = "Cox P",
+                         "Pieter Van Dorsselaer" = "Van Dorsselaer P",
+                         "Rik Clicque" = "Clique R",
+                         "Roeland Croket" = "Croket R",
+                         "Thomas Gyselinck" = "Gyselinck T",
+                         "Tom Van den Neucker" = "Van den Neucker T",
+                         "Verslycke Tim" = "Verslycke T",
+                         "VMM" = "Boets P",
+                         "VMM - Joost" = "Mertens J",
+                         "VMM - Joost, 2004_KreeftenBBICalc_Warmoes" = "",
+                         "VMM - Wim Gabriels" = "Gabriels W",
+                         "VMM - Wim Gabriels, 2004_KreeftenBBICalc_Warmoes" = "Gabriels W",
+                         "VMM - Wim Gabriels, 2004_KreeftenBBICalc_Warmoes, VMM - Joost" = "Gabriels W",
+                         "waarnemingen" = "waarnemingen.be",
+                         "waarnemingen - Dirk Hennebel" = "Hennebel D",
+                         "waarnemingen - Hans de Blauwe" = "de Blauwe H",
+                         "waarnemingen - Hans De Blauwe" = "de Blauwe H",
+                         "Waarnemingen - Kevin Lambeets" = "Lambeets K",
+                         "waarnemingen - Tom Van de Neucker" = "Van de Neucker T",
+                         "Warmoes Thierry" = "Warmoes T",
+                         "Wouters" = "Wouters K",
+                         "Wouters, 2002" = "Wouters K",
+                         "Xavier Vermeersch" = "Vermeersch X",
+                         "zeehavens" = "Boets P",
+                         .default = "",
+                         .missing = ""))
+
+
 #' #### dateIdentified
 #' #### identificationReferences
 #' #### identificationVerificationStatus
@@ -280,6 +437,14 @@ occurrence %<>% mutate(countryCode = "BE")
 #' #### namePublishedInID
 #' #### taxonConceptID
 #' #### scientificName
+#' 
+#' Dreissena (Dreissena) polymorpha is the only scientific name with the subgenus mentioned in the name. This doesn't add much information and is removed (see [issue #9](https://github.com/trias-project/alien-macroinvertebrates/issues/9))
+occurrence %<>% mutate (scientificName = 
+                          case_when (
+                            raw_nameserver_recommended_scientific_name == "Dreissena (Dreissena) polymorpha" ~ "Dreissena polymorpha",
+                            raw_nameserver_recommended_scientific_name != "Dreissena (Dreissena) polymorpha" ~ raw_nameserver_recommended_scientific_name
+                          ) )
+
 #' #### acceptedNameUsage
 #' #### parentNameUsage
 #' #### originalNameUsage
@@ -288,6 +453,8 @@ occurrence %<>% mutate(countryCode = "BE")
 #' #### namePublishedInYear
 #' #### higherClassification
 #' #### kingdom
+occurrence %<>% mutate (kingdom = "Animalia")
+
 #' #### phylum
 #' #### class
 #' #### order
@@ -297,13 +464,34 @@ occurrence %<>% mutate(countryCode = "BE")
 #' #### specificEpithet
 #' #### infraspecificEpithet
 #' #### taxonRank
+#' 
+#' raw_nameserver_recommended_name_rank contains two values: "Spp" and "SubSpp"
+#' --> This should be "Species" and "Subspecies":
+occurrence %<>% mutate (taxonRank = 
+                          case_when (
+                            raw_nameserver_recommended_name_rank == "Spp" ~ "species",
+                            raw_nameserver_recommended_name_rank == "SubSpp" ~ "subspecies"
+                          ) )
+
 #' #### verbatimTaxonRank
 #' #### scientificNameAuthorship
+occurrence %<>% mutate (scientificNameAuthorship = raw_nameserver_recommended_name_authority)
+
 #' #### vernacularName 
 #' #### nomenclaturalCode
+occurrence %<>% mutate (nomenclaturalCode = "ICZN")
+
 #' #### taxonomicStatus
 #' #### nomenclaturalStatus
 #' #### taxonRemarks
 #' 
 #' ### Post-processing
 #' 
+#' Remove the original columns:
+occurrence %<>% select(-one_of(raw_colnames))
+
+#' Preview data:
+kable(head(occurrence))
+
+#' Save to CSV:
+write.csv(taxon, file = dwc_occurrence_file, na = "", row.names = FALSE, fileEncoding = "UTF-8")
