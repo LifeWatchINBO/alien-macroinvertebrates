@@ -38,10 +38,10 @@ raw_data <- read.table(raw_data_file, header = TRUE, sep = "\t", quote="", fileE
 #' Clean data somewhat: remove empty rows if present
 raw_data %<>%  remove_empty_rows() 
 
-#' Add prefix `raw_` to all column names. Although the column names already contain Darwin Core terms, new columns will have to be added between the current columns. To put all columns in the right order, it is easier to create new columns (some of them will be copies of the columns in the raw dataset) and then remove the columns of the raw occurrence dataset:
+#' Add prefix `raw_` to all column names, this to avoid name clashes with Darwin Core terms:
 colnames(raw_data) <- paste0("raw_", colnames(raw_data))
 
-#' Save those column names as a list (makes it easier to remove them all later):
+#' Save those column names as a vector (makes it easier to remove them all later):
 raw_colnames <- colnames(raw_data)
 
 #' Preview data:
@@ -216,8 +216,7 @@ occurrence %<>% mutate(otherCatalogNumbers = raw_taxon_occurrence_key)
 #' #### eventDate
 #' 
 #' `eventDate` data can be found both in `raw_sample_vague_date_start` and `raw_sample_vague_date_end`
-#'  Both variables are imported as character vectors and need to be converted to an object of class "date".
-
+#'  Both variables are imported in Rstudio as character vectors and need to be converted to an object of class "date".
 occurrence %<>% 
   mutate(eventDate_start = as.Date (raw_sample_vague_date_start,"%Y-%m-%d")) %<>% 
   mutate(eventDate_end = as.Date (raw_sample_vague_date_end,"%Y-%m-%d")) 
@@ -228,18 +227,17 @@ with (occurrence, identical(eventDate_start, eventDate_end))
 #' Thus: `eventDate`` will be expressed as: 
 #' yyy-mm-dd when `eventDate_start` = `eventDate_end`
 #' yyy-mm-dd / yy-mm-dd when `eventDate_start` != `eventDate_end`
-
-#' new column `eventDate_interval` for when `eventDate_start` != `eventDate_end`
+#' creating new column `eventDate_interval`  when `eventDate_start` != `eventDate_end`
 occurrence %<>% mutate(eventDate_interval = paste (eventDate_start, eventDate_end, sep ="/"))  
 
-#' Create `eventDate`, which contains `eventDate_start` when `eventDate_start` = `eventDate_end`, or else `eventDate_interval` when `eventDate_start` != `eventDate_end`
+#' Create `eventDate`, which contains information from `eventDate_start` when `eventDate_start` = `eventDate_end`, or else `eventDate_interval` when `eventDate_start` != `eventDate_end`
 occurrence %<>% mutate (eventDate =
            case_when (
              raw_sample_vague_date_start == raw_sample_vague_date_end ~ as.character (eventDate_start),
              raw_sample_vague_date_start != raw_sample_vague_date_end ~ eventDate_interval
            ))
 
-#' Remove the extra columns:
+#' Remove the eventDate_start, eventDate_end and eventDate_interval (only intermediate steps):
 occurrence %<>% select (- c(eventDate_start, eventDate_end, eventDate_interval))
 
 #' #### eventTime
