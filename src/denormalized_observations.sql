@@ -16,6 +16,7 @@ select
     convert(datetime, sa.vague_date_start) as sample_vague_date_start, 
     convert(datetime, sa.vague_date_end) as sample_vague_date_end,
     sa.vague_date_type as sample_vague_date_type,
+    inbo.ufn_RtfToPlaintext (sue.comment) as survey_event_comment, 
     sue.comment as survey_event_comment, 
     ln.item_name as location_name_item_name,
     sue.location_name as survey_event_location_name,

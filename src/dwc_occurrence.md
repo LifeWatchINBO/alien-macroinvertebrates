@@ -2,7 +2,7 @@
 
 Lien Reyserhove, Dimitri Brosens, Peter Desmet
 
-2017-11-14
+2017-11-16
 
 This document describes how we map the occurrence data to Darwin Core.
 
@@ -35,6 +35,7 @@ library(magrittr)  # For %<>% pipes
 # Other packages
 library(janitor)   # For cleaning input data
 library(knitr)     # For nicer (kable) tables
+library(stringr)   # For string manipulation
 ```
 
 Set file paths (all paths should be relative to this script):
@@ -61,14 +62,14 @@ Clean data somewhat: remove empty rows if present
 raw_data %<>%  remove_empty_rows() 
 ```
 
-Add prefix `raw_` to all column names. Although the column names already contain Darwin Core terms, new columns will have to be added between the current columns. To put all columns in the right order, it is easier to create new columns (some of them will be copies of the columns in the raw dataset) and then remove the columns of the raw occurrence dataset:
+Add prefix `raw_` to all column names, this to avoid name clashes with Darwin Core terms:
 
 
 ```r
 colnames(raw_data) <- paste0("raw_", colnames(raw_data))
 ```
 
-Save those column names as a list (makes it easier to remove them all later):
+Save those column names as a vector (makes it easier to remove them all later):
 
 
 ```r
@@ -84,14 +85,14 @@ kable(head(raw_data))
 
 
 
-|raw_taxon_occurrence_key |raw_taxon_occurrence_comment |raw_nameserver_recommended_scientific_name |raw_nameserver_recommended_name_authority |raw_nameserver_recommended_name_rank |raw_sample_vague_date_start |raw_sample_vague_date_end |raw_sample_vague_date_type |raw_survey_event_comment |raw_location_name_item_name |raw_survey_event_location_name                               |raw_sample_lat   |raw_sample_long  |raw_sample_spatial_ref |raw_sample_spatial_ref_system |raw_sample_spatial_ref_qualifier |
-|:------------------------|:----------------------------|:------------------------------------------|:-----------------------------------------|:------------------------------------|:---------------------------|:-------------------------|:--------------------------|:------------------------|:---------------------------|:------------------------------------------------------------|:----------------|:----------------|:----------------------|:-----------------------------|:--------------------------------|
-|BFN0017900009RTD         |PB:Ugent:AqE:2706            |Proasellus coxalis                         |(Dollfus, 1892)                           |Spp                                  |2001-05-18 00:00:00.000     |2001-05-18 00:00:00.000   |D                          |eigen data VMM           |Sint-Gillis-Waas            |Wlp: Maatbeek-De Linie, De Klinge, Rode Moerpolder, opw brug |51,2493067145728 |4,10541780302292 |131613.0,215521.0      |BD72                          |Imported                         |
-|BFN0017900009RTO         |PB:Ugent:AqE:2711            |Proasellus coxalis                         |(Dollfus, 1892)                           |Spp                                  |1999-06-10 00:00:00.000     |1999-06-10 00:00:00.000   |D                          |eigen data VMM           |Sint-Gillis-Waas            |De Klinge, afw St. Gillisbroekpolder, opw weg                |51,2374250902656 |4,12700536600239 |133116.0,214194.0      |BD72                          |Imported                         |
-|BFN0017900009RV3         |PB:Ugent:AqE:2750            |Proasellus coxalis                         |(Dollfus, 1892)                           |Spp                                  |2005-09-29 00:00:00.000     |2005-09-29 00:00:00.000   |D                          |eigen data VMM           |Sint-Laureins               |St-Jan-in-Eremo, Zonnestraat, Zuidzijde                      |51,2560396558302 |3,57535960263105 |94612.0,216533.0       |BD72                          |Imported                         |
-|BFN0017900009SF7         |PB:Ugent:AqE:2716            |Proasellus coxalis                         |(Dollfus, 1892)                           |Spp                                  |2002-08-11 00:00:00.000     |2002-08-11 00:00:00.000   |D                          |eigen data VMM           |Beveren (Beveren)           |Verrebroek, Duikeldamse Dijk, afw brug                       |51,2414829501799 |4,16776684064578 |135964.0,214637.0      |BD72                          |Imported                         |
-|BFN0017900009SMZ         |PB:Ugent:AqE:2741            |Proasellus coxalis                         |(Dollfus, 1892)                           |Spp                                  |1999-06-25 00:00:00.000     |1999-06-25 00:00:00.000   |D                          |eigen data VMM           |Zonnebeke                   |Mispelarestraat                                              |50,8727871787077 |3,02208697062554 |55218.0,174460.0       |BD72                          |Imported                         |
-|BFN0017900009QYG         |PB:Ugent:AqE:2701            |Proasellus coxalis                         |(Dollfus, 1892)                           |Spp                                  |2003-08-21 00:00:00.000     |2003-08-21 00:00:00.000   |D                          |eigen data VMM           |Terneuzen                   |Mosselhuisstraat, Grenspaal 314                              |51,2561139824236 |3,79550073079471 |109980.0,216400.0      |BD72                          |Imported                         |
+|raw_taxon_occurrence_key |raw_taxon_occurrence_comment |raw_nameserver_recommended_scientific_name |raw_nameserver_recommended_name_authority |raw_nameserver_recommended_name_rank |raw_sample_vague_date_start |raw_sample_vague_date_end |raw_sample_vague_date_type |raw_survey_event_comment     |raw_location_name_item_name |raw_survey_event_location_name |raw_sample_lat   |raw_sample_long  |raw_sample_spatial_ref |raw_sample_spatial_ref_system |raw_sample_spatial_ref_qualifier |
+|:------------------------|:----------------------------|:------------------------------------------|:-----------------------------------------|:------------------------------------|:---------------------------|:-------------------------|:--------------------------|:----------------------------|:---------------------------|:------------------------------|:----------------|:----------------|:----------------------|:-----------------------------|:--------------------------------|
+|BFN0017900009QRO         |PB:Ugent:AqE:2906            |Procambarus clarkii                        |(Girard, 1852)                            |Spp                                  |2011-03-16 00:00:00.000     |2011-03-16 00:00:00.000   |D                          |NULL                         |Damme                       |NULL                           |51,2917039321127 |3,33787615648995 |78089.0,220704.0       |BD72                          |Imported                         |
+|BFN0017900009QRP         |PB:Ugent:AqE:2905            |Procambarus clarkii                        |(Girard, 1852)                            |Spp                                  |2009-01-03 00:00:00.000     |2010-01-02 00:00:00.000   |Y                          |NULL                         |Laakdal                     |NULL                           |51,0868389225402 |5,00310740316376 |194446.0,197604.0      |BD72                          |Imported                         |
+|BFN0017900009QRQ         |PB:Ugent:AqE:2904            |Procambarus clarkii                        |(Girard, 1852)                            |Spp                                  |2009-01-03 00:00:00.000     |2010-01-02 00:00:00.000   |Y                          |NULL                         |Geel                        |NULL                           |51,1005800032735 |4,97993697973969 |192810.0,199119.0      |BD72                          |Imported                         |
+|BFN0017900009QRS         |PB:Ugent:AqE:1815            |Orconectes limosus                         |(Rafinesque, 1817)                        |Spp                                  |2002-08-15 00:00:00.000     |2002-08-15 00:00:00.000   |D                          |2004_KreeftenBBICalc_Warmoes |Weert                       |NULL                           |51,2165593647505 |5,58310964700181 |234845.0,212540.0      |BD72                          |Imported                         |
+|BFN0017900009QRT         |PB:Ugent:AqE:1831            |Orconectes limosus                         |(Rafinesque, 1817)                        |Spp                                  |2003-06-06 00:00:00.000     |2003-06-06 00:00:00.000   |D                          |2004_KreeftenBBICalc_Warmoes |Dilsen-Stokkem              |NULL                           |51,0214476671045 |5,75042616893119 |246938.0,191042.0      |BD72                          |Imported                         |
+|BFN0017900009QRW         |PB:Ugent:AqE:1806            |Orconectes limosus                         |(Rafinesque, 1817)                        |Spp                                  |2002-05-30 00:00:00.000     |2002-05-30 00:00:00.000   |D                          |2004_KreeftenBBICalc_Warmoes |Ham                         |NULL                           |51,0990079250055 |5,13641646066324 |203772.0,199046.0      |BD72                          |Imported                         |
 
 ## Create occurrence core
 
@@ -118,7 +119,7 @@ occurrence %<>% mutate(type = "Event")
 
 
 ```r
-occurrence %<>% mutate(language ="en")
+occurrence %<>% mutate(language = "en")
 ```
 
 #### license
@@ -184,14 +185,19 @@ occurrence %<>% mutate(basisOfRecord = "HumanObservation")
 
 #### occurrenceID
 
+Checking whether occurrenceID is a unique code (TRUE)
+
 
 ```r
-n_distinct(occurrence $ raw_taxon_occurrence_comment)  # Checking whether occurrenceID is a unique code
+n_distinct(occurrence $ raw_taxon_occurrence_comment) == nrow(occurrence)
 ```
 
 ```
-## [1] 2856
+## [1] TRUE
 ```
+
+mapping:
+
 
 ```r
 occurrence %<>% mutate(occurrenceID = raw_taxon_occurrence_comment)
@@ -200,6 +206,140 @@ occurrence %<>% mutate(occurrenceID = raw_taxon_occurrence_comment)
 #### catalogNumber
 #### recordNumber
 #### recordedBy
+
+give all unique name/group/organization records in raw_survey_event_comment (base column for recordedBy and identifiedBy)
+
+
+```r
+occurrence %>% select (raw_survey_event_comment) %>%
+  distinct(raw_survey_event_comment) %>%
+  arrange (raw_survey_event_comment) %>%
+  kable()
+```
+
+
+
+|raw_survey_event_comment                                      |
+|:-------------------------------------------------------------|
+|2004_KreeftenBBICalc_Warmoes                                  |
+|2004_niet_BBICacl - Warmoes                                   |
+|Claudio Salvo                                                 |
+|D'udekem D'Acoz                                               |
+|databank VMM                                                  |
+|Dirk en Walda Hennebel                                        |
+|eigen data VMM                                                |
+|extra stalen                                                  |
+|Frank de Block-Burij                                          |
+|Geert Vanloot                                                 |
+|G�rard                                                        |
+|G�rard, 1986                                                  |
+|Gunter Flipkens                                               |
+|Hans de Blauwe                                                |
+|Herwig Mees                                                   |
+|IRSNB-Karel Wouters, 2002                                     |
+|Johan Auwerx                                                  |
+|Joost Mertens                                                 |
+|Kobe Janssen                                                  |
+|koen                                                          |
+|Koen Maes                                                     |
+|Leloup L.                                                     |
+|LIN - Belpaire - Cammaerts                                    |
+|LISEC - Neven & Beckers                                       |
+|Lot Hebbelinck                                                |
+|Luc Van Assche                                                |
+|Marjolein                                                     |
+|NULL                                                          |
+|Paul van sanden                                               |
+|Pieter Cox                                                    |
+|Pieter Van Dorsselaer                                         |
+|Rik Clicque                                                   |
+|Roeland Croket                                                |
+|Thomas Gyselinck                                              |
+|Tom Van den Neucker                                           |
+|Verslycke Tim                                                 |
+|VMM                                                           |
+|VMM - Joost                                                   |
+|VMM - Joost, 2004_KreeftenBBICalc_Warmoes                     |
+|VMM - Wim Gabriels                                            |
+|VMM - Wim Gabriels, 2004_KreeftenBBICalc_Warmoes              |
+|VMM - Wim Gabriels, 2004_KreeftenBBICalc_Warmoes, VMM - Joost |
+|VMM, 2004_KreeftenBBICalc_Warmoes                             |
+|waarnemingen                                                  |
+|waarnemingen - Dirk Hennebel                                  |
+|waarnemingen - Hans de Blauwe                                 |
+|waarnemingen - Hans De Blauwe                                 |
+|Waarnemingen - Kevin Lambeets                                 |
+|waarnemingen - Tom Van de Neucker                             |
+|Warmoes Thierry                                               |
+|Wouters                                                       |
+|Wouters, 2002                                                 |
+|Xavier Vermeersch                                             |
+|zeehavens                                                     |
+
+replace these records by a (list of) person(s), in the recommended best format for [recordedBy](https://terms.tdwg.org/wiki/dwc:recordedBy)  
+
+
+```r
+occurrence %<>% mutate (
+  recordedBy = recode (raw_survey_event_comment,
+                       "2004_KreeftenBBICalc_Warmoes" = "Warmoes T", 
+                       "VMM, 2004_KreeftenBBICalc_Warmoes" = " ",
+                       "2004_niet_BBICacl - Warmoes" = " ",
+                       "Claudio Salvo" = "Salvo C",
+                       "D'udekem D'Acoz" = "d'Udekem d'Acoz",
+                       "databank VMM" = "VMM",
+                       "Dirk en Walda Hennebel" = "Hennebel D | Hennebel W",
+                       "eigen data VMM" = "VMM",
+                       "extra stalen" = "Boets P",
+                       "Frank de Block-Burij" = "de Block-Burij F",
+                       "Geert Vanloot" = "Vanloot G",
+                       "Gérard" = "Gérard",
+                       "Gérard, 1986" = "Gérard",
+                       "Gunter Flipkens" = "Flipkens G",
+                       "Hans de Blauwe" = "de Blauwe H",
+                       "Herwig Mees" = "Mees H",
+                       "IRSNB-Karel Wouters, 2002" = "Wouters K",
+                       "Johan Auwerx" = "Auwerx J",
+                       "Joost Mertens" = "Mertens J",
+                       "Kobe Janssen" = "Janssen K",
+                       "koen" = "Lock K",
+                       "Koen Maes" = "Maes K",
+                       "Leloup L." = "Leloup L",
+                       "LIN - Belpaire - Cammaerts" = "Belpaire | Cammaerts",
+                       "LISEC - Neven & Beckers" = "Neven | Beckers",
+                       "Lot Hebbelinck" = "Hebbelinck L",
+                       "Luc Van Assche" = "Van Assche L",
+                       "Marjolein" = "Messiaen M",
+                       "NULL" = "",
+                       "Paul van sanden" = "Van Sanden P",
+                       "Pieter Cox" = "Cox P",
+                       "Pieter Van Dorsselaer" = "Van Dorsselaer P",
+                       "Rik Clicque" = "Clicque R",
+                       "Roeland Croket" = "Croket R",
+                       "Thomas Gyselinck" = "Gyselinck T",
+                       "Tom Van den Neucker" = "Van den Neucker T",
+                       "Verslycke Tim" = "Verslycke T",
+                       "VMM" = "VMM",
+                       "VMM - Joost" = "Mertens J",
+                       "VMM - Joost, 2004_KreeftenBBICalc_Warmoes" = "",
+                       "VMM - Wim Gabriels" = "Gabriels W",
+                       "VMM - Wim Gabriels, 2004_KreeftenBBICalc_Warmoes" = "Gabriels W",
+                       "VMM - Wim Gabriels, 2004_KreeftenBBICalc_Warmoes, VMM - Joost" = "Gabriels W",
+                       "waarnemingen" = "waarnemingen.be",
+                       "waarnemingen - Dirk Hennebel" = "Hennebel D",
+                       "waarnemingen - Hans de Blauwe" = "de Blauwe H",
+                       "waarnemingen - Hans De Blauwe" = "de Blauwe H",
+                       "Waarnemingen - Kevin Lambeets" = "Lambeets K",
+                       "waarnemingen - Tom Van de Neucker" = "Van de Neucker T",
+                       "Warmoes Thierry" = "Warmoes T",
+                       "Wouters" = "Wouters K",
+                       "Wouters, 2002" = "Wouters K",
+                       "Xavier Vermeersch" = "Vermeersch X",
+                       "zeehavens" = "Boets P",
+                       .default = "",
+                       .missing = ""))
+```
+
 #### individualCount
 #### organismQuantity
 #### organismQuantityType
@@ -219,7 +359,8 @@ occurrence %<>% mutate(occurrenceID = raw_taxon_occurrence_comment)
 
 
 ```r
-occurrence %<>% mutate(otherCatalogNumbers = raw_taxon_occurrence_key)
+occurrence %<>% mutate(otherCatalogNumbers = 
+                         paste0("INBO:NBN:",raw_taxon_occurrence_key))
 ```
 
 #### occurrenceRemarks
@@ -246,7 +387,7 @@ occurrence %<>% mutate(otherCatalogNumbers = raw_taxon_occurrence_key)
 #### eventDate
 
 `eventDate` data can be found both in `raw_sample_vague_date_start` and `raw_sample_vague_date_end`
- Both variables are imported as character vectors and need to be converted to an object of class "date".
+ Both variables are imported in Rstudio as character vectors and need to be converted to an object of class "date".
 
 
 ```r
@@ -269,14 +410,14 @@ with (occurrence, identical(eventDate_start, eventDate_end))
 Thus: `eventDate`` will be expressed as: 
 yyy-mm-dd when `eventDate_start` = `eventDate_end`
 yyy-mm-dd / yy-mm-dd when `eventDate_start` != `eventDate_end`
-new column `eventDate_interval` for when `eventDate_start` != `eventDate_end`
+creating new column `eventDate_interval`  when `eventDate_start` != `eventDate_end`
 
 
 ```r
 occurrence %<>% mutate(eventDate_interval = paste (eventDate_start, eventDate_end, sep ="/"))  
 ```
 
-Create `eventDate`, which contains `eventDate_start` when `eventDate_start` = `eventDate_end`, or else `eventDate_interval` when `eventDate_start` != `eventDate_end`
+Create `eventDate`, which contains information from `eventDate_start` when `eventDate_start` = `eventDate_end`, or else `eventDate_interval` when `eventDate_start` != `eventDate_end`
 
 
 ```r
@@ -287,7 +428,7 @@ occurrence %<>% mutate (eventDate =
            ))
 ```
 
-Remove the extra columns:
+Remove the eventDate_start, eventDate_end and eventDate_interval (only intermediate steps):
 
 
 ```r
@@ -335,8 +476,20 @@ occurrence %<>% mutate(countryCode = "BE")
 #### stateProvince
 #### county
 #### municipality
+
+
+```r
+occurrence %<>% mutate(municipality = raw_location_name_item_name)
+```
+
 #### locality
 #### verbatimLocality
+
+
+```r
+occurrence %<>% mutate(verbatimLocality = raw_survey_event_location_name)
+```
+
 #### minimumElevationInMeters
 #### maximumElevationInMeters
 #### verbatimElevation
@@ -348,8 +501,32 @@ occurrence %<>% mutate(countryCode = "BE")
 #### locationAccordingTo
 #### locationRemarks
 #### decimalLatitude
+
+
+```r
+occurrence %<>% 
+  mutate (coordinate = str_replace (raw_sample_lat, ",", ".")) %>%  # Change "," to "."
+  mutate (decimalLatitude = round (as.numeric(coordinate), 5)) %>%  # round to 5 decimals
+  select (-coordinate)                                              # remove intermediary vector "coordinate"
+```
+
 #### decimalLongitude
+
+
+```r
+occurrence %<>%
+  mutate (coordinate = str_replace (raw_sample_long, ",", ".")) %<>%  # Change "," to "."
+  mutate (decimalLongitude = round (as.numeric(coordinate), 5)) %<>%  # round to 5 decimals
+  select (-coordinate)                                                # remove intermediary vector "coordinate"
+```
+
 #### geodeticDatum
+
+
+```r
+occurrence %<>% mutate (geodeticDatum = "WGS84")
+```
+
 #### coordinateUncertaintyInMeters
 #### coordinatePrecision
 #### pointRadiusSpatialFit
@@ -357,6 +534,12 @@ occurrence %<>% mutate(countryCode = "BE")
 #### verbatimLatitude
 #### verbatimLongitude
 #### verbatimCoordinateSystem
+
+
+```r
+occurrence %<>% mutate(verbatimCoordinateSystem = "decimal degrees")
+```
+
 #### verbatimSRS
 #### footprintWKT
 #### footprintSRS
@@ -395,6 +578,140 @@ occurrence %<>% mutate(countryCode = "BE")
 #### identificationQualifier
 #### typeStatus
 #### identifiedBy
+
+give all unique name/group/organization records in raw_survey_event_comment (base for recordedBy and identifiedBy)
+
+
+```r
+occurrence %>% select (raw_survey_event_comment) %>%
+  distinct(raw_survey_event_comment) %>%
+  arrange (raw_survey_event_comment) %>%
+  kable()
+```
+
+
+
+|raw_survey_event_comment                                      |
+|:-------------------------------------------------------------|
+|2004_KreeftenBBICalc_Warmoes                                  |
+|2004_niet_BBICacl - Warmoes                                   |
+|Claudio Salvo                                                 |
+|D'udekem D'Acoz                                               |
+|databank VMM                                                  |
+|Dirk en Walda Hennebel                                        |
+|eigen data VMM                                                |
+|extra stalen                                                  |
+|Frank de Block-Burij                                          |
+|Geert Vanloot                                                 |
+|G�rard                                                        |
+|G�rard, 1986                                                  |
+|Gunter Flipkens                                               |
+|Hans de Blauwe                                                |
+|Herwig Mees                                                   |
+|IRSNB-Karel Wouters, 2002                                     |
+|Johan Auwerx                                                  |
+|Joost Mertens                                                 |
+|Kobe Janssen                                                  |
+|koen                                                          |
+|Koen Maes                                                     |
+|Leloup L.                                                     |
+|LIN - Belpaire - Cammaerts                                    |
+|LISEC - Neven & Beckers                                       |
+|Lot Hebbelinck                                                |
+|Luc Van Assche                                                |
+|Marjolein                                                     |
+|NULL                                                          |
+|Paul van sanden                                               |
+|Pieter Cox                                                    |
+|Pieter Van Dorsselaer                                         |
+|Rik Clicque                                                   |
+|Roeland Croket                                                |
+|Thomas Gyselinck                                              |
+|Tom Van den Neucker                                           |
+|Verslycke Tim                                                 |
+|VMM                                                           |
+|VMM - Joost                                                   |
+|VMM - Joost, 2004_KreeftenBBICalc_Warmoes                     |
+|VMM - Wim Gabriels                                            |
+|VMM - Wim Gabriels, 2004_KreeftenBBICalc_Warmoes              |
+|VMM - Wim Gabriels, 2004_KreeftenBBICalc_Warmoes, VMM - Joost |
+|VMM, 2004_KreeftenBBICalc_Warmoes                             |
+|waarnemingen                                                  |
+|waarnemingen - Dirk Hennebel                                  |
+|waarnemingen - Hans de Blauwe                                 |
+|waarnemingen - Hans De Blauwe                                 |
+|Waarnemingen - Kevin Lambeets                                 |
+|waarnemingen - Tom Van de Neucker                             |
+|Warmoes Thierry                                               |
+|Wouters                                                       |
+|Wouters, 2002                                                 |
+|Xavier Vermeersch                                             |
+|zeehavens                                                     |
+
+replace these records by a (list of) person(s), in the recommended best format for [identifiedBy](https://terms.tdwg.org/wiki/dwc:identifiedBy)  
+
+
+```r
+occurrence %<>% mutate (
+  identifiedBy = recode (raw_survey_event_comment,
+                         "2004_KreeftenBBICalc_Warmoes" = "Warmoes T", 
+                         "VMM, 2004_KreeftenBBICalc_Warmoes" = "",
+                         "2004_niet_BBICacl - Warmoes" = "",
+                         "Claudio Salvo" = "Salvo C",
+                         "D'udekem D'Acoz" = "d'Udekem d'Acoz",
+                         "databank VMM" = "Boets P",
+                         "Dirk en Walda Hennebel" = "Hennebel D | Hennebel W",
+                         "eigen data VMM" = "Boets P",
+                         "extra stalen" = "Boets P",
+                         "Frank de Block-Burij" = "de Block-Burij F",
+                         "Geert Vanloot" = "Vanloot G",
+                         "Gérard" = "Gérard",
+                         "Gérard, 1986" = "Gérard",
+                         "Gunter Flipkens" = "Flipkens G",
+                         "Hans de Blauwe" = "de Blauwe H",
+                         "Herwig Mees" = "Mees H",
+                         "IRSNB-Karel Wouters, 2002" = "Wouters K",
+                         "Johan Auwerx" = "Boets P",
+                         "Joost Mertens" = "Mertens J",
+                         "Kobe Janssen" = "Janssen K",
+                         "koen" = "Lock K",
+                         "Koen Maes" = "Maes K",
+                         "Leloup L." = "Leloup L",
+                         "LIN - Belpaire - Cammaerts" = "Belpaire | Cammaerts",
+                         "LISEC - Neven & Beckers" = "Neven | Beckers",
+                         "Lot Hebbelinck" = "Hebbelinck L",
+                         "Luc Van Assche" = "Van Assche L",
+                         "Marjolein" = "Messiaen M",
+                         "NULL" = "",
+                         "Paul van sanden" = "Van Sanden P",
+                         "Pieter Cox" = "Cox P",
+                         "Pieter Van Dorsselaer" = "Van Dorsselaer P",
+                         "Rik Clicque" = "Clicque R",
+                         "Roeland Croket" = "Croket R",
+                         "Thomas Gyselinck" = "Gyselinck T",
+                         "Tom Van den Neucker" = "Van den Neucker T",
+                         "Verslycke Tim" = "Verslycke T",
+                         "VMM" = "Boets P",
+                         "VMM - Joost" = "Mertens J",
+                         "VMM - Joost, 2004_KreeftenBBICalc_Warmoes" = "",
+                         "VMM - Wim Gabriels" = "Gabriels W",
+                         "VMM - Wim Gabriels, 2004_KreeftenBBICalc_Warmoes" = "Gabriels W",
+                         "VMM - Wim Gabriels, 2004_KreeftenBBICalc_Warmoes, VMM - Joost" = "Gabriels W",
+                         "waarnemingen" = "waarnemingen.be",
+                         "waarnemingen - Dirk Hennebel" = "Hennebel D",
+                         "waarnemingen - Hans de Blauwe" = "de Blauwe H",
+                         "waarnemingen - Hans De Blauwe" = "de Blauwe H",
+                         "Waarnemingen - Kevin Lambeets" = "Lambeets K",
+                         "waarnemingen - Tom Van de Neucker" = "Van de Neucker T",
+                         "Warmoes Thierry" = "Warmoes T",
+                         "Wouters" = "Wouters K",
+                         "Wouters, 2002" = "Wouters K",
+                         "Xavier Vermeersch" = "Vermeersch X",
+                         "zeehavens" = "Boets P",
+                         .default = "",
+                         .missing = ""))
+```
+
 #### dateIdentified
 #### identificationReferences
 #### identificationVerificationStatus
@@ -411,6 +728,18 @@ occurrence %<>% mutate(countryCode = "BE")
 #### namePublishedInID
 #### taxonConceptID
 #### scientificName
+
+Dreissena (Dreissena) polymorpha is the only scientific name with the subgenus mentioned in the name. This doesn't add much information and is removed (see [issue #9](https://github.com/trias-project/alien-macroinvertebrates/issues/9))
+
+
+```r
+occurrence %<>% mutate (scientificName = 
+                          case_when (
+                            raw_nameserver_recommended_scientific_name == "Dreissena (Dreissena) polymorpha" ~ "Dreissena polymorpha",
+                            raw_nameserver_recommended_scientific_name != "Dreissena (Dreissena) polymorpha" ~ raw_nameserver_recommended_scientific_name
+                          ) )
+```
+
 #### acceptedNameUsage
 #### parentNameUsage
 #### originalNameUsage
@@ -419,6 +748,12 @@ occurrence %<>% mutate(countryCode = "BE")
 #### namePublishedInYear
 #### higherClassification
 #### kingdom
+
+
+```r
+occurrence %<>% mutate (kingdom = "Animalia")
+```
+
 #### phylum
 #### class
 #### order
@@ -428,13 +763,70 @@ occurrence %<>% mutate(countryCode = "BE")
 #### specificEpithet
 #### infraspecificEpithet
 #### taxonRank
+
+raw_nameserver_recommended_name_rank contains two values: "Spp" and "SubSpp"
+--> This should be "Species" and "Subspecies":
+
+
+```r
+occurrence %<>% mutate (taxonRank = 
+                          case_when (
+                            raw_nameserver_recommended_name_rank == "Spp" ~ "species",
+                            raw_nameserver_recommended_name_rank == "SubSpp" ~ "subspecies"
+                          ) )
+```
+
 #### verbatimTaxonRank
 #### scientificNameAuthorship
+
+
+```r
+occurrence %<>% mutate (scientificNameAuthorship = raw_nameserver_recommended_name_authority)
+```
+
 #### vernacularName 
 #### nomenclaturalCode
+
+
+```r
+occurrence %<>% mutate (nomenclaturalCode = "ICZN")
+```
+
 #### taxonomicStatus
 #### nomenclaturalStatus
 #### taxonRemarks
 
 ### Post-processing
+
+Remove the original columns:
+
+
+```r
+occurrence %<>% select(-one_of(raw_colnames))
+```
+
+Preview data:
+
+
+```r
+kable(head(occurrence))
+```
+
+
+
+|type  |language |license                                          |rightsHolder     |accessRights                             |datasetID                       |institutionCode |datasetName                                   |basisOfRecord    |occurrenceID      |recordedBy |otherCatalogNumbers       |eventDate             |continent |countryCode |municipality   |verbatimLocality | decimalLatitude| decimalLongitude|geodeticDatum |verbatimCoordinateSystem |identifiedBy |scientificName      |kingdom  |taxonRank |scientificNameAuthorship |nomenclaturalCode |
+|:-----|:--------|:------------------------------------------------|:----------------|:----------------------------------------|:-------------------------------|:---------------|:---------------------------------------------|:----------------|:-----------------|:----------|:-------------------------|:---------------------|:---------|:-----------|:--------------|:----------------|---------------:|----------------:|:-------------|:------------------------|:------------|:-------------------|:--------|:---------|:------------------------|:-----------------|
+|Event |en       |http://creativecommons.org/publicdomain/zero/1.0 |Ghent University |http://www.inbo.be/en/norms-for-data-use |https://doi.org/10.15468/xjtfoo |INBO            |Alien macroinvertebrates in Flanders, Belgium |HumanObservation |PB:Ugent:AqE:2906 |           |INBO:NBN:BFN0017900009QRO |2011-03-16            |Europe    |BE          |Damme          |NULL             |        51.29170|          3.33788|WGS84         |decimal degrees          |             |Procambarus clarkii |Animalia |species   |(Girard, 1852)           |ICZN              |
+|Event |en       |http://creativecommons.org/publicdomain/zero/1.0 |Ghent University |http://www.inbo.be/en/norms-for-data-use |https://doi.org/10.15468/xjtfoo |INBO            |Alien macroinvertebrates in Flanders, Belgium |HumanObservation |PB:Ugent:AqE:2905 |           |INBO:NBN:BFN0017900009QRP |2009-01-03/2010-01-02 |Europe    |BE          |Laakdal        |NULL             |        51.08684|          5.00311|WGS84         |decimal degrees          |             |Procambarus clarkii |Animalia |species   |(Girard, 1852)           |ICZN              |
+|Event |en       |http://creativecommons.org/publicdomain/zero/1.0 |Ghent University |http://www.inbo.be/en/norms-for-data-use |https://doi.org/10.15468/xjtfoo |INBO            |Alien macroinvertebrates in Flanders, Belgium |HumanObservation |PB:Ugent:AqE:2904 |           |INBO:NBN:BFN0017900009QRQ |2009-01-03/2010-01-02 |Europe    |BE          |Geel           |NULL             |        51.10058|          4.97994|WGS84         |decimal degrees          |             |Procambarus clarkii |Animalia |species   |(Girard, 1852)           |ICZN              |
+|Event |en       |http://creativecommons.org/publicdomain/zero/1.0 |Ghent University |http://www.inbo.be/en/norms-for-data-use |https://doi.org/10.15468/xjtfoo |INBO            |Alien macroinvertebrates in Flanders, Belgium |HumanObservation |PB:Ugent:AqE:1815 |Warmoes T  |INBO:NBN:BFN0017900009QRS |2002-08-15            |Europe    |BE          |Weert          |NULL             |        51.21656|          5.58311|WGS84         |decimal degrees          |Warmoes T    |Orconectes limosus  |Animalia |species   |(Rafinesque, 1817)       |ICZN              |
+|Event |en       |http://creativecommons.org/publicdomain/zero/1.0 |Ghent University |http://www.inbo.be/en/norms-for-data-use |https://doi.org/10.15468/xjtfoo |INBO            |Alien macroinvertebrates in Flanders, Belgium |HumanObservation |PB:Ugent:AqE:1831 |Warmoes T  |INBO:NBN:BFN0017900009QRT |2003-06-06            |Europe    |BE          |Dilsen-Stokkem |NULL             |        51.02145|          5.75043|WGS84         |decimal degrees          |Warmoes T    |Orconectes limosus  |Animalia |species   |(Rafinesque, 1817)       |ICZN              |
+|Event |en       |http://creativecommons.org/publicdomain/zero/1.0 |Ghent University |http://www.inbo.be/en/norms-for-data-use |https://doi.org/10.15468/xjtfoo |INBO            |Alien macroinvertebrates in Flanders, Belgium |HumanObservation |PB:Ugent:AqE:1806 |Warmoes T  |INBO:NBN:BFN0017900009QRW |2002-05-30            |Europe    |BE          |Ham            |NULL             |        51.09901|          5.13642|WGS84         |decimal degrees          |Warmoes T    |Orconectes limosus  |Animalia |species   |(Rafinesque, 1817)       |ICZN              |
+
+Save to CSV:
+
+
+```r
+write.csv(occurrence, file = dwc_occurrence_file, na = "", row.names = FALSE, fileEncoding = "UTF-8")
+```
 
