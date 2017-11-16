@@ -19,7 +19,7 @@ select
 <<<<<<<< dwc_occurrence
     inbo.ufn_RtfToPlaintext (sue.comment) as survey_event_comment, 
 =======
-    [verbatimEventDate] = [inbo].[LCReturnVagueDateGBIF]( SA.VAGUE_DATE_START, SA.VAGUE_DATE_END , SA.VAGUE_DATE_TYPE,0),
+    verbatimEventDate] = [inbo].[LCReturnVagueDateGBIF]( SA.VAGUE_DATE_START, SA.VAGUE_DATE_END , SA.VAGUE_DATE_TYPE,0),
 	[EventDate] = [inbo].[LCReturnVagueDateGBIF]( SA.VAGUE_DATE_START, SA.VAGUE_DATE_END , SA.VAGUE_DATE_TYPE,1),
     sue.comment as survey_event_comment, 
 >>>>>>>> master
