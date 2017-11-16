@@ -17,7 +17,7 @@ select
     sa.vague_date_end as sample_vague_date_end, 
     sa.vague_date_type as sample_vague_date_type,
     [verbatimEventDate] = [inbo].[LCReturnVagueDateGBIF]( SA.VAGUE_DATE_START, SA.VAGUE_DATE_END , SA.VAGUE_DATE_TYPE,0),
-	[EventDate] = [inbo].[LCReturnVagueDateGBIF]( SA.VAGUE_DATE_START, SA.VAGUE_DATE_END , SA.VAGUE_DATE_TYPE,1),
+    [EventDate] = [inbo].[LCReturnVagueDateGBIF]( SA.VAGUE_DATE_START, SA.VAGUE_DATE_END , SA.VAGUE_DATE_TYPE,1),
     sue.comment as survey_event_comment, 
     ln.item_name as location_name_item_name,
     sue.location_name as survey_event_location_name,
