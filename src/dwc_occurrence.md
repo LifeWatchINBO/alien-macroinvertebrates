@@ -314,7 +314,7 @@ occurrence %<>% mutate (
                        "Paul van sanden" = "Van Sanden P",
                        "Pieter Cox" = "Cox P",
                        "Pieter Van Dorsselaer" = "Van Dorsselaer P",
-                       "Rik Clicque" = "Clique R",
+                       "Rik Clicque" = "Clicque R",
                        "Roeland Croket" = "Croket R",
                        "Thomas Gyselinck" = "Gyselinck T",
                        "Tom Van den Neucker" = "Van den Neucker T",
@@ -686,7 +686,7 @@ occurrence %<>% mutate (
                          "Paul van sanden" = "Van Sanden P",
                          "Pieter Cox" = "Cox P",
                          "Pieter Van Dorsselaer" = "Van Dorsselaer P",
-                         "Rik Clicque" = "Clique R",
+                         "Rik Clicque" = "Clicque R",
                          "Roeland Croket" = "Croket R",
                          "Thomas Gyselinck" = "Gyselinck T",
                          "Tom Van den Neucker" = "Van den Neucker T",
@@ -828,11 +828,5 @@ Save to CSV:
 
 ```r
 write.csv(occurrence, file = dwc_occurrence_file, na = "", row.names = FALSE, fileEncoding = "UTF-8")
-
-knitr::spin("dwc_occurrence.R")
-```
-
-```
-## Error in parse_block(g[-1], g[1], params.src): duplicate label 'configure_knitr'
 ```
 
