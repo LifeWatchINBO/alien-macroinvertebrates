@@ -16,13 +16,13 @@ select
     convert(datetime, sa.vague_date_start) as sample_vague_date_start, 
     convert(datetime, sa.vague_date_end) as sample_vague_date_end,
     sa.vague_date_type as sample_vague_date_type,
-======= dwc_occurrence
+<<<<<<<< dwc_occurrence
     inbo.ufn_RtfToPlaintext (sue.comment) as survey_event_comment, 
 =======
     [verbatimEventDate] = [inbo].[LCReturnVagueDateGBIF]( SA.VAGUE_DATE_START, SA.VAGUE_DATE_END , SA.VAGUE_DATE_TYPE,0),
 	[EventDate] = [inbo].[LCReturnVagueDateGBIF]( SA.VAGUE_DATE_START, SA.VAGUE_DATE_END , SA.VAGUE_DATE_TYPE,1),
     sue.comment as survey_event_comment, 
-======= master
+>>>>>>>> master
     ln.item_name as location_name_item_name,
     sue.location_name as survey_event_location_name,
     sa.lat as sample_lat,
