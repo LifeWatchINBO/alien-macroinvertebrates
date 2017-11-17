@@ -57,13 +57,25 @@ taxon <- raw_data
 #' 
 #' #### modified
 #' #### language
+taxon %<>% mutate(language = "en")
+
 #' #### license
+taxon %<>% mutate(license = "http://creativecommons.org/publicdomain/zero/1.0/")
+  
 #' #### rightsHolder
+taxon %<>% mutate("Ghent University Aquatic Ecology")
+    
 #' #### accessRights
+taxon %<>% mutate(accessRights = "http://www.inbo.be/en/norms-for-data-use")
+
 #' #### bibliographicCitation
 #' #### informationWithheld
 #' #### datasetID
+taxon  %<>% mutate(datasetID = "")
+ 
 #' #### datasetName
+taxon %<>% mutate(datasetName = "Checklist of alien macroinvertebrates in Flanders, Belgium")
+
 #' #### references
 #' #### taxonID
 #' #### scientificNameID
@@ -74,6 +86,11 @@ taxon <- raw_data
 #' #### namePublishedInID
 #' #### taxonConceptID
 #' #### scientificName
+taxon %<>% mutate(scientificName = raw_species)
+#
+#' verification if scientificName contains unique values:
+any(duplicated(taxon $scientificName))
+
 #' #### acceptedNameUsage
 #' #### parentNameUsage
 #' #### originalNameUsage
@@ -82,15 +99,25 @@ taxon <- raw_data
 #' #### namePublishedInYear
 #' #### higherClassification
 #' #### kingdom
+taxon %<>% mutate(kingdom = "Animalia")
+
 #' #### phylum
+taxon %<>% mutate(phylum = raw_phylum)
+  
 #' #### class
 #' #### order
+taxon %<>% mutate(order = raw_order)
+
 #' #### family
+taxon %<>% mutate(family = raw_family)
+
 #' #### genus
 #' #### subgenus
 #' #### specificEpithet
 #' #### infraspecificEpithet
 #' #### taxonRank
+taxon %<>% mutate(taxonRank = "species")
+
 #' #### verbatimTaxonRank
 #' #### scientificNameAuthorship
 #' #### vernacularName
