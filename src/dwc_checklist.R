@@ -26,19 +26,30 @@ library(janitor)   # For cleaning input data
 library(knitr)     # For nicer (kable) tables
 
 #' Set file paths (all paths should be relative to this script):
+raw_data_file = "../data/raw/AI_2016_Boets_etal_Supplement.xls"
 
 #' ## Read data
 #' 
 #' Read the source data:
-#' Clean data somewhat: remove empty rows if present
-#' Preview data:
+raw_data <- read_excel(raw_data_file, sheet = "checklist") 
 
-#' Save the raw column names as a list (makes it easier to remove them all later):
+#' Clean data somewhat: remove empty rows if present
+raw_data %<>%
+  remove_empty_rows() %>%     # Remove empty rows
+  clean_names()               # Have sensible (lowercase) column names
+
+#' Add prefix `raw_` to all column names to avoid name clashes with Darwin Core terms:
+colnames(raw_data) <- paste0("raw_", colnames(raw_data))
+
+#' Save those column names as a vector (makes it easier to remove them all later):
+raw_colnames <- colnames(raw_data)
+
 #' Preview data:
-kable(head(raw_species))
+kable(head(raw_data))
 
 #' ## Create taxon core
-#' 
+taxon <- raw_data
+
 #' ### Pre-processing
 #' ### Term mapping
 #' 
