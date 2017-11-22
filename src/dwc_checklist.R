@@ -81,6 +81,9 @@ taxon %<>% mutate(datasetName = "Checklist of alien macroinvertebrates in Flande
 taxon%<>% mutate(references = "http://www.aquaticinvasions.net/2016/AI_2016_Boets_etal.pdf")
 
 #' #### taxonID
+
+#' To be completed!
+
 #' #### scientificNameID
 #' #### acceptedNameUsageID
 #' #### parentNameUsageID
@@ -118,6 +121,9 @@ taxon %<>% mutate(taxonRank = "species")
 
 #' #### verbatimTaxonRank
 #' #### scientificNameAuthorship
+
+#' To be completed!
+
 #' #### vernacularName
 #' #### nomenclaturalCode
 taxon %<>% mutate(nomenclaturalCode = "ICZN")
