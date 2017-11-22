@@ -24,6 +24,7 @@ library(magrittr)  # For %<>% pipes
 # Other packages
 library(janitor)   # For cleaning input data
 library(knitr)     # For nicer (kable) tables
+library(readxl)    # To read excel files
 
 #' Set file paths (all paths should be relative to this script):
 raw_data_file = "../data/raw/AI_2016_Boets_etal_Supplement.xls"
@@ -77,6 +78,8 @@ taxon  %<>% mutate(datasetID = "")
 taxon %<>% mutate(datasetName = "Checklist of alien macroinvertebrates in Flanders, Belgium")
 
 #' #### references
+taxon%<>% mutate(references = "http://www.aquaticinvasions.net/2016/AI_2016_Boets_etal.pdf")
+
 #' #### taxonID
 #' #### scientificNameID
 #' #### acceptedNameUsageID
@@ -91,11 +94,6 @@ taxon %<>% mutate(scientificName = raw_species)
 #' verification if scientificName contains unique values:
 any(duplicated(taxon $scientificName))
 
-#' #### acceptedNameUsage
-#' #### parentNameUsage
-#' #### originalNameUsage
-#' #### nameAccordingTo
-#' #### namePublishedIn
 #' #### namePublishedInYear
 #' #### higherClassification
 #' #### kingdom
@@ -122,6 +120,8 @@ taxon %<>% mutate(taxonRank = "species")
 #' #### scientificNameAuthorship
 #' #### vernacularName
 #' #### nomenclaturalCode
+taxon %<>% mutate(nomenclaturalCode = "ICZN")
+
 #' #### taxonomicStatus
 #' #### nomenclaturalStatus
 #' #### taxonRemarks
