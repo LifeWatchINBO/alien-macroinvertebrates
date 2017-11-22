@@ -316,15 +316,48 @@ occurrence %<>%
 occurrence %<>% mutate (geodeticDatum = "WGS84")
 
 #' #### coordinateUncertaintyInMeters
+occurrence %<>% mutate(coordinateUncertaintyInMeters = "30")
+
 #' #### coordinatePrecision
 #' #### pointRadiusSpatialFit
 #' #### verbatimCoordinates
-#' #### verbatimLatitude
-#' #### verbatimLongitude
-#' #### verbatimCoordinateSystem
-occurrence %<>% mutate(verbatimCoordinateSystem = "decimal degrees")
+#' #### verbatimLatitude / verbatimLongitude / verbatimCoordinateSystem / verbatimSRS
+#' 
+#' These DwC terms were taken together as the *easiest* and *clearest* way to map them is to split `occurrence` 
+#' in two separate dataframes: one dataframe with coordinatesystem = Belgium Lambert 72 and one with coordinatesystem = decimal degrees. 
+#'
+#' First, to obtain `verbatimLongitude` and `verbatimLatitude` information, we need to split `raw_sample_spatial_ref` into two columns (separator = ","): `longitude` and `latitude` (intermediate columns, will be removed later)
+#' and to replace "," by "." in coordinates expressed as decimal degrees:
+occurrence %<>% 
+  separate( raw_sample_spatial_ref,
+            into = c("longitude", "latitude"),
+            sep = ",") %<>%
+  mutate (longitude = str_replace(longitude, ",", ".")) %<>%
+  mutate (latitude = str_replace(latitude, ",", "."))
 
-#' #### verbatimSRS
+#' Create one dataframe for verbatimCoordinateSystem = Belgium Lambert 72 and one for verbatimCoordinateSystem = decimal degrees:
+occurrence.BD72 <- filter (occurrence, raw_sample_spatial_ref_system == "BD72")
+occurrence.LTLN <- filter (occurrence, raw_sample_spatial_ref_system == "LTLN")
+
+#' Dwc mapping for verbatimLongitude / verbatimLatitude / verbatimCoordinateSystem / verbatimSRS:
+occurrence.BD72 %<>% 
+  mutate(verbatimLongitude = as.character (round (as.numeric (longitude, digits = 0 )))) %<>%  # round to 0 digits, convert from numeric to character for later union
+  mutate(verbatimLatitude  = as.character (round (as.numeric (latitude, digits = 0 )))) %<>%   # round to 0 digits, convert from numeric to character for later union
+  mutate(verbatimCoordinateSystem = "Belgium Lambert 72") %<>%
+  mutate(verbatimSRS = "Belgian Datum 1972")
+
+occurrence.LTLN %<>% 
+  mutate(verbatimLongitude = longitude) %<>%
+  mutate(verbatimLatitude  = latitude) %<>% 
+  mutate(verbatimCoordinateSystem = "decimal degrees") %<>%
+  mutate(verbatimSRS = "WGS84")
+
+#' merge both subset to new occurrence data frame:
+occurrence <- union(occurrence.BD72, occurrence.LTLN)
+
+#' remove intermediary columns `longitude` and `latitude`:
+occurrence %<>% select(-c(longitude, latitude))
+
 #' #### footprintWKT
 #' #### footprintSRS
 #' #### footprintSpatialFit
