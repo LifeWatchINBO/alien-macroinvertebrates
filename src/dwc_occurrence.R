@@ -67,7 +67,7 @@ occurrence %<>% mutate(language = "en")
 occurrence %<>% mutate(license = "http://creativecommons.org/publicdomain/zero/1.0")
 
 #' #### rightsHolder
-occurrence %<>% mutate(rightsHolder = "Ghent University")
+occurrence %<>% mutate(rightsHolder = "Ghent University Aquatic Ecology")
 
 #' #### accessRights
 occurrence %<>% mutate(accessRights = "http://www.inbo.be/en/norms-for-data-use")
