@@ -33,7 +33,7 @@ dwc_occurrence_file = "../data/processed/dwc_occurrence/occurrence.csv"
 #' ## Read data
 #' 
 #' Read the source data:
-raw_data <- read.table(raw_data_file, header = TRUE, sep = "\t", quote="", fileEncoding = "UTF-8-BOM", stringsAsFactors = F) 
+raw_data <- read.table(raw_data_file, header = TRUE, sep = "\t", quote="", na.strings = "NULL", fileEncoding = "UTF-8-BOM", stringsAsFactors = F) 
 
 #' Clean data somewhat: remove empty rows if present
 raw_data %<>%  remove_empty_rows() 
@@ -64,7 +64,7 @@ occurrence %<>% mutate(type = "Event")
 occurrence %<>% mutate(language = "en")
 
 #' #### license
-occurrence %<>% mutate(license = "http://creativecommons.org/publicdomain/zero/1.0")
+occurrence %<>% mutate(license = "http://creativecommons.org/publicdomain/zero/1.0/")
 
 #' #### rightsHolder
 occurrence %<>% mutate(rightsHolder = "Ghent University Aquatic Ecology")
@@ -165,7 +165,7 @@ occurrence %<>% mutate (
                        "waarnemingen - Hans de Blauwe" = "de Blauwe H",
                        "waarnemingen - Hans De Blauwe" = "de Blauwe H",
                        "Waarnemingen - Kevin Lambeets" = "Lambeets K",
-                       "waarnemingen - Tom Van de Neucker" = "Van de Neucker T",
+                       "waarnemingen - Tom Van den Neucker" = "Van den Neucker T",
                        "Warmoes Thierry" = "Warmoes T",
                        "Wouters" = "Wouters K",
                        "Wouters, 2002" = "Wouters K",
@@ -331,7 +331,8 @@ occurrence %<>% mutate(coordinateUncertaintyInMeters = "30")
 occurrence %<>% 
   separate( raw_sample_spatial_ref,
             into = c("longitude", "latitude"),
-            sep = ",") %<>%
+            sep = ",",
+            remove = F) %<>%
   mutate (longitude = str_replace(longitude, ",", ".")) %<>%
   mutate (latitude = str_replace(latitude, ",", "."))
 
@@ -453,7 +454,7 @@ occurrence %<>% mutate (
                          "waarnemingen - Hans de Blauwe" = "de Blauwe H",
                          "waarnemingen - Hans De Blauwe" = "de Blauwe H",
                          "Waarnemingen - Kevin Lambeets" = "Lambeets K",
-                         "waarnemingen - Tom Van de Neucker" = "Van de Neucker T",
+                         "waarnemingen - Tom Van den Neucker" = "Van den Neucker T",
                          "Warmoes Thierry" = "Warmoes T",
                          "Wouters" = "Wouters K",
                          "Wouters, 2002" = "Wouters K",
