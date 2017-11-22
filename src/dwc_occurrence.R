@@ -216,30 +216,40 @@ occurrence %<>% mutate(otherCatalogNumbers =
 #' #### fieldNumber
 #' #### eventDate
 #' 
-#' `eventDate` data can be found both in `raw_sample_vague_date_start` and `raw_sample_vague_date_end`
+#'  Dates can be found both in `raw_sample_vague_date_start` and `raw_sample_vague_date_end`
 #'  Both variables are imported in Rstudio as character vectors and need to be converted to an object of class "date".
 occurrence %<>% 
-  mutate(eventDate_start = as.Date (raw_sample_vague_date_start,"%Y-%m-%d")) %<>% 
-  mutate(eventDate_end = as.Date (raw_sample_vague_date_end,"%Y-%m-%d")) 
+  mutate(Date_start = as.Date (raw_sample_vague_date_start,"%Y-%m-%d")) %<>% 
+  mutate(Date_end = as.Date (raw_sample_vague_date_end,"%Y-%m-%d")) 
 
-#' `eventDate_start` and `eventDate_end`are not always identical: 
-with (occurrence, identical(eventDate_start, eventDate_end))
+#' `Date_start` and `Date_end`are not always identical: 
+with (occurrence, identical(Date_start, Date_end))
 
-#' Thus: `eventDate`` will be expressed as: 
-#' yyy-mm-dd when `eventDate_start` = `eventDate_end`
-#' yyy-mm-dd / yy-mm-dd when `eventDate_start` != `eventDate_end`
-#' creating new column `eventDate_interval`  when `eventDate_start` != `eventDate_end`
-occurrence %<>% mutate(eventDate_interval = paste (eventDate_start, eventDate_end, sep ="/"))  
+#' Thus: dates will be expressed as: 
+#' yyy-mm-dd when `Date_start` = `Date_end`
+#' yyy-mm-dd / yy-mm-dd when `Date_start` != `Date_end`
+#' 
+#' creating new column `Date_interval`  when `Date_start` != `Date_end`
+occurrence %<>% mutate(Date_interval = paste (Date_start, Date_end, sep ="/"))  
 
-#' Create `eventDate`, which contains information from `eventDate_start` when `eventDate_start` = `eventDate_end`, or else `eventDate_interval` when `eventDate_start` != `eventDate_end`
-occurrence %<>% mutate (eventDate =
-           case_when (
-             raw_sample_vague_date_start == raw_sample_vague_date_end ~ as.character (eventDate_start),
-             raw_sample_vague_date_start != raw_sample_vague_date_end ~ eventDate_interval
-           ))
+#' As it is unsure if GBIF can handle `/`in `EventDate`:
+#' we always use `Date_start` for `eventDate`
+#' when `Date_start` != `Date_end`, we use `Date_interval` for `verbatimEventDate` OR
+#' when `Date_start` = `Date_end`, we define no value for `verbatimEventDate` 
+#' 
+#' EventDate:
+occurrence %<>% mutate(eventDate = Date_start)
 
-#' Remove the eventDate_start, eventDate_end and eventDate_interval (only intermediate steps):
-occurrence %<>% select (- c(eventDate_start, eventDate_end, eventDate_interval))
+#' verbatimEventDate:
+occurrence %<>% mutate (verbatimEventDate =
+                          case_when (
+                            raw_sample_vague_date_start == raw_sample_vague_date_end ~ "",
+                            raw_sample_vague_date_start != raw_sample_vague_date_end ~ Date_interval
+                          ))
+
+
+#' Remove the `Date_start`, `Date_end` and `Date_interval` (only intermediate steps):
+occurrence %<>% select (- c(Date_start, Date_end, Date_interval))
 
 #' #### eventTime
 #' #### startDayOfYear
