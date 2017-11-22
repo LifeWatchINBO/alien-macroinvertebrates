@@ -28,6 +28,7 @@ library(readxl)    # To read excel files
 
 #' Set file paths (all paths should be relative to this script):
 raw_data_file = "../data/raw/AI_2016_Boets_etal_Supplement.xls"
+dwc_taxon_file = "../data/processed/dwc_checklist/taxon.csv"
 
 #' ## Read data
 #' 
@@ -140,6 +141,8 @@ taxon %<>% select(-one_of(raw_colnames))
 #' Preview data:
 kable(head(taxon))
 
+#' Save to CSV:
+write.csv(taxon, file = dwc_taxon_file, na = "", row.names = FALSE, fileEncoding = "UTF-8")
 
 
 #' ## Create distribution extension
