@@ -2,7 +2,7 @@
 
 Lien Reyserhove, Dimitri Brosens, Peter Desmet
 
-2017-11-16
+2017-11-22
 
 This document describes how we map the occurrence data to Darwin Core.
 
@@ -52,7 +52,7 @@ Read the source data:
 
 
 ```r
-raw_data <- read.table(raw_data_file, header = TRUE, sep = "\t", quote="", fileEncoding = "UTF-8-BOM", stringsAsFactors = F) 
+raw_data <- read.table(raw_data_file, header = TRUE, sep = "\t", quote="", na.strings = "NULL", fileEncoding = "UTF-8-BOM", stringsAsFactors = F) 
 ```
 
 Clean data somewhat: remove empty rows if present
@@ -87,12 +87,12 @@ kable(head(raw_data))
 
 |raw_taxon_occurrence_key |raw_taxon_occurrence_comment |raw_nameserver_recommended_scientific_name |raw_nameserver_recommended_name_authority |raw_nameserver_recommended_name_rank |raw_sample_vague_date_start |raw_sample_vague_date_end |raw_sample_vague_date_type |raw_survey_event_comment     |raw_location_name_item_name |raw_survey_event_location_name |raw_sample_lat   |raw_sample_long  |raw_sample_spatial_ref |raw_sample_spatial_ref_system |raw_sample_spatial_ref_qualifier |
 |:------------------------|:----------------------------|:------------------------------------------|:-----------------------------------------|:------------------------------------|:---------------------------|:-------------------------|:--------------------------|:----------------------------|:---------------------------|:------------------------------|:----------------|:----------------|:----------------------|:-----------------------------|:--------------------------------|
-|BFN0017900009QRO         |PB:Ugent:AqE:2906            |Procambarus clarkii                        |(Girard, 1852)                            |Spp                                  |2011-03-16 00:00:00.000     |2011-03-16 00:00:00.000   |D                          |NULL                         |Damme                       |NULL                           |51,2917039321127 |3,33787615648995 |78089.0,220704.0       |BD72                          |Imported                         |
-|BFN0017900009QRP         |PB:Ugent:AqE:2905            |Procambarus clarkii                        |(Girard, 1852)                            |Spp                                  |2009-01-03 00:00:00.000     |2010-01-02 00:00:00.000   |Y                          |NULL                         |Laakdal                     |NULL                           |51,0868389225402 |5,00310740316376 |194446.0,197604.0      |BD72                          |Imported                         |
-|BFN0017900009QRQ         |PB:Ugent:AqE:2904            |Procambarus clarkii                        |(Girard, 1852)                            |Spp                                  |2009-01-03 00:00:00.000     |2010-01-02 00:00:00.000   |Y                          |NULL                         |Geel                        |NULL                           |51,1005800032735 |4,97993697973969 |192810.0,199119.0      |BD72                          |Imported                         |
-|BFN0017900009QRS         |PB:Ugent:AqE:1815            |Orconectes limosus                         |(Rafinesque, 1817)                        |Spp                                  |2002-08-15 00:00:00.000     |2002-08-15 00:00:00.000   |D                          |2004_KreeftenBBICalc_Warmoes |Weert                       |NULL                           |51,2165593647505 |5,58310964700181 |234845.0,212540.0      |BD72                          |Imported                         |
-|BFN0017900009QRT         |PB:Ugent:AqE:1831            |Orconectes limosus                         |(Rafinesque, 1817)                        |Spp                                  |2003-06-06 00:00:00.000     |2003-06-06 00:00:00.000   |D                          |2004_KreeftenBBICalc_Warmoes |Dilsen-Stokkem              |NULL                           |51,0214476671045 |5,75042616893119 |246938.0,191042.0      |BD72                          |Imported                         |
-|BFN0017900009QRW         |PB:Ugent:AqE:1806            |Orconectes limosus                         |(Rafinesque, 1817)                        |Spp                                  |2002-05-30 00:00:00.000     |2002-05-30 00:00:00.000   |D                          |2004_KreeftenBBICalc_Warmoes |Ham                         |NULL                           |51,0990079250055 |5,13641646066324 |203772.0,199046.0      |BD72                          |Imported                         |
+|BFN0017900009QRO         |PB:Ugent:AqE:2906            |Procambarus clarkii                        |(Girard, 1852)                            |Spp                                  |2011-03-16 00:00:00.000     |2011-03-16 00:00:00.000   |D                          |NA                           |Damme                       |NA                             |51,2917039321127 |3,33787615648995 |78089.0,220704.0       |BD72                          |Imported                         |
+|BFN0017900009QRP         |PB:Ugent:AqE:2905            |Procambarus clarkii                        |(Girard, 1852)                            |Spp                                  |2009-01-03 00:00:00.000     |2010-01-02 00:00:00.000   |Y                          |NA                           |Laakdal                     |NA                             |51,0868389225402 |5,00310740316376 |194446.0,197604.0      |BD72                          |Imported                         |
+|BFN0017900009QRQ         |PB:Ugent:AqE:2904            |Procambarus clarkii                        |(Girard, 1852)                            |Spp                                  |2009-01-03 00:00:00.000     |2010-01-02 00:00:00.000   |Y                          |NA                           |Geel                        |NA                             |51,1005800032735 |4,97993697973969 |192810.0,199119.0      |BD72                          |Imported                         |
+|BFN0017900009QRS         |PB:Ugent:AqE:1815            |Orconectes limosus                         |(Rafinesque, 1817)                        |Spp                                  |2002-08-15 00:00:00.000     |2002-08-15 00:00:00.000   |D                          |2004_KreeftenBBICalc_Warmoes |Weert                       |NA                             |51,2165593647505 |5,58310964700181 |234845.0,212540.0      |BD72                          |Imported                         |
+|BFN0017900009QRT         |PB:Ugent:AqE:1831            |Orconectes limosus                         |(Rafinesque, 1817)                        |Spp                                  |2003-06-06 00:00:00.000     |2003-06-06 00:00:00.000   |D                          |2004_KreeftenBBICalc_Warmoes |Dilsen-Stokkem              |NA                             |51,0214476671045 |5,75042616893119 |246938.0,191042.0      |BD72                          |Imported                         |
+|BFN0017900009QRW         |PB:Ugent:AqE:1806            |Orconectes limosus                         |(Rafinesque, 1817)                        |Spp                                  |2002-05-30 00:00:00.000     |2002-05-30 00:00:00.000   |D                          |2004_KreeftenBBICalc_Warmoes |Ham                         |NA                             |51,0990079250055 |5,13641646066324 |203772.0,199046.0      |BD72                          |Imported                         |
 
 ## Create occurrence core
 
@@ -126,14 +126,14 @@ occurrence %<>% mutate(language = "en")
 
 
 ```r
-occurrence %<>% mutate(license = "http://creativecommons.org/publicdomain/zero/1.0")
+occurrence %<>% mutate(license = "http://creativecommons.org/publicdomain/zero/1.0/")
 ```
 
 #### rightsHolder
 
 
 ```r
-occurrence %<>% mutate(rightsHolder = "Ghent University")
+occurrence %<>% mutate(rightsHolder = "Ghent University Aquatic Ecology")
 ```
 
 #### accessRights
@@ -248,7 +248,6 @@ occurrence %>% select (raw_survey_event_comment) %>%
 |Lot Hebbelinck                                                |
 |Luc Van Assche                                                |
 |Marjolein                                                     |
-|NULL                                                          |
 |Paul van sanden                                               |
 |Pieter Cox                                                    |
 |Pieter Van Dorsselaer                                         |
@@ -275,6 +274,7 @@ occurrence %>% select (raw_survey_event_comment) %>%
 |Wouters, 2002                                                 |
 |Xavier Vermeersch                                             |
 |zeehavens                                                     |
+|NA                                                            |
 
 replace these records by a (list of) person(s), in the recommended best format for [recordedBy](https://terms.tdwg.org/wiki/dwc:recordedBy)  
 
@@ -330,7 +330,7 @@ occurrence %<>% mutate (
                        "waarnemingen - Hans de Blauwe" = "de Blauwe H",
                        "waarnemingen - Hans De Blauwe" = "de Blauwe H",
                        "Waarnemingen - Kevin Lambeets" = "Lambeets K",
-                       "waarnemingen - Tom Van de Neucker" = "Van de Neucker T",
+                       "waarnemingen - Tom Van den Neucker" = "Van den Neucker T",
                        "Warmoes Thierry" = "Warmoes T",
                        "Wouters" = "Wouters K",
                        "Wouters, 2002" = "Wouters K",
@@ -386,53 +386,66 @@ occurrence %<>% mutate(otherCatalogNumbers =
 #### fieldNumber
 #### eventDate
 
-`eventDate` data can be found both in `raw_sample_vague_date_start` and `raw_sample_vague_date_end`
+ Dates can be found both in `raw_sample_vague_date_start` and `raw_sample_vague_date_end`
  Both variables are imported in Rstudio as character vectors and need to be converted to an object of class "date".
 
 
 ```r
 occurrence %<>% 
-  mutate(eventDate_start = as.Date (raw_sample_vague_date_start,"%Y-%m-%d")) %<>% 
-  mutate(eventDate_end = as.Date (raw_sample_vague_date_end,"%Y-%m-%d")) 
+  mutate(Date_start = as.Date (raw_sample_vague_date_start,"%Y-%m-%d")) %<>% 
+  mutate(Date_end = as.Date (raw_sample_vague_date_end,"%Y-%m-%d")) 
 ```
 
-`eventDate_start` and `eventDate_end`are not always identical: 
+`Date_start` and `Date_end`are not always identical: 
 
 
 ```r
-with (occurrence, identical(eventDate_start, eventDate_end))
+with (occurrence, identical(Date_start, Date_end))
 ```
 
 ```
 ## [1] FALSE
 ```
 
-Thus: `eventDate`` will be expressed as: 
-yyy-mm-dd when `eventDate_start` = `eventDate_end`
-yyy-mm-dd / yy-mm-dd when `eventDate_start` != `eventDate_end`
-creating new column `eventDate_interval`  when `eventDate_start` != `eventDate_end`
+Thus: dates will be expressed as: 
+yyy-mm-dd when `Date_start` = `Date_end`
+yyy-mm-dd / yy-mm-dd when `Date_start` != `Date_end`
+
+creating new column `Date_interval`  when `Date_start` != `Date_end`
 
 
 ```r
-occurrence %<>% mutate(eventDate_interval = paste (eventDate_start, eventDate_end, sep ="/"))  
+occurrence %<>% mutate(Date_interval = paste (Date_start, Date_end, sep ="/"))  
 ```
 
-Create `eventDate`, which contains information from `eventDate_start` when `eventDate_start` = `eventDate_end`, or else `eventDate_interval` when `eventDate_start` != `eventDate_end`
+As it is unsure if GBIF can handle `/`in `EventDate`:
+we always use `Date_start` for `eventDate`
+when `Date_start` != `Date_end`, we use `Date_interval` for `verbatimEventDate` OR
+when `Date_start` = `Date_end`, we define no value for `verbatimEventDate` 
+
+EventDate:
 
 
 ```r
-occurrence %<>% mutate (eventDate =
-           case_when (
-             raw_sample_vague_date_start == raw_sample_vague_date_end ~ as.character (eventDate_start),
-             raw_sample_vague_date_start != raw_sample_vague_date_end ~ eventDate_interval
-           ))
+occurrence %<>% mutate(eventDate = Date_start)
 ```
 
-Remove the eventDate_start, eventDate_end and eventDate_interval (only intermediate steps):
+verbatimEventDate:
 
 
 ```r
-occurrence %<>% select (- c(eventDate_start, eventDate_end, eventDate_interval))
+occurrence %<>% mutate (verbatimEventDate =
+                          case_when (
+                            raw_sample_vague_date_start == raw_sample_vague_date_end ~ "",
+                            raw_sample_vague_date_start != raw_sample_vague_date_end ~ Date_interval
+                          ))
+```
+
+Remove the `Date_start`, `Date_end` and `Date_interval` (only intermediate steps):
+
+
+```r
+occurrence %<>% select (- c(Date_start, Date_end, Date_interval))
 ```
 
 #### eventTime
@@ -528,19 +541,73 @@ occurrence %<>% mutate (geodeticDatum = "WGS84")
 ```
 
 #### coordinateUncertaintyInMeters
-#### coordinatePrecision
-#### pointRadiusSpatialFit
-#### verbatimCoordinates
-#### verbatimLatitude
-#### verbatimLongitude
-#### verbatimCoordinateSystem
 
 
 ```r
-occurrence %<>% mutate(verbatimCoordinateSystem = "decimal degrees")
+occurrence %<>% mutate(coordinateUncertaintyInMeters = "30")
 ```
 
-#### verbatimSRS
+#### coordinatePrecision
+#### pointRadiusSpatialFit
+#### verbatimCoordinates
+#### verbatimLatitude / verbatimLongitude / verbatimCoordinateSystem / verbatimSRS
+
+These DwC terms were taken together as the *easiest* and *clearest* way to map them is to split `occurrence` 
+in two separate dataframes: one dataframe with coordinatesystem = Belgium Lambert 72 and one with coordinatesystem = decimal degrees. 
+
+First, to obtain `verbatimLongitude` and `verbatimLatitude` information, we need to split `raw_sample_spatial_ref` into two columns (separator = ","): `longitude` and `latitude` (intermediate columns, will be removed later)
+and to replace "," by "." in coordinates expressed as decimal degrees:
+
+
+```r
+occurrence %<>% 
+  separate( raw_sample_spatial_ref,
+            into = c("longitude", "latitude"),
+            sep = ",",
+            remove = F) %<>%
+  mutate (longitude = str_replace(longitude, ",", ".")) %<>%
+  mutate (latitude = str_replace(latitude, ",", "."))
+```
+
+Create one dataframe for verbatimCoordinateSystem = Belgium Lambert 72 and one for verbatimCoordinateSystem = decimal degrees:
+
+
+```r
+occurrence.BD72 <- filter (occurrence, raw_sample_spatial_ref_system == "BD72")
+occurrence.LTLN <- filter (occurrence, raw_sample_spatial_ref_system == "LTLN")
+```
+
+Dwc mapping for verbatimLongitude / verbatimLatitude / verbatimCoordinateSystem / verbatimSRS:
+
+
+```r
+occurrence.BD72 %<>% 
+  mutate(verbatimLongitude = as.character (round (as.numeric (longitude, digits = 0 )))) %<>%  # round to 0 digits, convert from numeric to character for later union
+  mutate(verbatimLatitude  = as.character (round (as.numeric (latitude, digits = 0 )))) %<>%   # round to 0 digits, convert from numeric to character for later union
+  mutate(verbatimCoordinateSystem = "Belgium Lambert 72") %<>%
+  mutate(verbatimSRS = "Belgian Datum 1972")
+
+occurrence.LTLN %<>% 
+  mutate(verbatimLongitude = longitude) %<>%
+  mutate(verbatimLatitude  = latitude) %<>% 
+  mutate(verbatimCoordinateSystem = "decimal degrees") %<>%
+  mutate(verbatimSRS = "WGS84")
+```
+
+merge both subset to new occurrence data frame:
+
+
+```r
+occurrence <- union(occurrence.BD72, occurrence.LTLN)
+```
+
+remove intermediary columns `longitude` and `latitude`:
+
+
+```r
+occurrence %<>% select(-c(longitude, latitude))
+```
+
 #### footprintWKT
 #### footprintSRS
 #### footprintSpatialFit
@@ -620,7 +687,6 @@ occurrence %>% select (raw_survey_event_comment) %>%
 |Lot Hebbelinck                                                |
 |Luc Van Assche                                                |
 |Marjolein                                                     |
-|NULL                                                          |
 |Paul van sanden                                               |
 |Pieter Cox                                                    |
 |Pieter Van Dorsselaer                                         |
@@ -647,6 +713,7 @@ occurrence %>% select (raw_survey_event_comment) %>%
 |Wouters, 2002                                                 |
 |Xavier Vermeersch                                             |
 |zeehavens                                                     |
+|NA                                                            |
 
 replace these records by a (list of) person(s), in the recommended best format for [identifiedBy](https://terms.tdwg.org/wiki/dwc:identifiedBy)  
 
@@ -702,7 +769,7 @@ occurrence %<>% mutate (
                          "waarnemingen - Hans de Blauwe" = "de Blauwe H",
                          "waarnemingen - Hans De Blauwe" = "de Blauwe H",
                          "Waarnemingen - Kevin Lambeets" = "Lambeets K",
-                         "waarnemingen - Tom Van de Neucker" = "Van de Neucker T",
+                         "waarnemingen - Tom Van den Neucker" = "Van den Neucker T",
                          "Warmoes Thierry" = "Warmoes T",
                          "Wouters" = "Wouters K",
                          "Wouters, 2002" = "Wouters K",
@@ -814,14 +881,14 @@ kable(head(occurrence))
 
 
 
-|type  |language |license                                          |rightsHolder     |accessRights                             |datasetID                       |institutionCode |datasetName                                   |basisOfRecord    |occurrenceID      |recordedBy |otherCatalogNumbers       |eventDate             |continent |countryCode |municipality   |verbatimLocality | decimalLatitude| decimalLongitude|geodeticDatum |verbatimCoordinateSystem |identifiedBy |scientificName      |kingdom  |taxonRank |scientificNameAuthorship |nomenclaturalCode |
-|:-----|:--------|:------------------------------------------------|:----------------|:----------------------------------------|:-------------------------------|:---------------|:---------------------------------------------|:----------------|:-----------------|:----------|:-------------------------|:---------------------|:---------|:-----------|:--------------|:----------------|---------------:|----------------:|:-------------|:------------------------|:------------|:-------------------|:--------|:---------|:------------------------|:-----------------|
-|Event |en       |http://creativecommons.org/publicdomain/zero/1.0 |Ghent University |http://www.inbo.be/en/norms-for-data-use |https://doi.org/10.15468/xjtfoo |INBO            |Alien macroinvertebrates in Flanders, Belgium |HumanObservation |PB:Ugent:AqE:2906 |           |INBO:NBN:BFN0017900009QRO |2011-03-16            |Europe    |BE          |Damme          |NULL             |        51.29170|          3.33788|WGS84         |decimal degrees          |             |Procambarus clarkii |Animalia |species   |(Girard, 1852)           |ICZN              |
-|Event |en       |http://creativecommons.org/publicdomain/zero/1.0 |Ghent University |http://www.inbo.be/en/norms-for-data-use |https://doi.org/10.15468/xjtfoo |INBO            |Alien macroinvertebrates in Flanders, Belgium |HumanObservation |PB:Ugent:AqE:2905 |           |INBO:NBN:BFN0017900009QRP |2009-01-03/2010-01-02 |Europe    |BE          |Laakdal        |NULL             |        51.08684|          5.00311|WGS84         |decimal degrees          |             |Procambarus clarkii |Animalia |species   |(Girard, 1852)           |ICZN              |
-|Event |en       |http://creativecommons.org/publicdomain/zero/1.0 |Ghent University |http://www.inbo.be/en/norms-for-data-use |https://doi.org/10.15468/xjtfoo |INBO            |Alien macroinvertebrates in Flanders, Belgium |HumanObservation |PB:Ugent:AqE:2904 |           |INBO:NBN:BFN0017900009QRQ |2009-01-03/2010-01-02 |Europe    |BE          |Geel           |NULL             |        51.10058|          4.97994|WGS84         |decimal degrees          |             |Procambarus clarkii |Animalia |species   |(Girard, 1852)           |ICZN              |
-|Event |en       |http://creativecommons.org/publicdomain/zero/1.0 |Ghent University |http://www.inbo.be/en/norms-for-data-use |https://doi.org/10.15468/xjtfoo |INBO            |Alien macroinvertebrates in Flanders, Belgium |HumanObservation |PB:Ugent:AqE:1815 |Warmoes T  |INBO:NBN:BFN0017900009QRS |2002-08-15            |Europe    |BE          |Weert          |NULL             |        51.21656|          5.58311|WGS84         |decimal degrees          |Warmoes T    |Orconectes limosus  |Animalia |species   |(Rafinesque, 1817)       |ICZN              |
-|Event |en       |http://creativecommons.org/publicdomain/zero/1.0 |Ghent University |http://www.inbo.be/en/norms-for-data-use |https://doi.org/10.15468/xjtfoo |INBO            |Alien macroinvertebrates in Flanders, Belgium |HumanObservation |PB:Ugent:AqE:1831 |Warmoes T  |INBO:NBN:BFN0017900009QRT |2003-06-06            |Europe    |BE          |Dilsen-Stokkem |NULL             |        51.02145|          5.75043|WGS84         |decimal degrees          |Warmoes T    |Orconectes limosus  |Animalia |species   |(Rafinesque, 1817)       |ICZN              |
-|Event |en       |http://creativecommons.org/publicdomain/zero/1.0 |Ghent University |http://www.inbo.be/en/norms-for-data-use |https://doi.org/10.15468/xjtfoo |INBO            |Alien macroinvertebrates in Flanders, Belgium |HumanObservation |PB:Ugent:AqE:1806 |Warmoes T  |INBO:NBN:BFN0017900009QRW |2002-05-30            |Europe    |BE          |Ham            |NULL             |        51.09901|          5.13642|WGS84         |decimal degrees          |Warmoes T    |Orconectes limosus  |Animalia |species   |(Rafinesque, 1817)       |ICZN              |
+|type  |language |license                                           |rightsHolder                     |accessRights                             |datasetID                       |institutionCode |datasetName                                   |basisOfRecord    |occurrenceID      |recordedBy |otherCatalogNumbers       |eventDate  |verbatimEventDate |continent |countryCode |municipality |verbatimLocality                                                                                     | decimalLatitude| decimalLongitude|geodeticDatum |coordinateUncertaintyInMeters |verbatimLongitude |verbatimLatitude |verbatimCoordinateSystem |verbatimSRS        |identifiedBy |scientificName           |kingdom  |taxonRank |scientificNameAuthorship |nomenclaturalCode |
+|:-----|:--------|:-------------------------------------------------|:--------------------------------|:----------------------------------------|:-------------------------------|:---------------|:---------------------------------------------|:----------------|:-----------------|:----------|:-------------------------|:----------|:-----------------|:---------|:-----------|:------------|:----------------------------------------------------------------------------------------------------|---------------:|----------------:|:-------------|:-----------------------------|:-----------------|:----------------|:------------------------|:------------------|:------------|:------------------------|:--------|:---------|:------------------------|:-----------------|
+|Event |en       |http://creativecommons.org/publicdomain/zero/1.0/ |Ghent University Aquatic Ecology |http://www.inbo.be/en/norms-for-data-use |https://doi.org/10.15468/xjtfoo |INBO            |Alien macroinvertebrates in Flanders, Belgium |HumanObservation |PB:Ugent:AqE:1078 |VMM        |INBO:NBN:BFN0017900009RAD |2000-08-19 |                  |Europe    |BE          |Gent         |Oostakker, Moervaartkaai, tussen Cargill en Dynea                                                    |        51.13824|          3.78624|WGS84         |30                            |109231            |203291           |Belgium Lambert 72       |Belgian Datum 1972 |Boets P      |Gammarus tigrinus        |Animalia |species   |Sexton, 1939             |ICZN              |
+|Event |en       |http://creativecommons.org/publicdomain/zero/1.0/ |Ghent University Aquatic Ecology |http://www.inbo.be/en/norms-for-data-use |https://doi.org/10.15468/xjtfoo |INBO            |Alien macroinvertebrates in Flanders, Belgium |HumanObservation |PB:Ugent:AqE:2669 |VMM        |INBO:NBN:BFN0017900009RI7 |1999-07-24 |                  |Europe    |BE          |Knokke-Heist |Hazegrasstraat, Schapersdijk                                                                         |        51.34525|          3.33294|WGS84         |30                            |77828             |226666           |Belgium Lambert 72       |Belgian Datum 1972 |Boets P      |Potamopyrgus antipodarum |Animalia |species   |(J.E. Gray, 1843)        |ICZN              |
+|Event |en       |http://creativecommons.org/publicdomain/zero/1.0/ |Ghent University Aquatic Ecology |http://www.inbo.be/en/norms-for-data-use |https://doi.org/10.15468/xjtfoo |INBO            |Alien macroinvertebrates in Flanders, Belgium |HumanObservation |PB:Ugent:AqE:264  |VMM        |INBO:NBN:BFN0017900009R6M |2004-08-27 |                  |Europe    |BE          |Evergem      |Molendreef, Enaamse                                                                                  |        51.15032|          3.73218|WGS84         |30                            |105459            |204666           |Belgium Lambert 72       |Belgian Datum 1972 |Boets P      |Crangonyx pseudogracilis |Animalia |species   |Bousfield, 1958          |ICZN              |
+|Event |en       |http://creativecommons.org/publicdomain/zero/1.0/ |Ghent University Aquatic Ecology |http://www.inbo.be/en/norms-for-data-use |https://doi.org/10.15468/xjtfoo |INBO            |Alien macroinvertebrates in Flanders, Belgium |HumanObservation |PB:Ugent:AqE:1451 |VMM        |INBO:NBN:BFN0017900009RPP |2007-08-31 |                  |Europe    |BE          |Nieuwpoort   |Sint-Joris, Ramskapellestraat                                                                        |        51.12485|          2.76741|WGS84         |30                            |37900             |202850           |Belgium Lambert 72       |Belgian Datum 1972 |Boets P      |Gammarus tigrinus        |Animalia |species   |Sexton, 1939             |ICZN              |
+|Event |en       |http://creativecommons.org/publicdomain/zero/1.0/ |Ghent University Aquatic Ecology |http://www.inbo.be/en/norms-for-data-use |https://doi.org/10.15468/xjtfoo |INBO            |Alien macroinvertebrates in Flanders, Belgium |HumanObservation |PB:Ugent:AqE:1265 |VMM        |INBO:NBN:BFN0017900009RE8 |1991-10-05 |                  |Europe    |BE          |Herentals    |FC: zijweg Geelsebaan (einde zandweg tgo Honingstr.), 30m afw. Prima-Lux, BIO: houten steiger na sas |        51.17161|          4.85111|WGS84         |30                            |183735            |206954           |Belgium Lambert 72       |Belgian Datum 1972 |Boets P      |Gammarus tigrinus        |Animalia |species   |Sexton, 1939             |ICZN              |
+|Event |en       |http://creativecommons.org/publicdomain/zero/1.0/ |Ghent University Aquatic Ecology |http://www.inbo.be/en/norms-for-data-use |https://doi.org/10.15468/xjtfoo |INBO            |Alien macroinvertebrates in Flanders, Belgium |HumanObservation |PB:Ugent:AqE:1519 |VMM        |INBO:NBN:BFN0017900009SM6 |2008-11-05 |                  |Europe    |BE          |Oostende     |Zandvoordestraat                                                                                     |        51.21327|          2.94688|WGS84         |30                            |50650             |212429           |Belgium Lambert 72       |Belgian Datum 1972 |Boets P      |Gammarus tigrinus        |Animalia |species   |Sexton, 1939             |ICZN              |
 
 Save to CSV:
 
