@@ -135,8 +135,10 @@ taxon %<>% mutate(nomenclaturalCode = "ICZN")
 #' ### Post-processing
 #' 
 #' Remove the original columns:
+taxon %<>% select(-one_of(raw_colnames))
+
 #' Preview data:
-#' Save to CSV:
+kable(head(taxon))
 
 
 
