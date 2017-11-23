@@ -237,3 +237,77 @@ write.csv(distribution, file = dwc_distribution_file, na = "", row.names = FALSE
 #' 
 #' ### Pre-processing
 #' 
+#' #### Native range
+#' 
+#' `raw_origin` contains native range information (e.g. `South-America`). We'll separate, clean, map and combine these values.
+#' 
+#' Create new data frame:
+native_range <- raw_data
+
+#' Inspect native_range:
+native_range %>%
+  distinct(raw_origin) %>%
+  arrange(raw_origin) %>%
+  kable()
+
+
+#' Create `description` from `raw_origin`:
+native_range %<>% mutate(description = raw_origin)
+
+#' Separate `description` on column in 3 columns.
+# In case there are more than 3 values, these will be merged in native_range_3. 
+# The dataset currently contains no more than 3 values per record.
+native_range %<>% 
+  separate(description, 
+           into = c("native_range_1", "native_range_2", "native_range_3"),
+           sep = ", ",
+           remove = TRUE,
+           convert = FALSE,
+           extra = "merge",
+           fill = "right"
+  )
+
+#' Gather native ranges in a key and value column:
+native_range %<>% gather(
+  key, value,
+  native_range_1, native_range_2, native_range_3,
+  na.rm = TRUE, # Also removes records for which there is no native_range_1
+  convert = FALSE
+)
+
+#' HERE: SORT ON TAXONID
+
+#' Manually cleaning of `value` to make them more standardized
+native_range %<>% 
+  mutate(mapped_value = recode(
+    value,
+    "East-Asia" = "Eastern Asia",
+    "East-Europe" = "Eastern Europe",
+    "North-Africa" = "Northern Africa",
+    "North-America" = "Northern America",
+    "Northeast-Asia" = "North-eastern Asia",
+    "South-America" = "South America",
+    "South-Europe" = "Southern Europe",
+    "Southeast-Asia" = "South-eastern Asia",
+    "West-Africa" = "Western Africa"))
+
+#' Show mapped values:
+native_range %>%
+  select(value, mapped_value) %>%
+  group_by(value, mapped_value) %>%
+  summarize(records = n()) %>%
+  arrange(value) %>%
+  kable()
+
+#' Drop `key` and `value` column and rename `mapped value`:
+native_range %<>% select(-key, -value)
+native_range %<>% rename(description = mapped_value)
+
+#' Keep only non-empty descriptions:
+native_range %<>% filter(!is.na(description) & description != "")
+
+#' Create a `type` field to indicate the type of description:
+native_range %<>% mutate(type = "native range")
+
+#' Preview data:
+kable(head(native_range))
