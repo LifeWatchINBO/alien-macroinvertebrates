@@ -148,21 +148,76 @@ write.csv(taxon, file = dwc_taxon_file, na = "", row.names = FALSE, fileEncoding
 #' ## Create distribution extension
 #' 
 #' ### Pre-processing
-#' ### Term mapping
+distribution <- raw_data
 
-#' #### id
+#' ### Term mapping
+#' 
+#' Map the source data to [Species Distribution](http://rs.gbif.org/extension/gbif/1.0/distribution.xml):
+
+#' #### taxonID
+# to be determined!
+
 #' #### locationID
+distribution %<>% mutate(locationID = "ISO_3166-2:BE-VLG")
+
 #' #### locality
+distribution %<>% mutate(locality = "Flanders")
+
 #' #### countryCode
+distribution %<>% mutate(countryCode = "BE")
+
 #' #### lifeStage
 #' #### occurrenceStatus
+distribution %<>% mutate(occurrenceStatus = "Present")
+
 #' #### threatStatus
 #' #### establishmentMeans
 #' #### appendixCITES
 #' #### eventDate
+#'
+#' Inspect content of `raw_first_occurrence_in_flanders`:
+distribution %>%
+  distinct(raw_first_occurrence_in_flanders) %>%
+  arrange(raw_first_occurrence_in_flanders) %>%
+  kable()
+
+#' `eventDate` will be of format `start_year`- `current_year` (yyyy-yyyy).
+#' `start_year` (yyyy) will contain the information from the following formats in `raw_first_occurrence_in_flanders`: "yyyy", "< yyyy", "<yyyy" and "before yyyy" OR the first year of the interval "yyyy-yyyy":
+#' `current_year` (yyyy) will contain the current year OR the last year of the interval "yyyy-yyyy":
+#' Before further processing, `raw_first_occurrence_in_flanders` needs to be cleaned, i.e. remove "<","< " and "before ":
+distribution %<>% mutate(year = str_replace_all(raw_first_occurrence_in_flanders, "(< |before |<)", ""))
+
+#' Create `start_year`:
+distribution %<>%
+  mutate(start_year = 
+           case_when(
+             str_detect(year, "-") == "TRUE" ~ "1730",   # when `year` = range --> pick first year (1730 in 1730-1732)
+             str_detect(year, "-") == "FALSE" ~ year))   
+
+#' Create `current_year`:
+distribution %<>%
+  mutate (current_year = 
+            case_when(
+              str_detect(year, "-") == TRUE ~ "1732",    # when `year` = range --> pick last year (1730 in 1730-1732)
+              str_detect(year, "-") == FALSE ~ format(Sys.Date(), "%Y")))
+
+#' Create `eventDate` by binding `start_year` and `current_year`:
+distribution %<>% 
+  mutate (eventDate = paste (start_year, current_year, sep ="-")) 
+
+#' Compare formatted dates with `raw_first_occurrence_in_flanders`:
+distribution %>% 
+  select (raw_first_occurrence_in_flanders, eventDate) %>%
+  kable()
+
+#' remove intermediary steps `year`, `start_year`, `current_year`:
+distribution %<>% select (-c(year, start_year, current_year))
+
 #' #### startDayOfYear
 #' #### endDayOfYear
 #' #### source
+
+
 #' #### occurrenceRemarks
 #' #### datasetID
 
