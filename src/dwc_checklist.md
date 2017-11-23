@@ -2,7 +2,7 @@
 
 Lien Reyserhove, Dimitri Brosens, Peter Desmet
 
-2017-11-07
+2017-11-23
 
 This document describes how we map the checklist data to Darwin Core.
 
@@ -20,7 +20,7 @@ Sys.setlocale("LC_CTYPE", "en_US.UTF-8")
 ```
 
 ```
-## [1] "en_US.UTF-8"
+## [1] ""
 ```
 
 Load libraries:
@@ -35,16 +35,15 @@ library(magrittr)  # For %<>% pipes
 # Other packages
 library(janitor)   # For cleaning input data
 library(knitr)     # For nicer (kable) tables
+library(readxl)    # To read excel files
 ```
 
 Set file paths (all paths should be relative to this script):
 
 
 ```r
-raw_data_file = "../data/raw/alien_macroinvertebrates_occurrences.tsv"
+raw_data_file = "../data/raw/AI_2016_Boets_etal_Supplement.xls"
 dwc_taxon_file = "../data/processed/dwc_checklist/taxon.csv"
-dwc_distribution_file = "../data/processed/dwc_checklist/distribution.csv"
-dwc_description_file = "../data/processed/dwc_checklist/description.csv"
 ```
 
 ## Read data
@@ -53,21 +52,30 @@ Read the source data:
 
 
 ```r
-raw_data <- read.table(raw_data_file, header = TRUE, sep = "\t", quote="", fileEncoding = "UTF-8-BOM") 
+raw_data <- read_excel(raw_data_file, sheet = "checklist") 
 ```
 
 Clean data somewhat: remove empty rows if present
 
 
 ```r
-raw_data %<>%  remove_empty_rows() 
+raw_data %<>%
+  remove_empty_rows() %>%     # Remove empty rows
+  clean_names()               # Have sensible (lowercase) column names
 ```
 
-Add prefix `raw_` to all column names. Although the column names already contain Darwin Core terms, new columns will have to be added between the current columns. To put all columns in the right order, it is easier to create new columns (some of them will be copies of the columns in the raw dataset) and then remove the columns of the raw occurrence dataset:
+Add prefix `raw_` to all column names to avoid name clashes with Darwin Core terms:
 
 
 ```r
 colnames(raw_data) <- paste0("raw_", colnames(raw_data))
+```
+
+Save those column names as a vector (makes it easier to remove them all later):
+
+
+```r
+raw_colnames <- colnames(raw_data)
 ```
 
 Preview data:
@@ -79,65 +87,23 @@ kable(head(raw_data))
 
 
 
-|raw_occurrenceID |raw_recordedBy              |raw_otherCatalogNumbers   |raw_eventDate |raw_municipality |raw_verbatimLocality                               |raw_verbatimLongitude | raw_verbatimLatitude| raw_decimalLatitude| raw_decimalLongitude| raw_coordinateUncertaintyInMeters|raw_identifiedBy            |raw_scientificName    |raw_taxonRank |raw_scientificNameAuthorship |
-|:----------------|:---------------------------|:-------------------------|:-------------|:----------------|:--------------------------------------------------|:---------------------|--------------------:|-------------------:|--------------------:|---------------------------------:|:---------------------------|:---------------------|:-------------|:----------------------------|
-|PB:Ugent:AqE:2   |F. de Block-Burij           |INBO:NBN:BFN0017900009Z2W |2011-04-25    |Hoeleden         |De Pinte-Hageland                                  |50.862224N            |         5.015018e+00|            50.86222|              5.01502|                                30|F. de Block-Burij           |Astacus leptodactylus |species       |Eschscholtz, 1823            |
-|PB:Ugent:AqE:3   |waarnemingen - D. Hennebel  |INBO:NBN:BFN0017900009SZ3 |2009-02-26    |Linkebeek        |Linkebeek (Drève des Etangs)                       |147461.0              |         1.619600e+05|            50.76813|              4.33276|                                30|waarnemingen - D. Hennebel  |Astacus leptodactylus |species       |Eschscholtz, 1823            |
-|PB:Ugent:AqE:4   |waarnemingen - H. de Blauwe |INBO:NBN:BFN0017900009SZ4 |2009-09-28    |Damme            |Damme (Damse Vaart)                                |74141.0               |         2.165490e+05|            51.25386|              3.28216|                                30|waarnemingen - H. de Blauwe |Astacus leptodactylus |species       |Eschscholtz, 1823            |
-|PB:Ugent:AqE:5   |Gérard                      |INBO:NBN:BFN0017900009Z2R |1985          |Brugge           |Damse vaart                                        |51.22617778N          |         3.214800e+00|            51.22618|              3.21480|                                30|Gérard                      |Astacus leptodactylus |species       |Eschscholtz, 1823            |
-|PB:Ugent:AqE:6   |Wouters K.                  |INBO:NBN:BFN0017900009Z34 |1985          |Hoeilaart        |Hoeilaart (Duboislaan)                             |50.765825N            |         4.432371e+00|            50.76582|              4.43237|                              3536|Wouters K.                  |Astacus leptodactylus |species       |Eschscholtz, 1823            |
-|PB:Ugent:AqE:7   |D'udekem D'Acoz             |INBO:NBN:BFN0017900009Z2X |1985          |Oud-Heverlee     |Oud-Heverlee (Langerodestraat, hazenfonteinstraat) |50.845565N            |         4.665830e+00|            50.84557|              4.66583|                              3536|D'udekem D'Acoz             |Astacus leptodactylus |species       |Eschscholtz, 1823            |
-
-## Group by species
-
-Group the occurrence data as species data (= one record for each scientific name):
-
-
-```r
-raw_species <- raw_data # replace by dplyr groupby on taxonID, scientificName, taxonRank and scientificNameAuthorship
-```
-
-Order by raw_taxonID:
-
-
-```r
-# raw_species %<>% arrange(raw_taxonID)
-```
-
-Save the raw column names as a list (makes it easier to remove them all later):
-
-
-```r
-raw_colnames <- colnames(raw_species)
-```
-
-Preview data:
-
-
-```r
-kable(head(raw_species))
-```
-
-
-
-|raw_occurrenceID |raw_recordedBy              |raw_otherCatalogNumbers   |raw_eventDate |raw_municipality |raw_verbatimLocality                               |raw_verbatimLongitude | raw_verbatimLatitude| raw_decimalLatitude| raw_decimalLongitude| raw_coordinateUncertaintyInMeters|raw_identifiedBy            |raw_scientificName    |raw_taxonRank |raw_scientificNameAuthorship |
-|:----------------|:---------------------------|:-------------------------|:-------------|:----------------|:--------------------------------------------------|:---------------------|--------------------:|-------------------:|--------------------:|---------------------------------:|:---------------------------|:---------------------|:-------------|:----------------------------|
-|PB:Ugent:AqE:2   |F. de Block-Burij           |INBO:NBN:BFN0017900009Z2W |2011-04-25    |Hoeleden         |De Pinte-Hageland                                  |50.862224N            |         5.015018e+00|            50.86222|              5.01502|                                30|F. de Block-Burij           |Astacus leptodactylus |species       |Eschscholtz, 1823            |
-|PB:Ugent:AqE:3   |waarnemingen - D. Hennebel  |INBO:NBN:BFN0017900009SZ3 |2009-02-26    |Linkebeek        |Linkebeek (Drève des Etangs)                       |147461.0              |         1.619600e+05|            50.76813|              4.33276|                                30|waarnemingen - D. Hennebel  |Astacus leptodactylus |species       |Eschscholtz, 1823            |
-|PB:Ugent:AqE:4   |waarnemingen - H. de Blauwe |INBO:NBN:BFN0017900009SZ4 |2009-09-28    |Damme            |Damme (Damse Vaart)                                |74141.0               |         2.165490e+05|            51.25386|              3.28216|                                30|waarnemingen - H. de Blauwe |Astacus leptodactylus |species       |Eschscholtz, 1823            |
-|PB:Ugent:AqE:5   |Gérard                      |INBO:NBN:BFN0017900009Z2R |1985          |Brugge           |Damse vaart                                        |51.22617778N          |         3.214800e+00|            51.22618|              3.21480|                                30|Gérard                      |Astacus leptodactylus |species       |Eschscholtz, 1823            |
-|PB:Ugent:AqE:6   |Wouters K.                  |INBO:NBN:BFN0017900009Z34 |1985          |Hoeilaart        |Hoeilaart (Duboislaan)                             |50.765825N            |         4.432371e+00|            50.76582|              4.43237|                              3536|Wouters K.                  |Astacus leptodactylus |species       |Eschscholtz, 1823            |
-|PB:Ugent:AqE:7   |D'udekem D'Acoz             |INBO:NBN:BFN0017900009Z2X |1985          |Oud-Heverlee     |Oud-Heverlee (Langerodestraat, hazenfonteinstraat) |50.845565N            |         4.665830e+00|            50.84557|              4.66583|                              3536|D'udekem D'Acoz             |Astacus leptodactylus |species       |Eschscholtz, 1823            |
+|raw_phylum |raw_order   |raw_family   |raw_species              |raw_origin                 |raw_first_occurrence_in_flanders |raw_pathway_of_introduction |raw_salinity_zone |raw_reference           |
+|:----------|:-----------|:------------|:------------------------|:--------------------------|:--------------------------------|:---------------------------|:-----------------|:-----------------------|
+|Annelida   |Sabellida   |Sabellidae   |Laonome calida           |Australia                  |2014                             |shipping                    |F/B               |This study              |
+|Annelida   |Sabellida   |Serpulidae   |Ficopomatus enigmaticus  |Asia                       |1950                             |shipping                    |F/B               |Leloup and Lefevre 1952 |
+|Annelida   |Spionida    |Spionidae    |Marenzelleria viridis    |North-America              |1995                             |shipping                    |B                 |Ysebaert et al. 1997    |
+|Annelida   |Spionida    |Spionidae    |Marenzelleria neglecta   |North-America              |2008                             |shipping                    |B                 |Soors et al. 2013       |
+|Annelida   |Terebellida |Ampharetidae |Hypania invalida         |Ponto-Caspian              |2000                             |shipping                    |F                 |Vercauteren et al. 2005 |
+|Annelida   |Tubficida   |Naididae     |Branchiodrilus hortensis |Asia, Africa and Australia |2010                             |shipping, corridors         |F                 |Soors et al. 2013       |
 
 ## Create taxon core
 
-### Pre-processing
-
 
 ```r
-taxon <- raw_species
+taxon <- raw_data
 ```
 
+### Pre-processing
 ### Term mapping
 
 Map the source data to [Darwin Core Taxon](http://rs.gbif.org/core/dwc_taxon_2015-04-24.xml):
@@ -161,7 +127,7 @@ taxon %<>% mutate(license = "http://creativecommons.org/publicdomain/zero/1.0/")
 
 
 ```r
-taxon %<>% mutate(rightsHolder = "Ugent; Aquatic ecolo")
+taxon %<>% mutate("Ghent University Aquatic Ecology")
 ```
 
 #### accessRights
@@ -177,24 +143,25 @@ taxon %<>% mutate(accessRights = "http://www.inbo.be/en/norms-for-data-use")
 
 
 ```r
-taxon %<>% mutate(datasetID = "")
+taxon  %<>% mutate(datasetID = "")
 ```
 
 #### datasetName
 
 
 ```r
-taxon %<>% mutate(datasetName = "Alien macroinvertebrates checklist for Flanders, Belgium")
+taxon %<>% mutate(datasetName = "Checklist of alien macroinvertebrates in Flanders, Belgium")
 ```
 
 #### references
-#### taxonID
 
 
 ```r
-taxon %<>% mutate(taxonID = "") # Should be taken from source
+taxon%<>% mutate(references = "http://www.aquaticinvasions.net/2016/AI_2016_Boets_etal.pdf")
 ```
 
+#### taxonID
+To be completed!
 #### scientificNameID
 #### acceptedNameUsageID
 #### parentNameUsageID
@@ -206,14 +173,21 @@ taxon %<>% mutate(taxonID = "") # Should be taken from source
 
 
 ```r
-taxon %<>% mutate(scientificName = raw_scientificName)
+taxon %<>% mutate(scientificName = raw_species)
+#
 ```
 
-#### acceptedNameUsage
-#### parentNameUsage
-#### originalNameUsage
-#### nameAccordingTo
-#### namePublishedIn
+verification if scientificName contains unique values:
+
+
+```r
+any(duplicated(taxon $scientificName))
+```
+
+```
+## [1] FALSE
+```
+
 #### namePublishedInYear
 #### higherClassification
 #### kingdom
@@ -224,9 +198,27 @@ taxon %<>% mutate(kingdom = "Animalia")
 ```
 
 #### phylum
+
+
+```r
+taxon %<>% mutate(phylum = raw_phylum)
+```
+
 #### class
 #### order
+
+
+```r
+taxon %<>% mutate(order = raw_order)
+```
+
 #### family
+
+
+```r
+taxon %<>% mutate(family = raw_family)
+```
+
 #### genus
 #### subgenus
 #### specificEpithet
@@ -235,17 +227,12 @@ taxon %<>% mutate(kingdom = "Animalia")
 
 
 ```r
-taxon %<>% mutate(taxonRank = raw_taxonRank)
+taxon %<>% mutate(taxonRank = "species")
 ```
 
 #### verbatimTaxonRank
 #### scientificNameAuthorship
-
-
-```r
-taxon %<>% mutate(scientificNameAuthorship = raw_scientificNameAuthorship)
-```
-
+To be completed!
 #### vernacularName
 #### nomenclaturalCode
 
@@ -276,14 +263,14 @@ kable(head(taxon))
 
 
 
-|language |license                                           |rightsHolder         |accessRights                             |datasetID |datasetName                                              |taxonID |scientificName        |kingdom  |taxonRank |scientificNameAuthorship |nomenclaturalCode |
-|:--------|:-------------------------------------------------|:--------------------|:----------------------------------------|:---------|:--------------------------------------------------------|:-------|:---------------------|:--------|:---------|:------------------------|:-----------------|
-|en       |http://creativecommons.org/publicdomain/zero/1.0/ |Ugent; Aquatic ecolo |http://www.inbo.be/en/norms-for-data-use |          |Alien macroinvertebrates checklist for Flanders, Belgium |        |Astacus leptodactylus |Animalia |species   |Eschscholtz, 1823        |ICZN              |
-|en       |http://creativecommons.org/publicdomain/zero/1.0/ |Ugent; Aquatic ecolo |http://www.inbo.be/en/norms-for-data-use |          |Alien macroinvertebrates checklist for Flanders, Belgium |        |Astacus leptodactylus |Animalia |species   |Eschscholtz, 1823        |ICZN              |
-|en       |http://creativecommons.org/publicdomain/zero/1.0/ |Ugent; Aquatic ecolo |http://www.inbo.be/en/norms-for-data-use |          |Alien macroinvertebrates checklist for Flanders, Belgium |        |Astacus leptodactylus |Animalia |species   |Eschscholtz, 1823        |ICZN              |
-|en       |http://creativecommons.org/publicdomain/zero/1.0/ |Ugent; Aquatic ecolo |http://www.inbo.be/en/norms-for-data-use |          |Alien macroinvertebrates checklist for Flanders, Belgium |        |Astacus leptodactylus |Animalia |species   |Eschscholtz, 1823        |ICZN              |
-|en       |http://creativecommons.org/publicdomain/zero/1.0/ |Ugent; Aquatic ecolo |http://www.inbo.be/en/norms-for-data-use |          |Alien macroinvertebrates checklist for Flanders, Belgium |        |Astacus leptodactylus |Animalia |species   |Eschscholtz, 1823        |ICZN              |
-|en       |http://creativecommons.org/publicdomain/zero/1.0/ |Ugent; Aquatic ecolo |http://www.inbo.be/en/norms-for-data-use |          |Alien macroinvertebrates checklist for Flanders, Belgium |        |Astacus leptodactylus |Animalia |species   |Eschscholtz, 1823        |ICZN              |
+|language |license                                           |"Ghent University Aquatic Ecology" |accessRights                             |datasetID |datasetName                                                |references                                                  |scientificName           |kingdom  |phylum   |order       |family       |taxonRank |nomenclaturalCode |
+|:--------|:-------------------------------------------------|:----------------------------------|:----------------------------------------|:---------|:----------------------------------------------------------|:-----------------------------------------------------------|:------------------------|:--------|:--------|:-----------|:------------|:---------|:-----------------|
+|en       |http://creativecommons.org/publicdomain/zero/1.0/ |Ghent University Aquatic Ecology   |http://www.inbo.be/en/norms-for-data-use |          |Checklist of alien macroinvertebrates in Flanders, Belgium |http://www.aquaticinvasions.net/2016/AI_2016_Boets_etal.pdf |Laonome calida           |Animalia |Annelida |Sabellida   |Sabellidae   |species   |ICZN              |
+|en       |http://creativecommons.org/publicdomain/zero/1.0/ |Ghent University Aquatic Ecology   |http://www.inbo.be/en/norms-for-data-use |          |Checklist of alien macroinvertebrates in Flanders, Belgium |http://www.aquaticinvasions.net/2016/AI_2016_Boets_etal.pdf |Ficopomatus enigmaticus  |Animalia |Annelida |Sabellida   |Serpulidae   |species   |ICZN              |
+|en       |http://creativecommons.org/publicdomain/zero/1.0/ |Ghent University Aquatic Ecology   |http://www.inbo.be/en/norms-for-data-use |          |Checklist of alien macroinvertebrates in Flanders, Belgium |http://www.aquaticinvasions.net/2016/AI_2016_Boets_etal.pdf |Marenzelleria viridis    |Animalia |Annelida |Spionida    |Spionidae    |species   |ICZN              |
+|en       |http://creativecommons.org/publicdomain/zero/1.0/ |Ghent University Aquatic Ecology   |http://www.inbo.be/en/norms-for-data-use |          |Checklist of alien macroinvertebrates in Flanders, Belgium |http://www.aquaticinvasions.net/2016/AI_2016_Boets_etal.pdf |Marenzelleria neglecta   |Animalia |Annelida |Spionida    |Spionidae    |species   |ICZN              |
+|en       |http://creativecommons.org/publicdomain/zero/1.0/ |Ghent University Aquatic Ecology   |http://www.inbo.be/en/norms-for-data-use |          |Checklist of alien macroinvertebrates in Flanders, Belgium |http://www.aquaticinvasions.net/2016/AI_2016_Boets_etal.pdf |Hypania invalida         |Animalia |Annelida |Terebellida |Ampharetidae |species   |ICZN              |
+|en       |http://creativecommons.org/publicdomain/zero/1.0/ |Ghent University Aquatic Ecology   |http://www.inbo.be/en/norms-for-data-use |          |Checklist of alien macroinvertebrates in Flanders, Belgium |http://www.aquaticinvasions.net/2016/AI_2016_Boets_etal.pdf |Branchiodrilus hortensis |Animalia |Annelida |Tubficida   |Naididae     |species   |ICZN              |
 
 Save to CSV:
 
@@ -298,15 +285,17 @@ write.csv(taxon, file = dwc_taxon_file, na = "", row.names = FALSE, fileEncoding
 
 
 ```r
-distribution <- raw_species
+distribution <- raw_data
 ```
 
 ### Term mapping
-#### id
+
+Map the source data to [Species Distribution](http://rs.gbif.org/extension/gbif/1.0/distribution.xml):
+#### taxonID
 
 
 ```r
-distribution %<>% mutate(id = "")
+# to be determined!
 ```
 
 #### locationID
@@ -335,18 +324,217 @@ distribution %<>% mutate(countryCode = "BE")
 
 
 ```r
-distribution %<>% mutate(occurrenceStatus = "present")
+distribution %<>% mutate(occurrenceStatus = "Present")
 ```
 
 #### threatStatus
 #### establishmentMeans
 #### appendixCITES
 #### eventDate
+
+Inspect content of `raw_first_occurrence_in_flanders`:
+
+
+```r
+distribution %>%
+  distinct(raw_first_occurrence_in_flanders) %>%
+  arrange(raw_first_occurrence_in_flanders) %>%
+  kable()
+```
+
+
+
+|raw_first_occurrence_in_flanders |
+|:--------------------------------|
+|< 1700                           |
+|<1600                            |
+|1730-1732                        |
+|1834                             |
+|1835                             |
+|1869                             |
+|1895                             |
+|1899                             |
+|1911                             |
+|1924                             |
+|1925                             |
+|1927                             |
+|1931                             |
+|1933                             |
+|1937                             |
+|1945                             |
+|1950                             |
+|1952                             |
+|1969                             |
+|1977                             |
+|1986                             |
+|1987                             |
+|1990                             |
+|1991                             |
+|1992                             |
+|1993                             |
+|1995                             |
+|1996                             |
+|1997                             |
+|1998                             |
+|1999                             |
+|2000                             |
+|2001                             |
+|2002                             |
+|2003                             |
+|2004                             |
+|2005                             |
+|2006                             |
+|2007                             |
+|2008                             |
+|2009                             |
+|2010                             |
+|2014                             |
+|before 1700                      |
+
+`eventDate` will be of format `start_year`- `current_year` (yyyy-yyyy).
+`start_year` (yyyy) will contain the information from the following formats in `raw_first_occurrence_in_flanders`: "yyyy", "< yyyy", "<yyyy" and "before yyyy" OR the first year of the interval "yyyy-yyyy":
+`current_year` (yyyy) will contain the current year OR the last year of the interval "yyyy-yyyy":
+Before further processing, `raw_first_occurrence_in_flanders` needs to be cleaned, i.e. remove "<","< " and "before ":
+
+
+```r
+distribution %<>% mutate(year = str_replace_all(raw_first_occurrence_in_flanders, "(< |before |<)", ""))
+```
+
+Create `start_year`:
+
+
+```r
+distribution %<>%
+  mutate(start_year = 
+           case_when(
+             str_detect(year, "-") == "TRUE" ~ "1730",   # when `year` = range --> pick first year (1730 in 1730-1732)
+             str_detect(year, "-") == "FALSE" ~ year))   
+```
+
+Create `current_year`:
+
+
+```r
+distribution %<>%
+  mutate (current_year = 
+            case_when(
+              str_detect(year, "-") == TRUE ~ "1732",    # when `year` = range --> pick last year (1730 in 1730-1732)
+              str_detect(year, "-") == FALSE ~ format(Sys.Date(), "%Y")))
+```
+
+Create `eventDate` by binding `start_year` and `current_year`:
+
+
+```r
+distribution %<>% 
+  mutate (eventDate = paste (start_year, current_year, sep ="-")) 
+```
+
+Compare formatted dates with `raw_first_occurrence_in_flanders`:
+
+
+```r
+distribution %>% 
+  select (raw_first_occurrence_in_flanders, eventDate) %>%
+  kable()
+```
+
+
+
+|raw_first_occurrence_in_flanders |eventDate |
+|:--------------------------------|:---------|
+|2014                             |2014-2017 |
+|1950                             |1950-2017 |
+|1995                             |1995-2017 |
+|2008                             |2008-2017 |
+|2000                             |2000-2017 |
+|2010                             |2010-2017 |
+|2002                             |2002-2017 |
+|1931                             |1931-2017 |
+|2009                             |2009-2017 |
+|2002                             |2002-2017 |
+|2009                             |2009-2017 |
+|2008                             |2008-2017 |
+|1996                             |1996-2017 |
+|2006                             |2006-2017 |
+|1998                             |1998-2017 |
+|1990                             |1990-2017 |
+|1993                             |1993-2017 |
+|1992                             |1992-2017 |
+|2003                             |2003-2017 |
+|1997                             |1997-2017 |
+|1925                             |1925-2017 |
+|2009                             |2009-2017 |
+|1937                             |1937-2017 |
+|1991                             |1991-2017 |
+|1996                             |1996-2017 |
+|1996                             |1996-2017 |
+|1927                             |1927-2017 |
+|1986                             |1986-2017 |
+|1986                             |1986-2017 |
+|1895                             |1895-2017 |
+|2008                             |2008-2017 |
+|1977                             |1977-2017 |
+|1991                             |1991-2017 |
+|1999                             |1999-2017 |
+|1993                             |1993-2017 |
+|1933                             |1933-2017 |
+|2003                             |2003-2017 |
+|2006                             |2006-2017 |
+|1998                             |1998-2017 |
+|1945                             |1945-2017 |
+|2005                             |2005-2017 |
+|2000                             |2000-2017 |
+|1999                             |1999-2017 |
+|2005                             |2005-2017 |
+|1950                             |1950-2017 |
+|1952                             |1952-2017 |
+|before 1700                      |1700-2017 |
+|1998                             |1998-2017 |
+|1997                             |1997-2017 |
+|1997                             |1997-2017 |
+|2007                             |2007-2017 |
+|1987                             |1987-2017 |
+|1911                             |1911-2017 |
+|< 1700                           |1700-2017 |
+|1730-1732                        |1730-1732 |
+|<1600                            |1600-2017 |
+|1924                             |1924-2017 |
+|1927                             |1927-2017 |
+|1969                             |1969-2017 |
+|1998                             |1998-2017 |
+|1937                             |1937-2017 |
+|1869                             |1869-2017 |
+|1999                             |1999-2017 |
+|1992                             |1992-2017 |
+|1992                             |1992-2017 |
+|1834                             |1834-2017 |
+|2009                             |2009-2017 |
+|1835                             |1835-2017 |
+|2004                             |2004-2017 |
+|1899                             |1899-2017 |
+|1933                             |1933-2017 |
+|2004                             |2004-2017 |
+|2001                             |2001-2017 |
+
+remove intermediary steps `year`, `start_year`, `current_year`:
+
+
+```r
+distribution %<>% select (-c(year, start_year, current_year))
+```
+
 #### startDayOfYear
 #### endDayOfYear
 #### source
+
+
+```r
+distribution %<>% mutate (source = raw_reference)
+```
+
 #### occurrenceRemarks
-#### datasetID
 ### Post-processing
 
 Remove the original columns:
@@ -365,14 +553,14 @@ kable(head(distribution))
 
 
 
-|id |locationID        |locality |countryCode |occurrenceStatus |
-|:--|:-----------------|:--------|:-----------|:----------------|
-|   |ISO_3166-2:BE-VLG |Flanders |BE          |present          |
-|   |ISO_3166-2:BE-VLG |Flanders |BE          |present          |
-|   |ISO_3166-2:BE-VLG |Flanders |BE          |present          |
-|   |ISO_3166-2:BE-VLG |Flanders |BE          |present          |
-|   |ISO_3166-2:BE-VLG |Flanders |BE          |present          |
-|   |ISO_3166-2:BE-VLG |Flanders |BE          |present          |
+|locationID        |locality |countryCode |occurrenceStatus |eventDate |source                  |
+|:-----------------|:--------|:-----------|:----------------|:---------|:-----------------------|
+|ISO_3166-2:BE-VLG |Flanders |BE          |Present          |2014-2017 |This study              |
+|ISO_3166-2:BE-VLG |Flanders |BE          |Present          |1950-2017 |Leloup and Lefevre 1952 |
+|ISO_3166-2:BE-VLG |Flanders |BE          |Present          |1995-2017 |Ysebaert et al. 1997    |
+|ISO_3166-2:BE-VLG |Flanders |BE          |Present          |2008-2017 |Soors et al. 2013       |
+|ISO_3166-2:BE-VLG |Flanders |BE          |Present          |2000-2017 |Vercauteren et al. 2005 |
+|ISO_3166-2:BE-VLG |Flanders |BE          |Present          |2010-2017 |Soors et al. 2013       |
 
 Save to CSV:
 
@@ -381,21 +569,3 @@ Save to CSV:
 write.csv(distribution, file = dwc_distribution_file, na = "", row.names = FALSE, fileEncoding = "UTF-8")
 ```
 
-## Summary
-
-### Number of records
-
-* Source file: 2856
-* Taxon core: 2856
-* Distribution extension: 2856
-* Description extension: `TODO`
-
-### Taxon core
-
-Number of duplicates: 2 (should be 0)
-
-The following numbers are expected to be the same:
-
-* Number of records: 2856
-* Number of distinct `taxonID`: 1
-* Number of distinct `scientificName`: 42
