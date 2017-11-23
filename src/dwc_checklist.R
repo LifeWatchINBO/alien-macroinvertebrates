@@ -231,21 +231,9 @@ kable(head(distribution))
 #' Save to CSV:
 write.csv(distribution, file = dwc_distribution_file, na = "", row.names = FALSE, fileEncoding = "UTF-8")
 
-#' ## Summary
+#' ## Create description extension
 #' 
-#' ### Number of records
+#' In the description extension we want to include **native range** (`raw_origin`), **pathway** (`raw_pathway_of_introduction`) and **salinity zone** (`raw_salinity_zone`) information. We'll create a separate data frame for each and then combine these with union.
 #' 
-#' * Source file: `r nrow(raw_data)`
-#' * Taxon core: `r nrow(taxon)`
-#' * Distribution extension: `r nrow(distribution)`
-#' * Description extension: `TODO`
-#'
-#' ### Taxon core
+#' ### Pre-processing
 #' 
-#' Number of duplicates: `r anyDuplicated(taxon[["taxonID"]])` (should be 0)
-#' 
-#' The following numbers are expected to be the same:
-#' 
-#' * Number of records: `r nrow(taxon)`
-#' * Number of distinct `taxonID`: `r n_distinct(taxon[["taxonID"]], na.rm = TRUE)`
-#' * Number of distinct `scientificName`: `r n_distinct(taxon[["scientificName"]], na.rm = TRUE)`
