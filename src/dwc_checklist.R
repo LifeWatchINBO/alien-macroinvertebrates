@@ -216,16 +216,21 @@ distribution %<>% select (-c(year, start_year, current_year))
 #' #### startDayOfYear
 #' #### endDayOfYear
 #' #### source
-
+distribution %<>% mutate (source = raw_reference)
 
 #' #### occurrenceRemarks
-#' #### datasetID
 
 #' ### Post-processing
 #' 
 #' Remove the original columns:
+distribution %<>% select(-one_of(raw_colnames))
+
 #' Preview data:
+kable(head(distribution))
+
 #' Save to CSV:
+write.csv(distribution, file = dwc_distribution_file, na = "", row.names = FALSE, fileEncoding = "UTF-8")
+
 #' ## Summary
 #' 
 #' ### Number of records
