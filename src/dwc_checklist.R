@@ -33,7 +33,7 @@ dwc_taxon_file = "../data/processed/dwc_checklist/taxon.csv"
 #' ## Read data
 #' 
 #' Read the source data:
-raw_data <- read_excel(raw_data_file, sheet = "checklist") 
+raw_data <- read_excel(raw_data_file, sheet = "checklist", na = "NA") 
 
 #' Clean data somewhat: remove empty rows if present
 raw_data %<>%
