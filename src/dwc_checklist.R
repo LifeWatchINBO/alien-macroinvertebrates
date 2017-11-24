@@ -313,3 +313,67 @@ native_range %<>% mutate(type = "native range")
 
 #' Preview data:
 kable(head(native_range))
+
+#' #### Pathway (pathway of introduction)
+#' 
+#' `raw_pathway_of_introduction` contains information on the pathway of introduction (e.g. `aquaculture`). We'll separate, clean, map and combine these values.
+#' 
+#' Create new data frame:
+pathway <- raw_data
+
+#' Inspect `pathway`:
+pathway %>%
+  distinct(raw_pathway_of_introduction) %>%
+  arrange(raw_pathway_of_introduction) %>%
+  kable()
+
+#' Similar as for `native_range`, we create a new variable `description` in `pathway` from `raw_pathway_of_introduction`:
+pathway %<>% mutate(description = raw_pathway_of_introduction)
+
+#' Separate `description` on column in 3 columns.
+# In case there are more than 3 values, these will be merged in pathway_3. 
+# The dataset currently contains no more than 3 values per record.
+pathway %<>% 
+  separate(description, 
+           into = c("pathway_1", "pathway_2", "pathway_3"),
+           sep = ", ",
+           remove = TRUE,
+           convert = FALSE,
+           extra = "merge",
+           fill = "right"
+  )
+
+#' Gather pathways in a key and value column:
+pathway %<>% gather(
+  key, value,
+  pathway_1, pathway_2, pathway_3,
+  na.rm = TRUE, # Also removes records for which there is no pathway_1
+  convert = FALSE
+)
+
+#' HERE: SORT ON TAXONID
+
+#' In `value`, both `other` and `others` is given as a pathway of introduction.
+#' We clean `value` by changing `others` --> `other`
+pathway %<>% mutate(value = recode(value, "others" = "other"))
+
+#' Show new values:
+pathway %>%
+  distinct(value) %>%
+  arrange(value) %>%
+  kable()
+
+#' Drop `key` column and rename `value`:
+pathway %<>% select(-key)
+pathway %<>% rename(description = value)
+
+#' Keep only non-empty descriptions:
+pathway %<>% filter(!is.na(description) & description != "")
+
+#' Create a `type` field to indicate the type of description:
+pathway %<>% mutate(type = "pathway")
+
+#' Preview data:
+kable(head(pathway))
+
+
