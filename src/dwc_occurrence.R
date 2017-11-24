@@ -24,23 +24,24 @@ library(magrittr)  # For %<>% pipes
 # Other packages
 library(janitor)   # For cleaning input data
 library(knitr)     # For nicer (kable) tables
+library(stringr)   # For string manipulation
 
 #' Set file paths (all paths should be relative to this script):
-raw_data_file = "../data/raw/alien_macroinvertebrates_occurrences.tsv"
+raw_data_file = "../data/raw/denormalized_observations.csv"
 dwc_occurrence_file = "../data/processed/dwc_occurrence/occurrence.csv"
 
 #' ## Read data
 #' 
 #' Read the source data:
-raw_data <- read.table(raw_data_file, header = TRUE, sep = "\t", quote="", fileEncoding = "UTF-8-BOM") 
+raw_data <- read.table(raw_data_file, header = TRUE, sep = "\t", quote="", na.strings = "NULL", fileEncoding = "UTF-8-BOM", stringsAsFactors = F) 
 
 #' Clean data somewhat: remove empty rows if present
 raw_data %<>%  remove_empty_rows() 
 
-#' Add prefix `raw_` to all column names. Although the column names already contain Darwin Core terms, new columns will have to be added between the current columns. To put all columns in the right order, it is easier to create new columns (some of them will be copies of the columns in the raw dataset) and then remove the columns of the raw occurrence dataset:
+#' Add prefix `raw_` to all column names, this to avoid name clashes with Darwin Core terms:
 colnames(raw_data) <- paste0("raw_", colnames(raw_data))
 
-#' Save those column names as a list (makes it easier to remove them all later):
+#' Save those column names as a vector (makes it easier to remove them all later):
 raw_colnames <- colnames(raw_data)
 
 #' Preview data:
@@ -57,7 +58,7 @@ occurrence <- raw_data
 #' 
 #' #### type
 occurrence %<>% mutate(type = "Event")
-#' 
+  
 #' #### modified
 #' #### language
 occurrence %<>% mutate(language = "en")
@@ -66,7 +67,7 @@ occurrence %<>% mutate(language = "en")
 occurrence %<>% mutate(license = "http://creativecommons.org/publicdomain/zero/1.0/")
 
 #' #### rightsHolder
-occurrence %<>% mutate(rightsHolder = "Ugent; Aquatic ecolo")
+occurrence %<>% mutate(rightsHolder = "Ghent University Aquatic Ecology")
 
 #' #### accessRights
 occurrence %<>% mutate(accessRights = "http://www.inbo.be/en/norms-for-data-use")
@@ -80,6 +81,7 @@ occurrence %<>% mutate(datasetID = "https://doi.org/10.15468/xjtfoo")
 
 #' #### institutionCode
 occurrence %<>% mutate(institutionCode = "INBO")
+
 #' #### collectionCode
 #' #### datasetName
 occurrence %<>% mutate(datasetName = "Alien macroinvertebrates in Flanders, Belgium")
@@ -95,12 +97,82 @@ occurrence %<>% mutate(basisOfRecord = "HumanObservation")
 #' ---
 #' 
 #' #### occurrenceID
-occurrence %<>% mutate(occurrenceID = raw_occurrenceID)
+#' 
+#' Checking whether occurrenceID is a unique code (TRUE)
+n_distinct(occurrence $ raw_taxon_occurrence_comment) == nrow(occurrence)
+
+#' mapping:
+occurrence %<>% mutate(occurrenceID = raw_taxon_occurrence_comment)
 
 #' #### catalogNumber
 #' #### recordNumber
 #' #### recordedBy
-occurrence %<>% mutate(recordedBy = raw_recordedBy)
+#' 
+#' give all unique name/group/organization records in raw_survey_event_comment (base column for recordedBy and identifiedBy)
+occurrence %>% select (raw_survey_event_comment) %>%
+  distinct(raw_survey_event_comment) %>%
+  arrange (raw_survey_event_comment) %>%
+  kable()
+
+#' replace these records by a (list of) person(s), in the recommended best format for [recordedBy](https://terms.tdwg.org/wiki/dwc:recordedBy)  
+occurrence %<>% mutate (
+  recordedBy = recode (raw_survey_event_comment,
+                       "2004_KreeftenBBICalc_Warmoes" = "Warmoes T", 
+                       "VMM, 2004_KreeftenBBICalc_Warmoes" = " ",
+                       "2004_niet_BBICacl - Warmoes" = " ",
+                       "Claudio Salvo" = "Salvo C",
+                       "D'udekem D'Acoz" = "d'Udekem d'Acoz",
+                       "databank VMM" = "VMM",
+                       "Dirk en Walda Hennebel" = "Hennebel D | Hennebel W",
+                       "eigen data VMM" = "VMM",
+                       "extra stalen" = "Boets P",
+                       "Frank de Block-Burij" = "de Block-Burij F",
+                       "Geert Vanloot" = "Vanloot G",
+                       "Gérard" = "Gérard",
+                       "Gérard, 1986" = "Gérard",
+                       "Gunter Flipkens" = "Flipkens G",
+                       "Hans de Blauwe" = "de Blauwe H",
+                       "Herwig Mees" = "Mees H",
+                       "IRSNB-Karel Wouters, 2002" = "Wouters K",
+                       "Johan Auwerx" = "Auwerx J",
+                       "Joost Mertens" = "Mertens J",
+                       "Kobe Janssen" = "Janssen K",
+                       "koen" = "Lock K",
+                       "Koen Maes" = "Maes K",
+                       "Leloup L." = "Leloup L",
+                       "LIN - Belpaire - Cammaerts" = "Belpaire | Cammaerts",
+                       "LISEC - Neven & Beckers" = "Neven | Beckers",
+                       "Lot Hebbelinck" = "Hebbelinck L",
+                       "Luc Van Assche" = "Van Assche L",
+                       "Marjolein" = "Messiaen M",
+                       "NULL" = "",
+                       "Paul van sanden" = "Van Sanden P",
+                       "Pieter Cox" = "Cox P",
+                       "Pieter Van Dorsselaer" = "Van Dorsselaer P",
+                       "Rik Clicque" = "Clicque R",
+                       "Roeland Croket" = "Croket R",
+                       "Thomas Gyselinck" = "Gyselinck T",
+                       "Tom Van den Neucker" = "Van den Neucker T",
+                       "Verslycke Tim" = "Verslycke T",
+                       "VMM" = "VMM",
+                       "VMM - Joost" = "Mertens J",
+                       "VMM - Joost, 2004_KreeftenBBICalc_Warmoes" = "",
+                       "VMM - Wim Gabriels" = "Gabriels W",
+                       "VMM - Wim Gabriels, 2004_KreeftenBBICalc_Warmoes" = "Gabriels W",
+                       "VMM - Wim Gabriels, 2004_KreeftenBBICalc_Warmoes, VMM - Joost" = "Gabriels W",
+                       "waarnemingen" = "waarnemingen.be",
+                       "waarnemingen - Dirk Hennebel" = "Hennebel D",
+                       "waarnemingen - Hans de Blauwe" = "de Blauwe H",
+                       "waarnemingen - Hans De Blauwe" = "de Blauwe H",
+                       "Waarnemingen - Kevin Lambeets" = "Lambeets K",
+                       "waarnemingen - Tom Van den Neucker" = "Van den Neucker T",
+                       "Warmoes Thierry" = "Warmoes T",
+                       "Wouters" = "Wouters K",
+                       "Wouters, 2002" = "Wouters K",
+                       "Xavier Vermeersch" = "Vermeersch X",
+                       "zeehavens" = "Boets P",
+                       .default = "",
+                       .missing = ""))
 
 #' #### individualCount
 #' #### organismQuantity
@@ -118,7 +190,8 @@ occurrence %<>% mutate(recordedBy = raw_recordedBy)
 #' #### associatedSequences
 #' #### associatedTaxa
 #' #### otherCatalogNumbers
-occurrence %<>% mutate(otherCatalogNumbers = raw_otherCatalogNumbers)
+occurrence %<>% mutate(otherCatalogNumbers = 
+                         paste0("INBO:NBN:",raw_taxon_occurrence_key))
 
 #' #### occurrenceRemarks
 #' 
@@ -142,7 +215,41 @@ occurrence %<>% mutate(otherCatalogNumbers = raw_otherCatalogNumbers)
 #' #### parentEventID
 #' #### fieldNumber
 #' #### eventDate
-occurrence %<>% mutate(eventDate = raw_eventDate)
+#' 
+#'  Dates can be found both in `raw_sample_vague_date_start` and `raw_sample_vague_date_end`
+#'  Both variables are imported in Rstudio as character vectors and need to be converted to an object of class "date".
+occurrence %<>% 
+  mutate(Date_start = as.Date (raw_sample_vague_date_start,"%Y-%m-%d")) %<>% 
+  mutate(Date_end = as.Date (raw_sample_vague_date_end,"%Y-%m-%d")) 
+
+#' `Date_start` and `Date_end`are not always identical: 
+with (occurrence, identical(Date_start, Date_end))
+
+#' Thus: dates will be expressed as: 
+#' yyy-mm-dd when `Date_start` = `Date_end`
+#' yyy-mm-dd / yy-mm-dd when `Date_start` != `Date_end`
+#' 
+#' creating new column `Date_interval`  when `Date_start` != `Date_end`
+occurrence %<>% mutate(Date_interval = paste (Date_start, Date_end, sep ="/"))  
+
+#' As it is unsure if GBIF can handle `/`in `EventDate`:
+#' we always use `Date_start` for `eventDate`
+#' when `Date_start` != `Date_end`, we use `Date_interval` for `verbatimEventDate` OR
+#' when `Date_start` = `Date_end`, we define no value for `verbatimEventDate` 
+#' 
+#' EventDate:
+occurrence %<>% mutate(eventDate = Date_start)
+
+#' verbatimEventDate:
+occurrence %<>% mutate (verbatimEventDate =
+                          case_when (
+                            raw_sample_vague_date_start == raw_sample_vague_date_end ~ "",
+                            raw_sample_vague_date_start != raw_sample_vague_date_end ~ Date_interval
+                          ))
+
+
+#' Remove the `Date_start`, `Date_end` and `Date_interval` (only intermediate steps):
+occurrence %<>% select (- c(Date_start, Date_end, Date_interval))
 
 #' #### eventTime
 #' #### startDayOfYear
@@ -151,8 +258,6 @@ occurrence %<>% mutate(eventDate = raw_eventDate)
 #' #### month
 #' #### day
 #' #### verbatimEventDate
-occurrence %<>% mutate(verbatimEventDate = raw_eventDate)
-
 #' #### habitat
 #' #### samplingProtocol
 #' #### sampleSizeValue
@@ -168,7 +273,7 @@ occurrence %<>% mutate(verbatimEventDate = raw_eventDate)
 #' #### higherGeography
 #' #### continent
 occurrence %<>% mutate(continent = "Europe")
-
+  
 #' #### waterBody
 #' #### islandGroup
 #' #### island
@@ -179,11 +284,11 @@ occurrence %<>% mutate(countryCode = "BE")
 #' #### stateProvince
 #' #### county
 #' #### municipality
-occurrence %<>% mutate(municipality = raw_municipality)
+occurrence %<>% mutate(municipality = raw_location_name_item_name)
 
 #' #### locality
 #' #### verbatimLocality
-occurrence %<>% mutate(verbatimLocality = raw_verbatimLocality)
+occurrence %<>% mutate(verbatimLocality = raw_survey_event_location_name)
 
 #' #### minimumElevationInMeters
 #' #### maximumElevationInMeters
@@ -196,31 +301,63 @@ occurrence %<>% mutate(verbatimLocality = raw_verbatimLocality)
 #' #### locationAccordingTo
 #' #### locationRemarks
 #' #### decimalLatitude
-occurrence %<>% mutate(decimalLatitude = raw_decimalLatitude)
+occurrence %<>% 
+  mutate (coordinate = str_replace (raw_sample_lat, ",", ".")) %>%  # Change "," to "."
+  mutate (decimalLatitude = round (as.numeric(coordinate), 5)) %>%  # round to 5 decimals
+  select (-coordinate)                                              # remove intermediary vector "coordinate"
 
 #' #### decimalLongitude
-occurrence %<>% mutate(decimalLongitude = raw_decimalLongitude)
+occurrence %<>%
+  mutate (coordinate = str_replace (raw_sample_long, ",", ".")) %<>%  # Change "," to "."
+  mutate (decimalLongitude = round (as.numeric(coordinate), 5)) %<>%  # round to 5 decimals
+  select (-coordinate)                                                # remove intermediary vector "coordinate"
 
 #' #### geodeticDatum
-occurrence %<>% mutate(geodeticDatum = "WGS84")
+occurrence %<>% mutate (geodeticDatum = "WGS84")
 
 #' #### coordinateUncertaintyInMeters
-occurrence %<>% mutate(coordinateUncertaintyInMeters = raw_coordinateUncertaintyInMeters)
+occurrence %<>% mutate(coordinateUncertaintyInMeters = "30")
 
 #' #### coordinatePrecision
 #' #### pointRadiusSpatialFit
 #' #### verbatimCoordinates
-#' #### verbatimLatitude
-occurrence %<>% mutate(verbatimLatitude = raw_verbatimLatitude)
+#' #### verbatimLatitude / verbatimLongitude / verbatimCoordinateSystem / verbatimSRS
+#' 
+#' These DwC terms were taken together as the *easiest* and *clearest* way to map them is to split `occurrence` 
+#' in two separate dataframes: one dataframe with coordinatesystem = Belgium Lambert 72 and one with coordinatesystem = decimal degrees. 
+#'
+#' First, to obtain `verbatimLongitude` and `verbatimLatitude` information, we need to split `raw_sample_spatial_ref` into two columns (separator = ","): `longitude` and `latitude` (intermediate columns, will be removed later)
+#' and to replace "," by "." in coordinates expressed as decimal degrees:
+occurrence %<>% 
+  separate( raw_sample_spatial_ref,
+            into = c("longitude", "latitude"),
+            sep = ",",
+            remove = F) %<>%
+  mutate (longitude = str_replace(longitude, ",", ".")) %<>%
+  mutate (latitude = str_replace(latitude, ",", "."))
 
-#' #### verbatimLongitude
-occurrence %<>% mutate(verbatimLongitude = raw_verbatimLongitude)
+#' Create one dataframe for verbatimCoordinateSystem = Belgium Lambert 72 and one for verbatimCoordinateSystem = decimal degrees:
+occurrence.BD72 <- filter (occurrence, raw_sample_spatial_ref_system == "BD72")
+occurrence.LTLN <- filter (occurrence, raw_sample_spatial_ref_system == "LTLN")
 
-#' #### verbatimCoordinateSystem
-occurrence %<>% mutate(verbatimCoordinateSystem = "Belgium Lambert 72")
+#' Dwc mapping for verbatimLongitude / verbatimLatitude / verbatimCoordinateSystem / verbatimSRS:
+occurrence.BD72 %<>% 
+  mutate(verbatimLongitude = as.character (round (as.numeric (longitude, digits = 0 )))) %<>%  # round to 0 digits, convert from numeric to character for later union
+  mutate(verbatimLatitude  = as.character (round (as.numeric (latitude, digits = 0 )))) %<>%   # round to 0 digits, convert from numeric to character for later union
+  mutate(verbatimCoordinateSystem = "Belgium Lambert 72") %<>%
+  mutate(verbatimSRS = "Belgian Datum 1972")
 
-#' #### verbatimSRS
-occurrence %<>% mutate(verbatimSRS = "Belgium Datum 1972")
+occurrence.LTLN %<>% 
+  mutate(verbatimLongitude = longitude) %<>%
+  mutate(verbatimLatitude  = latitude) %<>% 
+  mutate(verbatimCoordinateSystem = "decimal degrees") %<>%
+  mutate(verbatimSRS = "WGS84")
+
+#' merge both subset to new occurrence data frame:
+occurrence <- union(occurrence.BD72, occurrence.LTLN)
+
+#' remove intermediary columns `longitude` and `latitude`:
+occurrence %<>% select(-c(longitude, latitude))
 
 #' #### footprintWKT
 #' #### footprintSRS
@@ -259,7 +396,73 @@ occurrence %<>% mutate(verbatimSRS = "Belgium Datum 1972")
 #' #### identificationQualifier
 #' #### typeStatus
 #' #### identifiedBy
-occurrence %<>% mutate(identifiedBy = raw_identifiedBy)
+#' 
+#' give all unique name/group/organization records in raw_survey_event_comment (base for recordedBy and identifiedBy)
+occurrence %>% select (raw_survey_event_comment) %>%
+  distinct(raw_survey_event_comment) %>%
+  arrange (raw_survey_event_comment) %>%
+  kable()
+
+#' replace these records by a (list of) person(s), in the recommended best format for [identifiedBy](https://terms.tdwg.org/wiki/dwc:identifiedBy)  
+occurrence %<>% mutate (
+  identifiedBy = recode (raw_survey_event_comment,
+                         "2004_KreeftenBBICalc_Warmoes" = "Warmoes T", 
+                         "VMM, 2004_KreeftenBBICalc_Warmoes" = "",
+                         "2004_niet_BBICacl - Warmoes" = "",
+                         "Claudio Salvo" = "Salvo C",
+                         "D'udekem D'Acoz" = "d'Udekem d'Acoz",
+                         "databank VMM" = "Boets P",
+                         "Dirk en Walda Hennebel" = "Hennebel D | Hennebel W",
+                         "eigen data VMM" = "Boets P",
+                         "extra stalen" = "Boets P",
+                         "Frank de Block-Burij" = "de Block-Burij F",
+                         "Geert Vanloot" = "Vanloot G",
+                         "Gérard" = "Gérard",
+                         "Gérard, 1986" = "Gérard",
+                         "Gunter Flipkens" = "Flipkens G",
+                         "Hans de Blauwe" = "de Blauwe H",
+                         "Herwig Mees" = "Mees H",
+                         "IRSNB-Karel Wouters, 2002" = "Wouters K",
+                         "Johan Auwerx" = "Boets P",
+                         "Joost Mertens" = "Mertens J",
+                         "Kobe Janssen" = "Janssen K",
+                         "koen" = "Lock K",
+                         "Koen Maes" = "Maes K",
+                         "Leloup L." = "Leloup L",
+                         "LIN - Belpaire - Cammaerts" = "Belpaire | Cammaerts",
+                         "LISEC - Neven & Beckers" = "Neven | Beckers",
+                         "Lot Hebbelinck" = "Hebbelinck L",
+                         "Luc Van Assche" = "Van Assche L",
+                         "Marjolein" = "Messiaen M",
+                         "NULL" = "",
+                         "Paul van sanden" = "Van Sanden P",
+                         "Pieter Cox" = "Cox P",
+                         "Pieter Van Dorsselaer" = "Van Dorsselaer P",
+                         "Rik Clicque" = "Clicque R",
+                         "Roeland Croket" = "Croket R",
+                         "Thomas Gyselinck" = "Gyselinck T",
+                         "Tom Van den Neucker" = "Van den Neucker T",
+                         "Verslycke Tim" = "Verslycke T",
+                         "VMM" = "Boets P",
+                         "VMM - Joost" = "Mertens J",
+                         "VMM - Joost, 2004_KreeftenBBICalc_Warmoes" = "",
+                         "VMM - Wim Gabriels" = "Gabriels W",
+                         "VMM - Wim Gabriels, 2004_KreeftenBBICalc_Warmoes" = "Gabriels W",
+                         "VMM - Wim Gabriels, 2004_KreeftenBBICalc_Warmoes, VMM - Joost" = "Gabriels W",
+                         "waarnemingen" = "waarnemingen.be",
+                         "waarnemingen - Dirk Hennebel" = "Hennebel D",
+                         "waarnemingen - Hans de Blauwe" = "de Blauwe H",
+                         "waarnemingen - Hans De Blauwe" = "de Blauwe H",
+                         "Waarnemingen - Kevin Lambeets" = "Lambeets K",
+                         "waarnemingen - Tom Van den Neucker" = "Van den Neucker T",
+                         "Warmoes Thierry" = "Warmoes T",
+                         "Wouters" = "Wouters K",
+                         "Wouters, 2002" = "Wouters K",
+                         "Xavier Vermeersch" = "Vermeersch X",
+                         "zeehavens" = "Boets P",
+                         .default = "",
+                         .missing = ""))
+
 
 #' #### dateIdentified
 #' #### identificationReferences
@@ -277,7 +480,13 @@ occurrence %<>% mutate(identifiedBy = raw_identifiedBy)
 #' #### namePublishedInID
 #' #### taxonConceptID
 #' #### scientificName
-occurrence %<>% mutate(scientificName = raw_scientificName)
+#' 
+#' Dreissena (Dreissena) polymorpha is the only scientific name with the subgenus mentioned in the name. This doesn't add much information and is removed (see [issue #9](https://github.com/trias-project/alien-macroinvertebrates/issues/9))
+occurrence %<>% mutate (scientificName = 
+                          case_when (
+                            raw_nameserver_recommended_scientific_name == "Dreissena (Dreissena) polymorpha" ~ "Dreissena polymorpha",
+                            raw_nameserver_recommended_scientific_name != "Dreissena (Dreissena) polymorpha" ~ raw_nameserver_recommended_scientific_name
+                          ) )
 
 #' #### acceptedNameUsage
 #' #### parentNameUsage
@@ -287,7 +496,7 @@ occurrence %<>% mutate(scientificName = raw_scientificName)
 #' #### namePublishedInYear
 #' #### higherClassification
 #' #### kingdom
-occurrence %<>% mutate(kingdom = "Animalia")
+occurrence %<>% mutate (kingdom = "Animalia")
 
 #' #### phylum
 #' #### class
@@ -298,15 +507,22 @@ occurrence %<>% mutate(kingdom = "Animalia")
 #' #### specificEpithet
 #' #### infraspecificEpithet
 #' #### taxonRank
-occurrence %<>% mutate(taxonRank = raw_taxonRank)
+#' 
+#' raw_nameserver_recommended_name_rank contains two values: "Spp" and "SubSpp"
+#' --> This should be "Species" and "Subspecies":
+occurrence %<>% mutate (taxonRank = 
+                          case_when (
+                            raw_nameserver_recommended_name_rank == "Spp" ~ "species",
+                            raw_nameserver_recommended_name_rank == "SubSpp" ~ "subspecies"
+                          ) )
 
 #' #### verbatimTaxonRank
 #' #### scientificNameAuthorship
-occurrence %<>% mutate(scientificNameAuthorship = raw_scientificNameAuthorship)
+occurrence %<>% mutate (scientificNameAuthorship = raw_nameserver_recommended_name_authority)
 
 #' #### vernacularName 
 #' #### nomenclaturalCode
-occurrence %<>% mutate(nomenclaturalCode = "ICZN")
+occurrence %<>% mutate (nomenclaturalCode = "ICZN")
 
 #' #### taxonomicStatus
 #' #### nomenclaturalStatus
@@ -322,19 +538,3 @@ kable(head(occurrence))
 
 #' Save to CSV:
 write.csv(occurrence, file = dwc_occurrence_file, na = "", row.names = FALSE, fileEncoding = "UTF-8")
-
-#' ## Summary
-#' 
-#' ### Number of records
-#' 
-#' * Source file: `r nrow(raw_data)`
-#' * Occurrence core: `r nrow(occurrence)`
-#'
-#' ### Occurrence core
-#' 
-#' Number of duplicates: `r anyDuplicated(occurrence[["occurrenceID"]])` (should be 0)
-#' 
-#' The following numbers are expected to be the same:
-#' 
-#' * Number of records: `r nrow(occurrence)`
-#' * Number of distinct `occurrenceID`: `r n_distinct(occurrence[["occurrenceID"]], na.rm = TRUE)`

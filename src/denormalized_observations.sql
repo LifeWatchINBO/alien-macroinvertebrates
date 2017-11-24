@@ -13,11 +13,10 @@ select
     ns.recommended_scientific_name as nameserver_recommended_scientific_name, 
     ns.recommended_name_authority as nameserver_recommended_name_authority, 
     ns.recommended_name_rank as nameserver_recommended_name_rank, 
-    sa.vague_date_start as sample_vague_date_start, 
-    sa.vague_date_end as sample_vague_date_end, 
+    convert(datetime, sa.vague_date_start) as sample_vague_date_start, 
+    convert(datetime, sa.vague_date_end) as sample_vague_date_end,
     sa.vague_date_type as sample_vague_date_type,
-    [verbatimEventDate] = [inbo].[LCReturnVagueDateGBIF]( SA.VAGUE_DATE_START, SA.VAGUE_DATE_END , SA.VAGUE_DATE_TYPE,0),
-    [EventDate] = [inbo].[LCReturnVagueDateGBIF]( SA.VAGUE_DATE_START, SA.VAGUE_DATE_END , SA.VAGUE_DATE_TYPE,1),
+    inbo.ufn_RtfToPlaintext (sue.comment) as survey_event_comment, 
     sue.comment as survey_event_comment, 
     ln.item_name as location_name_item_name,
     sue.location_name as survey_event_location_name,
@@ -44,6 +43,6 @@ from
 where
     su.item_name = 'alien macro-invertebrates in flanders'
     and ln.preferred = 1
-go
 
+go
 
