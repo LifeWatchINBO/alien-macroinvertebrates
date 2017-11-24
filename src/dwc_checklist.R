@@ -31,6 +31,7 @@ library(stringr)   # to perform string operations
 raw_data_file = "../data/raw/AI_2016_Boets_etal_Supplement.xls"
 dwc_taxon_file = "../data/processed/dwc_checklist/taxon.csv"
 dwc_distribution_file = "../data/processed/dwc_checklist/distribution.csv"
+dwc_description_file = "../data/processed/dwc_checklist/description.csv"
 
 #' ## Read data
 #' 
@@ -445,6 +446,7 @@ description_ext <- bind_rows(native_range, pathway, habitat)
 #' Map the source data to [Taxon Description](http://rs.gbif.org/extension/gbif/1.0/description.xml):
 
 #' #### taxonID
+description_ext %<>% mutate(taxonID = raw_id)
 
 #' #### description
 description_ext %<>% mutate(description = description)
@@ -466,3 +468,17 @@ description_ext %<>% mutate(language = "en")
 #' #### rightsHolder
 #' #### datasetID
 
+
+#' ### Post-processing
+#' 
+#' Remove the original columns:
+description_ext %<>% select(-one_of(raw_colnames))
+
+#' Move `taxonID` to the first position:
+description_ext %<>% select(taxonID, everything())
+
+#' Preview data:
+kable(head(description_ext, 10))
+
+#' Save to CSV:
+write.csv(description_ext, file = dwc_description_file, na = "", row.names = FALSE, fileEncoding = "UTF-8")
