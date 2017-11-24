@@ -10,7 +10,7 @@ This repository contains 1) the source data for the _Alien macroinvertebrates in
 
 * Description of the [Darwin Core mapping](src/dwc_occurrence.md) (= a rendition of the [mapping script](src/dwc_occurrence.R))
 * Generated [Darwin Core files](data/processed/dwc_occurrence/)
-* Published [dataset on the IPT](http://data.inbo.be/ipt/resource?r=http://data.inbo.be/ipt/resource?r=alien-macroinvertebrate-occurrences)
+* Published [dataset on the IPT](http://data.inbo.be/ipt/resource?r=alien-macroinvertebrate-occurrences)
 * Published [dataset on GBIF](https://www.gbif.org/dataset/3c428404-893c-44da-bb4a-6c19d8fb676a)
 * Article for this dataset:
 
