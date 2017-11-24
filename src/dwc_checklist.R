@@ -235,7 +235,7 @@ write.csv(distribution, file = dwc_distribution_file, na = "", row.names = FALSE
 
 #' ## Create description extension
 #' 
-#' In the description extension we want to include **native range** (`raw_origin`), **pathway** (`raw_pathway_of_introduction`) and **salinity zone** (`raw_salinity_zone`) information. We'll create a separate data frame for each and then combine these with union.
+#' In the description extension we want to include **native range** (`raw_origin`), **pathway** (`raw_pathway_of_introduction`) and **habitat** (`raw_salinity_zone`) information. We'll create a separate data frame for each and then combine these with union.
 #' 
 #' ### Pre-processing
 #' 
@@ -376,4 +376,71 @@ pathway %<>% mutate(type = "pathway")
 #' Preview data:
 kable(head(pathway))
 
+#' #### Habitat
+#' 
+#' `raw_salinity_zone` contains information on the habitat of the species ("B" = brackish, "M" = marine, "freshwater"). We'll separate, clean, map and combine these values.
+#' 
+#' Create new data frame:
+habitat <- raw_data
+
+#' Inspect native_range:
+habitat %>%
+  distinct(raw_salinity_zone) %>%
+  arrange(raw_salinity_zone) %>%
+  kable()
+
+#' Similar as for `native_range` and `pathway`, we create a new variable `description` in `habitat` from `raw_salinity_zone`:
+habitat %<>% mutate(description = raw_salinity_zone)
+
+#' Separate `description` on column in 2 columns.
+# In case there are more than 2 values, these will be merged in habitat_2. 
+# The dataset currently contains no more than 2 values per record.
+habitat %<>% 
+  separate(description, 
+           into = c("habitat_1", "habitat_2"),
+           sep = "/",
+           remove = TRUE,
+           convert = FALSE,
+           extra = "merge",
+           fill = "right"
+  )
+
+#' Gather habitats in a key and value column:
+habitat %<>% gather(
+  key, value,
+  habitat_1, habitat_2,
+  na.rm = TRUE, # Also removes records for which there is no habitat_1
+  convert = FALSE
+)
+
+#' HERE: SORT ON TAXONID
+
+#' `value now contains` the abbreviations `B`, `M` and `F` --> we substitute these by `brackish`, `marine` and `freshwater` respectively.
+habitat %<>% 
+  mutate(mapped_value = recode(
+    value,
+    "B" = "brackish",
+    "M" = "marine",
+    "F" = "freshwater"))
+
+#' Show mapped values:
+habitat %>%
+  select(value, mapped_value) %>%
+  group_by(value, mapped_value) %>%
+  summarize(records = n()) %>%
+  arrange(value) %>%
+  kable()
+
+#' Drop `key` and `value` column and rename `mapped value`:
+habitat %<>% select(-key, -value)
+habitat %<>% rename(description = mapped_value)
+
+#' Keep only non-empty descriptions:
+habitat %<>% filter(!is.na(description) & description != "")
+
+#' Create a `type` field to indicate the type of description:
+habitat %<>% mutate(type = "habitat")
+
+#' Preview data:
+kable(head(habitat))
 
