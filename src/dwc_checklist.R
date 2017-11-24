@@ -444,3 +444,32 @@ habitat %<>% mutate(type = "habitat")
 #' Preview data:
 kable(head(habitat))
 
+#' #### Union native range, pathway and habitat:
+description_ext <- bind_rows(native_range, pathway, habitat)
+
+#' ### Term mapping
+#' 
+#' Map the source data to [Taxon Description](http://rs.gbif.org/extension/gbif/1.0/description.xml):
+
+#' #### taxonID
+
+#' #### description
+description_ext %<>% mutate(description = description)
+
+#' #### type
+description_ext %<>% mutate(type = type)
+
+#' #### source
+description_ext %<>% mutate (source = raw_reference)
+
+#' #### language
+description_ext %<>% mutate(language = "en")
+
+#' #### created
+#' #### creator
+#' #### contributor
+#' #### audience
+#' #### license
+#' #### rightsHolder
+#' #### datasetID
+
