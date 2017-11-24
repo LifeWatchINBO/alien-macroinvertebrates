@@ -25,10 +25,12 @@ library(magrittr)  # For %<>% pipes
 library(janitor)   # For cleaning input data
 library(knitr)     # For nicer (kable) tables
 library(readxl)    # To read excel files
+library(stringr)   # to perform string operations
 
 #' Set file paths (all paths should be relative to this script):
 raw_data_file = "../data/raw/AI_2016_Boets_etal_Supplement.xls"
 dwc_taxon_file = "../data/processed/dwc_checklist/taxon.csv"
+dwc_distribution_file = "../data/processed/dwc_checklist/distribution.csv"
 
 #' ## Read data
 #' 
