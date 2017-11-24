@@ -1,0 +1,48 @@
+# Dataset: alien-macroinvertebrates-checklist
+# DOI: 
+# 
+# Scope: dwc-taxon
+# Author: Peter Desmet
+# Syntax version: 0.1
+
+language:
+  allowed: en
+
+license:
+  allowed: http://creativecommons.org/publicdomain/zero/1.0/
+
+rightsHolder:
+  allowed: Ghent University Aquatic Ecology
+
+accessRights:
+  allowed: http://www.inbo.be/en/norms-for-data-use
+
+datasetID:
+  allowed: 
+
+datasetName:
+  allowed: Checklist of alien macroinvertebrates in Flanders, Belgium
+
+taxonID:
+  regex: 'alien-macroinvertebrates-checklist:taxon:\d'
+
+scientificName:
+  empty: false
+
+kingdom:
+  allowed: Animalia
+
+phylum:
+  allowed: [Annelida, Arthropoda, Mollusca, Platyhelminthes]
+
+order:
+  empty: false
+
+family:
+  empty: false
+
+taxonRank:
+  allowed: [species, subspecies]
+
+nomenclaturalCode:
+  allowed: ICZN

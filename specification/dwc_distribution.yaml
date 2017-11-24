@@ -1,0 +1,31 @@
+# Dataset: alien-macroinvertebrates-checklist
+# DOI: 
+# 
+# Scope: dwc-distribution
+# Author: Peter Desmet
+# Syntax version: 0.1
+
+taxonID:
+  regex: 'alien-macroinvertebrates-checklist:taxon:\d'
+
+locationID:
+  allowed: ISO_3166-2:BE-VLG
+
+locality:
+  allowed: Flanders
+
+countryCode:
+  allowed: BE
+
+occurrenceStatus:
+  allowed: present
+
+eventDate:
+  delimitedvalues:
+    delimiter: /
+    type: integer
+    min: 1600
+    max: 2017
+
+source:
+  empty: false
