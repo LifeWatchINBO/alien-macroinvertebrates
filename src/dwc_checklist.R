@@ -477,6 +477,9 @@ description_ext %<>% select(-one_of(raw_colnames))
 #' Move `taxonID` to the first position:
 description_ext %<>% select(taxonID, everything())
 
+#' Sort on `taxonID`:
+description_ext %<>% arrange(taxonID)
+
 #' Preview data:
 kable(head(description_ext, 10))
 
