@@ -84,9 +84,8 @@ taxon %<>% mutate(datasetName = "Checklist of alien macroinvertebrates in Flande
 taxon%<>% mutate(references = "http://www.aquaticinvasions.net/2016/AI_2016_Boets_etal.pdf")
 
 #' #### taxonID
-
-#' To be completed!
-
+taxon%<>% mutate(taxonID = raw_id)
+  
 #' #### scientificNameID
 #' #### acceptedNameUsageID
 #' #### parentNameUsageID
@@ -96,7 +95,7 @@ taxon%<>% mutate(references = "http://www.aquaticinvasions.net/2016/AI_2016_Boet
 #' #### taxonConceptID
 #' #### scientificName
 taxon %<>% mutate(scientificName = raw_species)
-#
+
 #' verification if scientificName contains unique values:
 any(duplicated(taxon $scientificName))
 
@@ -157,8 +156,8 @@ distribution <- raw_data
 #' Map the source data to [Species Distribution](http://rs.gbif.org/extension/gbif/1.0/distribution.xml):
 
 #' #### taxonID
-# to be determined!
-
+distribution %<>% mutate(taxonID = raw_id)
+  
 #' #### locationID
 distribution %<>% mutate(locationID = "ISO_3166-2:BE-VLG")
 
@@ -277,8 +276,6 @@ native_range %<>% gather(
   convert = FALSE
 )
 
-#' HERE: SORT ON TAXONID
-
 #' Manually cleaning of `value` to make them more standardized
 native_range %<>% 
   mutate(mapped_value = recode(
@@ -351,8 +348,6 @@ pathway %<>% gather(
   convert = FALSE
 )
 
-#' HERE: SORT ON TAXONID
-
 #' In `value`, both `other` and `others` is given as a pathway of introduction.
 #' We clean `value` by changing `others` --> `other`
 pathway %<>% mutate(value = recode(value, "others" = "other"))
@@ -412,8 +407,6 @@ habitat %<>% gather(
   na.rm = TRUE, # Also removes records for which there is no habitat_1
   convert = FALSE
 )
-
-#' HERE: SORT ON TAXONID
 
 #' `value now contains` the abbreviations `B`, `M` and `F` --> we substitute these by `brackish`, `marine` and `freshwater` respectively.
 habitat %<>% 
