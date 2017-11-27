@@ -176,7 +176,7 @@ distribution %<>% mutate(countryCode = "BE")
 
 #' #### lifeStage
 #' #### occurrenceStatus
-distribution %<>% mutate(occurrenceStatus = "Present")
+distribution %<>% mutate(occurrenceStatus = "present")
 
 #' #### threatStatus
 #' #### establishmentMeans
