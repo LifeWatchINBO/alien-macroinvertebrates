@@ -123,7 +123,10 @@ taxon %<>% mutate(family = raw_family)
 #' #### specificEpithet
 #' #### infraspecificEpithet
 #' #### taxonRank
-taxon %<>% mutate(taxonRank = "species")
+taxon %<>% mutate(taxonRank = case_when(
+  raw_species == "Dreissena rostriformis bugensis" ~ "subspecies",
+  raw_species != "Dreissena rostriformis bugensis" ~ "species")
+  )
 
 #' #### verbatimTaxonRank
 #' #### scientificNameAuthorship
