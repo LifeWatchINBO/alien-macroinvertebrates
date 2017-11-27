@@ -104,7 +104,9 @@ any(duplicated(taxon $scientificName))
 taxon %<>% mutate(kingdom = "Animalia")
 
 #' #### phylum
-taxon %<>% mutate(phylum = raw_phylum)
+#' 
+#' Crustacea is not a phylum but a subphylum. The phylum to which crustaceans belong is "Arthropoda"
+taxon %<>% mutate (phylum = recode (raw_phylum, "Crustacea" = "Arthropoda"))
   
 #' #### class
 #' #### order
