@@ -294,13 +294,16 @@ native_range %<>%
     value,
     "East-Asia" = "Eastern Asia",
     "East-Europe" = "Eastern Europe",
+    "Indio-Pacific" = "Indo-Pacific",
     "North-Africa" = "Northern Africa",
     "North-America" = "Northern America",
     "Northeast-Asia" = "North-eastern Asia",
     "South-America" = "South America",
     "South-Europe" = "Southern Europe",
     "Southeast-Asia" = "South-eastern Asia",
-    "West-Africa" = "Western Africa"))
+    "USA" = "United States of America",
+    "West-Africa" = "Western Africa",
+    "West-Atlantic" = "Western Atlantic"))
 
 #' Show mapped values:
 native_range %>%
