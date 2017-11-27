@@ -224,7 +224,12 @@ distribution %<>% select (-c(year, start_year, current_year))
 #' #### startDayOfYear
 #' #### endDayOfYear
 #' #### source
-distribution %<>% mutate (source = raw_reference)
+distribution %<>% mutate (source = recode(
+  raw_reference,
+  "Adam  and Leloup 1934" = "Adam and Leloup 1934",  # remove whitespace
+  "Van  Haaren and Soors 2009" = "van Haaren and Soors 2009", # remove whitespace and lowercase "van"
+  "This study" = "Boets et al. 2016",
+  "Nyst 1835; Adam 1947" = "Nyst 1835 | Adam 1947" ))
 
 #' #### occurrenceRemarks
 
@@ -461,7 +466,12 @@ description_ext %<>% mutate(description = description)
 description_ext %<>% mutate(type = type)
 
 #' #### source
-description_ext %<>% mutate (source = raw_reference)
+description_ext %<>% mutate (source = recode(
+  raw_reference,
+  "Adam  and Leloup 1934" = "Adam and Leloup 1934",  # remove whitespace
+  "Van  Haaren and Soors 2009" = "van Haaren and Soors 2009", # remove whitespace and lowercase "van"
+  "This study" = "Boets et al. 2016",
+  "Nyst 1835; Adam 1947" = "Nyst 1835 | Adam 1947" ))
 
 #' #### language
 description_ext %<>% mutate(language = "en")
