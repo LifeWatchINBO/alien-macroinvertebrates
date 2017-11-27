@@ -189,7 +189,7 @@ distribution %>%
   arrange(raw_first_occurrence_in_flanders) %>%
   kable()
 
-#' `eventDate` will be of format `start_year`- `current_year` (yyyy-yyyy).
+#' `eventDate` will be of format `start_year`/`current_year` (yyyy/yyyy).
 #' `start_year` (yyyy) will contain the information from the following formats in `raw_first_occurrence_in_flanders`: "yyyy", "< yyyy", "<yyyy" and "before yyyy" OR the first year of the interval "yyyy-yyyy":
 #' `current_year` (yyyy) will contain the current year OR the last year of the interval "yyyy-yyyy":
 #' Before further processing, `raw_first_occurrence_in_flanders` needs to be cleaned, i.e. remove "<","< " and "before ":
@@ -211,7 +211,7 @@ distribution %<>%
 
 #' Create `eventDate` by binding `start_year` and `current_year`:
 distribution %<>% 
-  mutate (eventDate = paste (start_year, current_year, sep ="-")) 
+  mutate (eventDate = paste (start_year, current_year, sep ="/")) 
 
 #' Compare formatted dates with `raw_first_occurrence_in_flanders`:
 distribution %>% 
