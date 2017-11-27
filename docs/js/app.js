@@ -4,8 +4,8 @@
         vizlayers;
 
     var fetchSpecies = function () {
-      var sql = "SELECT distinct scientificname from alien_macroinvertebrates";
-      return $.get("https://lifewatch.cartodb.com/api/v2/sql?q=" + sql);
+      var sql = "SELECT distinct scientificname from occurrence_1";
+      return $.get("https://lifewatch.carto.com/api/v1/sql?q=" + sql);
     };
 
     var createSpeciesSelection = function () {
@@ -15,12 +15,12 @@
             var spec_name = species[i];
             var option = '<option value="' + (i+1) + '">' + spec_name.scientificname + '</option>';
             $("#select-species").append(option);
-        };
+        }
     };
 
     var selectSpecies = function() {
         var speciesID = $("option:selected", this).val();
-        if (speciesID==0) {
+        if (speciesID === 0) {
             clearSelection();
         } else {
             selectedSpecies = species[speciesID-1].scientificname;
@@ -30,13 +30,12 @@
     };
 
     var clearSelection = function() {
-        vizlayers[1].getSubLayer(0).set({"sql": "SELECT * FROM alien_macroinvertebrates"});
+        vizlayers[1].getSubLayer(0).set({"sql": "SELECT * FROM occurrence_1"});
     };
 
     var loadSpecies = function() {
-        vizlayers[1].getSubLayer(0).set({"sql": "SELECT * FROM alien_macroinvertebrates WHERE scientificname='" + selectedSpecies + "'"});
+        vizlayers[1].getSubLayer(0).set({"sql": "SELECT * FROM occurrence_1 WHERE scientificname = '" + selectedSpecies + "'"});
     };
-
 
     window.onload = function() {
         fetchSpecies()
@@ -45,12 +44,22 @@
                 createSpeciesSelection();
                 $("#select-species").on("change", selectSpecies);
             });
-        var map = cartodb.createVis('map-canvas', 'https://inbo.cartodb.com/u/lifewatch/api/v2/viz/b95fcc5e-2ad7-11e5-928a-0e6e1df11cbf/viz.json')
+        var map = cartodb.createVis(
+                "map-canvas",
+                "https://lifewatch.carto.com/api/v2/viz/33404524-6071-11e6-81a5-0e3ebc282e83/viz.json",
+                {
+                    "shareable": false,
+                    "zoom": 8,
+                    "cartodb_logo": false,
+                    "center_lat": 51.1,
+                    "center_lon": 4.2
+                }
+            )
             .done(function(vis, layers) {
                 vizlayers = layers;
             })
             .error(function(err) {
                 console.log(err);
             });
-    }
+    };
 })();
