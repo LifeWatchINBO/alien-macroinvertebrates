@@ -82,8 +82,6 @@ taxon  %<>% mutate(datasetID = "")
 taxon %<>% mutate(datasetName = "Checklist of alien macroinvertebrates in Flanders, Belgium")
 
 #' #### references
-taxon%<>% mutate(references = "http://www.aquaticinvasions.net/2016/AI_2016_Boets_etal.pdf")
-
 #' #### taxonID
 taxon%<>% mutate(taxonID = raw_id)
   
