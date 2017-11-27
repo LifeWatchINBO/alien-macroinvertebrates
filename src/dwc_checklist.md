@@ -2,7 +2,7 @@
 
 Lien Reyserhove, Dimitri Brosens, Peter Desmet
 
-2017-11-24
+2017-11-27
 
 This document describes how we map the checklist data to Darwin Core.
 
@@ -130,7 +130,7 @@ taxon %<>% mutate(license = "http://creativecommons.org/publicdomain/zero/1.0/")
 
 
 ```r
-taxon %<>% mutate("Ghent University Aquatic Ecology")
+taxon %<>% mutate(rightsHolder = "Ghent University Aquatic Ecology")
 ```
 
 #### accessRights
@@ -157,12 +157,6 @@ taxon %<>% mutate(datasetName = "Checklist of alien macroinvertebrates in Flande
 ```
 
 #### references
-
-
-```r
-taxon%<>% mutate(references = "http://www.aquaticinvasions.net/2016/AI_2016_Boets_etal.pdf")
-```
-
 #### taxonID
 
 
@@ -206,9 +200,11 @@ taxon %<>% mutate(kingdom = "Animalia")
 
 #### phylum
 
+Crustacea is not a phylum but a subphylum. The phylum to which crustaceans belong is "Arthropoda"
+
 
 ```r
-taxon %<>% mutate(phylum = raw_phylum)
+taxon %<>% mutate (phylum = recode (raw_phylum, "Crustacea" = "Arthropoda"))
 ```
 
 #### class
@@ -216,7 +212,10 @@ taxon %<>% mutate(phylum = raw_phylum)
 
 
 ```r
-taxon %<>% mutate(order = raw_order)
+taxon %<>% mutate(order = recode(
+  raw_order,
+  "Tubficida" = "Haplotaxida",
+  "Veneroidea" = "Venerida"))
 ```
 
 #### family
@@ -234,7 +233,10 @@ taxon %<>% mutate(family = raw_family)
 
 
 ```r
-taxon %<>% mutate(taxonRank = "species")
+taxon %<>% mutate(taxonRank = case_when(
+  raw_species == "Dreissena rostriformis bugensis" ~ "subspecies",
+  raw_species != "Dreissena rostriformis bugensis" ~ "species")
+  )
 ```
 
 #### verbatimTaxonRank
@@ -270,14 +272,14 @@ kable(head(taxon))
 
 
 
-|language |license                                           |"Ghent University Aquatic Ecology" |accessRights                             |datasetID |datasetName                                                |references                                                  |taxonID                                    |scientificName           |kingdom  |phylum    |order    |family          |taxonRank |nomenclaturalCode |
-|:--------|:-------------------------------------------------|:----------------------------------|:----------------------------------------|:---------|:----------------------------------------------------------|:-----------------------------------------------------------|:------------------------------------------|:------------------------|:--------|:---------|:--------|:---------------|:---------|:-----------------|
-|en       |http://creativecommons.org/publicdomain/zero/1.0/ |Ghent University Aquatic Ecology   |http://www.inbo.be/en/norms-for-data-use |          |Checklist of alien macroinvertebrates in Flanders, Belgium |http://www.aquaticinvasions.net/2016/AI_2016_Boets_etal.pdf |alien-macroinvertebrates-checklist:taxon:1 |Amphibalanus amphitrite  |Animalia |Crustacea |Sessilia |Balanidae       |species   |ICZN              |
-|en       |http://creativecommons.org/publicdomain/zero/1.0/ |Ghent University Aquatic Ecology   |http://www.inbo.be/en/norms-for-data-use |          |Checklist of alien macroinvertebrates in Flanders, Belgium |http://www.aquaticinvasions.net/2016/AI_2016_Boets_etal.pdf |alien-macroinvertebrates-checklist:taxon:2 |Amphibalanus improvisus  |Animalia |Crustacea |Sessilia |Balanidae       |species   |ICZN              |
-|en       |http://creativecommons.org/publicdomain/zero/1.0/ |Ghent University Aquatic Ecology   |http://www.inbo.be/en/norms-for-data-use |          |Checklist of alien macroinvertebrates in Flanders, Belgium |http://www.aquaticinvasions.net/2016/AI_2016_Boets_etal.pdf |alien-macroinvertebrates-checklist:taxon:3 |Amphibalanus reticulatus |Animalia |Crustacea |Sessilia |Balanidae       |species   |ICZN              |
-|en       |http://creativecommons.org/publicdomain/zero/1.0/ |Ghent University Aquatic Ecology   |http://www.inbo.be/en/norms-for-data-use |          |Checklist of alien macroinvertebrates in Flanders, Belgium |http://www.aquaticinvasions.net/2016/AI_2016_Boets_etal.pdf |alien-macroinvertebrates-checklist:taxon:4 |Astacus leptodactylus    |Animalia |Crustacea |Decapoda |Astacidae       |species   |ICZN              |
-|en       |http://creativecommons.org/publicdomain/zero/1.0/ |Ghent University Aquatic Ecology   |http://www.inbo.be/en/norms-for-data-use |          |Checklist of alien macroinvertebrates in Flanders, Belgium |http://www.aquaticinvasions.net/2016/AI_2016_Boets_etal.pdf |alien-macroinvertebrates-checklist:taxon:5 |Atyaephyra desmaresti    |Animalia |Crustacea |Decapoda |Atyidae         |species   |ICZN              |
-|en       |http://creativecommons.org/publicdomain/zero/1.0/ |Ghent University Aquatic Ecology   |http://www.inbo.be/en/norms-for-data-use |          |Checklist of alien macroinvertebrates in Flanders, Belgium |http://www.aquaticinvasions.net/2016/AI_2016_Boets_etal.pdf |alien-macroinvertebrates-checklist:taxon:6 |Austrominius modestus    |Animalia |Crustacea |Sessilia |Austrobalanidae |species   |ICZN              |
+|language |license                                           |rightsHolder                     |accessRights                             |datasetID |datasetName                                                |taxonID                                    |scientificName           |kingdom  |phylum     |order    |family          |taxonRank |nomenclaturalCode |
+|:--------|:-------------------------------------------------|:--------------------------------|:----------------------------------------|:---------|:----------------------------------------------------------|:------------------------------------------|:------------------------|:--------|:----------|:--------|:---------------|:---------|:-----------------|
+|en       |http://creativecommons.org/publicdomain/zero/1.0/ |Ghent University Aquatic Ecology |http://www.inbo.be/en/norms-for-data-use |          |Checklist of alien macroinvertebrates in Flanders, Belgium |alien-macroinvertebrates-checklist:taxon:1 |Amphibalanus amphitrite  |Animalia |Arthropoda |Sessilia |Balanidae       |species   |ICZN              |
+|en       |http://creativecommons.org/publicdomain/zero/1.0/ |Ghent University Aquatic Ecology |http://www.inbo.be/en/norms-for-data-use |          |Checklist of alien macroinvertebrates in Flanders, Belgium |alien-macroinvertebrates-checklist:taxon:2 |Amphibalanus improvisus  |Animalia |Arthropoda |Sessilia |Balanidae       |species   |ICZN              |
+|en       |http://creativecommons.org/publicdomain/zero/1.0/ |Ghent University Aquatic Ecology |http://www.inbo.be/en/norms-for-data-use |          |Checklist of alien macroinvertebrates in Flanders, Belgium |alien-macroinvertebrates-checklist:taxon:3 |Amphibalanus reticulatus |Animalia |Arthropoda |Sessilia |Balanidae       |species   |ICZN              |
+|en       |http://creativecommons.org/publicdomain/zero/1.0/ |Ghent University Aquatic Ecology |http://www.inbo.be/en/norms-for-data-use |          |Checklist of alien macroinvertebrates in Flanders, Belgium |alien-macroinvertebrates-checklist:taxon:4 |Astacus leptodactylus    |Animalia |Arthropoda |Decapoda |Astacidae       |species   |ICZN              |
+|en       |http://creativecommons.org/publicdomain/zero/1.0/ |Ghent University Aquatic Ecology |http://www.inbo.be/en/norms-for-data-use |          |Checklist of alien macroinvertebrates in Flanders, Belgium |alien-macroinvertebrates-checklist:taxon:5 |Atyaephyra desmaresti    |Animalia |Arthropoda |Decapoda |Atyidae         |species   |ICZN              |
+|en       |http://creativecommons.org/publicdomain/zero/1.0/ |Ghent University Aquatic Ecology |http://www.inbo.be/en/norms-for-data-use |          |Checklist of alien macroinvertebrates in Flanders, Belgium |alien-macroinvertebrates-checklist:taxon:6 |Austrominius modestus    |Animalia |Arthropoda |Sessilia |Austrobalanidae |species   |ICZN              |
 
 Save to CSV:
 
@@ -331,7 +333,7 @@ distribution %<>% mutate(countryCode = "BE")
 
 
 ```r
-distribution %<>% mutate(occurrenceStatus = "Present")
+distribution %<>% mutate(occurrenceStatus = "present")
 ```
 
 #### threatStatus
@@ -398,7 +400,7 @@ distribution %>%
 |2014                             |
 |before 1700                      |
 
-`eventDate` will be of format `start_year`- `current_year` (yyyy-yyyy).
+`eventDate` will be of format `start_year`/`current_year` (yyyy/yyyy).
 `start_year` (yyyy) will contain the information from the following formats in `raw_first_occurrence_in_flanders`: "yyyy", "< yyyy", "<yyyy" and "before yyyy" OR the first year of the interval "yyyy-yyyy":
 `current_year` (yyyy) will contain the current year OR the last year of the interval "yyyy-yyyy":
 Before further processing, `raw_first_occurrence_in_flanders` needs to be cleaned, i.e. remove "<","< " and "before ":
@@ -435,7 +437,7 @@ Create `eventDate` by binding `start_year` and `current_year`:
 
 ```r
 distribution %<>% 
-  mutate (eventDate = paste (start_year, current_year, sep ="-")) 
+  mutate (eventDate = paste (start_year, current_year, sep ="/")) 
 ```
 
 Compare formatted dates with `raw_first_occurrence_in_flanders`:
@@ -451,79 +453,79 @@ distribution %>%
 
 |raw_first_occurrence_in_flanders |eventDate |
 |:--------------------------------|:---------|
-|1952                             |1952-2017 |
-|before 1700                      |1700-2017 |
-|1997                             |1997-2017 |
-|1986                             |1986-2017 |
-|1895                             |1895-2017 |
-|1950                             |1950-2017 |
-|2010                             |2010-2017 |
-|1931                             |1931-2017 |
-|2002                             |2002-2017 |
-|1993                             |1993-2017 |
-|1998                             |1998-2017 |
-|1990                             |1990-2017 |
-|1992                             |1992-2017 |
-|1992                             |1992-2017 |
-|1992                             |1992-2017 |
-|1969                             |1969-2017 |
-|1911                             |1911-2017 |
-|2001                             |2001-2017 |
-|1997                             |1997-2017 |
-|1834                             |1834-2017 |
-|2009                             |2009-2017 |
-|2004                             |2004-2017 |
-|1925                             |1925-2017 |
-|2009                             |2009-2017 |
-|1987                             |1987-2017 |
-|1933                             |1933-2017 |
-|1937                             |1937-2017 |
-|1950                             |1950-2017 |
-|1937                             |1937-2017 |
-|1991                             |1991-2017 |
-|2006                             |2006-2017 |
-|2003                             |2003-2017 |
-|1999                             |1999-2017 |
-|2000                             |2000-2017 |
-|1996                             |1996-2017 |
-|2000                             |2000-2017 |
-|2014                             |2014-2017 |
-|2009                             |2009-2017 |
-|2005                             |2005-2017 |
-|1924                             |1924-2017 |
-|2008                             |2008-2017 |
-|1995                             |1995-2017 |
-|1997                             |1997-2017 |
-|1998                             |1998-2017 |
-|1996                             |1996-2017 |
-|1998                             |1998-2017 |
-|1933                             |1933-2017 |
-|1993                             |1993-2017 |
-|2002                             |2002-2017 |
-|< 1700                           |1700-2017 |
-|1835                             |1835-2017 |
-|1927                             |1927-2017 |
-|1977                             |1977-2017 |
-|1986                             |1986-2017 |
-|1999                             |1999-2017 |
-|1899                             |1899-2017 |
-|1869                             |1869-2017 |
-|1927                             |1927-2017 |
-|2009                             |2009-2017 |
-|1998                             |1998-2017 |
-|1945                             |1945-2017 |
-|2008                             |2008-2017 |
-|2008                             |2008-2017 |
-|<1600                            |1600-2017 |
-|1996                             |1996-2017 |
-|2004                             |2004-2017 |
-|1991                             |1991-2017 |
-|1999                             |1999-2017 |
-|2007                             |2007-2017 |
-|2005                             |2005-2017 |
-|2003                             |2003-2017 |
-|2006                             |2006-2017 |
-|1730-1732                        |1730-1732 |
+|1952                             |1952/2017 |
+|before 1700                      |1700/2017 |
+|1997                             |1997/2017 |
+|1986                             |1986/2017 |
+|1895                             |1895/2017 |
+|1950                             |1950/2017 |
+|2010                             |2010/2017 |
+|1931                             |1931/2017 |
+|2002                             |2002/2017 |
+|1993                             |1993/2017 |
+|1998                             |1998/2017 |
+|1990                             |1990/2017 |
+|1992                             |1992/2017 |
+|1992                             |1992/2017 |
+|1992                             |1992/2017 |
+|1969                             |1969/2017 |
+|1911                             |1911/2017 |
+|2001                             |2001/2017 |
+|1997                             |1997/2017 |
+|1834                             |1834/2017 |
+|2009                             |2009/2017 |
+|2004                             |2004/2017 |
+|1925                             |1925/2017 |
+|2009                             |2009/2017 |
+|1987                             |1987/2017 |
+|1933                             |1933/2017 |
+|1937                             |1937/2017 |
+|1950                             |1950/2017 |
+|1937                             |1937/2017 |
+|1991                             |1991/2017 |
+|2006                             |2006/2017 |
+|2003                             |2003/2017 |
+|1999                             |1999/2017 |
+|2000                             |2000/2017 |
+|1996                             |1996/2017 |
+|2000                             |2000/2017 |
+|2014                             |2014/2017 |
+|2009                             |2009/2017 |
+|2005                             |2005/2017 |
+|1924                             |1924/2017 |
+|2008                             |2008/2017 |
+|1995                             |1995/2017 |
+|1997                             |1997/2017 |
+|1998                             |1998/2017 |
+|1996                             |1996/2017 |
+|1998                             |1998/2017 |
+|1933                             |1933/2017 |
+|1993                             |1993/2017 |
+|2002                             |2002/2017 |
+|< 1700                           |1700/2017 |
+|1835                             |1835/2017 |
+|1927                             |1927/2017 |
+|1977                             |1977/2017 |
+|1986                             |1986/2017 |
+|1999                             |1999/2017 |
+|1899                             |1899/2017 |
+|1869                             |1869/2017 |
+|1927                             |1927/2017 |
+|2009                             |2009/2017 |
+|1998                             |1998/2017 |
+|1945                             |1945/2017 |
+|2008                             |2008/2017 |
+|2008                             |2008/2017 |
+|<1600                            |1600/2017 |
+|1996                             |1996/2017 |
+|2004                             |2004/2017 |
+|1991                             |1991/2017 |
+|1999                             |1999/2017 |
+|2007                             |2007/2017 |
+|2005                             |2005/2017 |
+|2003                             |2003/2017 |
+|2006                             |2006/2017 |
+|1730-1732                        |1730/1732 |
 
 remove intermediary steps `year`, `start_year`, `current_year`:
 
@@ -538,7 +540,12 @@ distribution %<>% select (-c(year, start_year, current_year))
 
 
 ```r
-distribution %<>% mutate (source = raw_reference)
+distribution %<>% mutate (source = recode(
+  raw_reference,
+  "Adam  and Leloup 1934" = "Adam and Leloup 1934",  # remove whitespace
+  "Van  Haaren and Soors 2009" = "van Haaren and Soors 2009", # remove whitespace and lowercase "van"
+  "This study" = "Boets et al. 2016",
+  "Nyst 1835; Adam 1947" = "Nyst 1835 | Adam 1947" ))
 ```
 
 #### occurrenceRemarks
@@ -562,12 +569,12 @@ kable(head(distribution))
 
 |taxonID                                    |locationID        |locality |countryCode |occurrenceStatus |eventDate |source                      |
 |:------------------------------------------|:-----------------|:--------|:-----------|:----------------|:---------|:---------------------------|
-|alien-macroinvertebrates-checklist:taxon:1 |ISO_3166-2:BE-VLG |Flanders |BE          |Present          |1952-2017 |Kerckhof and Catrijsse 2001 |
-|alien-macroinvertebrates-checklist:taxon:2 |ISO_3166-2:BE-VLG |Flanders |BE          |Present          |1700-2017 |Kerckhof and Catrijsse 2001 |
-|alien-macroinvertebrates-checklist:taxon:3 |ISO_3166-2:BE-VLG |Flanders |BE          |Present          |1997-2017 |Kerckhof and Catrijsse 2001 |
-|alien-macroinvertebrates-checklist:taxon:4 |ISO_3166-2:BE-VLG |Flanders |BE          |Present          |1986-2017 |Gerard 1986                 |
-|alien-macroinvertebrates-checklist:taxon:5 |ISO_3166-2:BE-VLG |Flanders |BE          |Present          |1895-2017 |Wouters 2002                |
-|alien-macroinvertebrates-checklist:taxon:6 |ISO_3166-2:BE-VLG |Flanders |BE          |Present          |1950-2017 |Leloup and Lefevre 1952     |
+|alien-macroinvertebrates-checklist:taxon:1 |ISO_3166-2:BE-VLG |Flanders |BE          |present          |1952/2017 |Kerckhof and Catrijsse 2001 |
+|alien-macroinvertebrates-checklist:taxon:2 |ISO_3166-2:BE-VLG |Flanders |BE          |present          |1700/2017 |Kerckhof and Catrijsse 2001 |
+|alien-macroinvertebrates-checklist:taxon:3 |ISO_3166-2:BE-VLG |Flanders |BE          |present          |1997/2017 |Kerckhof and Catrijsse 2001 |
+|alien-macroinvertebrates-checklist:taxon:4 |ISO_3166-2:BE-VLG |Flanders |BE          |present          |1986/2017 |Gerard 1986                 |
+|alien-macroinvertebrates-checklist:taxon:5 |ISO_3166-2:BE-VLG |Flanders |BE          |present          |1895/2017 |Wouters 2002                |
+|alien-macroinvertebrates-checklist:taxon:6 |ISO_3166-2:BE-VLG |Flanders |BE          |present          |1950/2017 |Leloup and Lefevre 1952     |
 
 Save to CSV:
 
@@ -672,13 +679,16 @@ native_range %<>%
     value,
     "East-Asia" = "Eastern Asia",
     "East-Europe" = "Eastern Europe",
+    "Indio-Pacific" = "Indo-Pacific",
     "North-Africa" = "Northern Africa",
     "North-America" = "Northern America",
     "Northeast-Asia" = "North-eastern Asia",
     "South-America" = "South America",
     "South-Europe" = "Southern Europe",
     "Southeast-Asia" = "South-eastern Asia",
-    "West-Africa" = "Western Africa"))
+    "USA" = "United States of America",
+    "West-Africa" = "Western Africa",
+    "West-Atlantic" = "Western Atlantic"))
 ```
 
 Show mapped values:
@@ -695,28 +705,28 @@ native_range %>%
 
 
 
-|value                  |mapped_value           | records|
-|:----------------------|:----------------------|-------:|
-|Africa                 |Africa                 |       1|
-|Asia                   |Asia                   |       7|
-|Australia              |Australia              |       3|
-|China                  |China                  |       1|
-|East-Asia              |Eastern Asia           |       1|
-|East-Europe            |Eastern Europe         |       1|
-|Indio-Pacific          |Indio-Pacific          |       1|
-|New Zealand            |New Zealand            |       2|
-|North-Africa           |Northern Africa        |       1|
-|North-America          |Northern America       |      27|
-|Northeast-Asia         |North-eastern Asia     |       1|
-|Ponto-Caspian          |Ponto-Caspian          |      15|
-|South-America          |South America          |       1|
-|South-Europe           |Southern Europe        |       6|
-|Southeast-Asia         |South-eastern Asia     |       3|
-|Southern hemisphere    |Southern hemisphere    |       1|
-|Tropical and warm seas |Tropical and warm seas |       1|
-|USA                    |USA                    |       1|
-|West-Africa            |Western Africa         |       1|
-|West-Atlantic          |West-Atlantic          |       1|
+|value                  |mapped_value             | records|
+|:----------------------|:------------------------|-------:|
+|Africa                 |Africa                   |       1|
+|Asia                   |Asia                     |       7|
+|Australia              |Australia                |       3|
+|China                  |China                    |       1|
+|East-Asia              |Eastern Asia             |       1|
+|East-Europe            |Eastern Europe           |       1|
+|Indio-Pacific          |Indo-Pacific             |       1|
+|New Zealand            |New Zealand              |       2|
+|North-Africa           |Northern Africa          |       1|
+|North-America          |Northern America         |      27|
+|Northeast-Asia         |North-eastern Asia       |       1|
+|Ponto-Caspian          |Ponto-Caspian            |      15|
+|South-America          |South America            |       1|
+|South-Europe           |Southern Europe          |       6|
+|Southeast-Asia         |South-eastern Asia       |       3|
+|Southern hemisphere    |Southern hemisphere      |       1|
+|Tropical and warm seas |Tropical and warm seas   |       1|
+|USA                    |United States of America |       1|
+|West-Africa            |Western Africa           |       1|
+|West-Atlantic          |Western Atlantic         |       1|
 
 Drop `key` and `value` column and rename `mapped value`:
 
@@ -752,7 +762,7 @@ kable(head(native_range))
 |raw_id                                     |raw_phylum |raw_order |raw_family      |raw_species              |raw_origin             |raw_first_occurrence_in_flanders |raw_pathway_of_introduction |raw_salinity_zone |raw_reference               |description            |type         |
 |:------------------------------------------|:----------|:---------|:---------------|:------------------------|:----------------------|:--------------------------------|:---------------------------|:-----------------|:---------------------------|:----------------------|:------------|
 |alien-macroinvertebrates-checklist:taxon:1 |Crustacea  |Sessilia  |Balanidae       |Amphibalanus amphitrite  |South-Europe           |1952                             |shipping                    |M                 |Kerckhof and Catrijsse 2001 |Southern Europe        |native range |
-|alien-macroinvertebrates-checklist:taxon:2 |Crustacea  |Sessilia  |Balanidae       |Amphibalanus improvisus  |West-Atlantic          |before 1700                      |shipping                    |M                 |Kerckhof and Catrijsse 2001 |West-Atlantic          |native range |
+|alien-macroinvertebrates-checklist:taxon:2 |Crustacea  |Sessilia  |Balanidae       |Amphibalanus improvisus  |West-Atlantic          |before 1700                      |shipping                    |M                 |Kerckhof and Catrijsse 2001 |Western Atlantic       |native range |
 |alien-macroinvertebrates-checklist:taxon:3 |Crustacea  |Sessilia  |Balanidae       |Amphibalanus reticulatus |Tropical and warm seas |1997                             |shipping                    |M                 |Kerckhof and Catrijsse 2001 |Tropical and warm seas |native range |
 |alien-macroinvertebrates-checklist:taxon:4 |Crustacea  |Decapoda  |Astacidae       |Astacus leptodactylus    |East-Europe            |1986                             |aquaculture                 |F                 |Gerard 1986                 |Eastern Europe         |native range |
 |alien-macroinvertebrates-checklist:taxon:5 |Crustacea  |Decapoda  |Atyidae         |Atyaephyra desmaresti    |South-Europe           |1895                             |aquarium trade              |F                 |Wouters 2002                |Southern Europe        |native range |
@@ -1074,7 +1084,12 @@ description_ext %<>% mutate(type = type)
 
 
 ```r
-description_ext %<>% mutate (source = raw_reference)
+description_ext %<>% mutate (source = recode(
+  raw_reference,
+  "Adam  and Leloup 1934" = "Adam and Leloup 1934",  # remove whitespace
+  "Van  Haaren and Soors 2009" = "van Haaren and Soors 2009", # remove whitespace and lowercase "van"
+  "This study" = "Boets et al. 2016",
+  "Nyst 1835; Adam 1947" = "Nyst 1835 | Adam 1947" ))
 ```
 
 #### language
@@ -1107,6 +1122,13 @@ Move `taxonID` to the first position:
 description_ext %<>% select(taxonID, everything())
 ```
 
+Sort on `taxonID`:
+
+
+```r
+description_ext %<>% arrange(taxonID)
+```
+
 Preview data:
 
 
@@ -1116,18 +1138,18 @@ kable(head(description_ext, 10))
 
 
 
-|taxonID                                     |description            |type         |source                      |language |
-|:-------------------------------------------|:----------------------|:------------|:---------------------------|:--------|
-|alien-macroinvertebrates-checklist:taxon:1  |Southern Europe        |native range |Kerckhof and Catrijsse 2001 |en       |
-|alien-macroinvertebrates-checklist:taxon:2  |West-Atlantic          |native range |Kerckhof and Catrijsse 2001 |en       |
-|alien-macroinvertebrates-checklist:taxon:3  |Tropical and warm seas |native range |Kerckhof and Catrijsse 2001 |en       |
-|alien-macroinvertebrates-checklist:taxon:4  |Eastern Europe         |native range |Gerard 1986                 |en       |
-|alien-macroinvertebrates-checklist:taxon:5  |Southern Europe        |native range |Wouters 2002                |en       |
-|alien-macroinvertebrates-checklist:taxon:6  |Australia              |native range |Leloup and Lefevre 1952     |en       |
-|alien-macroinvertebrates-checklist:taxon:7  |Asia                   |native range |Soors et al. 2013           |en       |
-|alien-macroinvertebrates-checklist:taxon:8  |Eastern Asia           |native range |Damas 1938                  |en       |
-|alien-macroinvertebrates-checklist:taxon:9  |Southern hemisphere    |native range |Soors et al. 2013           |en       |
-|alien-macroinvertebrates-checklist:taxon:10 |Northern America       |native range |Van Damme and Maes 1993     |en       |
+|taxonID                                     |description        |type         |source                      |language |
+|:-------------------------------------------|:------------------|:------------|:---------------------------|:--------|
+|alien-macroinvertebrates-checklist:taxon:1  |Southern Europe    |native range |Kerckhof and Catrijsse 2001 |en       |
+|alien-macroinvertebrates-checklist:taxon:1  |shipping           |pathway      |Kerckhof and Catrijsse 2001 |en       |
+|alien-macroinvertebrates-checklist:taxon:1  |marine             |habitat      |Kerckhof and Catrijsse 2001 |en       |
+|alien-macroinvertebrates-checklist:taxon:10 |Northern America   |native range |Van Damme and Maes 1993     |en       |
+|alien-macroinvertebrates-checklist:taxon:10 |shipping           |pathway      |Van Damme and Maes 1993     |en       |
+|alien-macroinvertebrates-checklist:taxon:10 |brackish           |habitat      |Van Damme and Maes 1993     |en       |
+|alien-macroinvertebrates-checklist:taxon:10 |marine             |habitat      |Van Damme and Maes 1993     |en       |
+|alien-macroinvertebrates-checklist:taxon:11 |North-eastern Asia |native range |Cook et al. 2007            |en       |
+|alien-macroinvertebrates-checklist:taxon:11 |shipping           |pathway      |Cook et al. 2007            |en       |
+|alien-macroinvertebrates-checklist:taxon:11 |aquaculture        |pathway      |Cook et al. 2007            |en       |
 
 Save to CSV:
 
