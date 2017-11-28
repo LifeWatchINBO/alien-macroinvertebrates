@@ -587,7 +587,7 @@ distribution %<>%
 ```
 
 Visualisation of this merge. 
-`Boets. et al. unpub data`, `Collection RBINs` and `Dumoulin 2004` full references were lacking and should thus be empty fields in `source`
+(`Boets. et al. unpub data`, `Collection RBINs` and `Dumoulin 2004` full references were lacking in `source`)
 
 
 ```r
@@ -613,12 +613,12 @@ distribution %>%
 |Boets et al. 2011b          |Boets P, L |       1|
 |Boets et al. 2012c          |Boets P, L |       1|
 |Boets et al. 2016           |Boets P, B |       1|
-|Boets et al. unpub data     |           |       1|
-|Collection RBINS            |           |       2|
+|Boets et al. unpub data     |Boets et a |       1|
+|Collection RBINS            |Collection |       2|
 |Cook et al. 2007            |Cook EJ, J |       1|
 |Damas 1938                  |Damas H (1 |       1|
 |Dewicke 2002                |Dewicke A  |       1|
-|Dumoulin 2004               |           |       1|
+|Dumoulin 2004               |Dumoulin 2 |       1|
 |Faasse and Van Moorsel 2003 |Faasse M,  |       2|
 |Gerard 1986                 |Gérard P ( |       2|
 |Keppens and Mienis 2004     |Keppens M, |       1|
@@ -1226,7 +1226,7 @@ description_ext %<>%
 ```
 
 Visualisation of this merge. 
-`Boets. et al. unpub data`, `Collection RBINs` and `Dumoulin 2004` full references were lacking and should thus be empty fields in `source`
+(`Boets. et al. unpub data`, `Collection RBINs` and `Dumoulin 2004` full references are lacking in `source`)
 
 
 ```r
@@ -1252,12 +1252,12 @@ description_ext %>%
 |Boets et al. 2011b          |Boets P, L |       4|
 |Boets et al. 2012c          |Boets P, L |       3|
 |Boets et al. 2016           |Boets P, B |       4|
-|Boets et al. unpub data     |           |       6|
-|Collection RBINS            |           |       9|
+|Boets et al. unpub data     |Boets et a |       6|
+|Collection RBINS            |Collection |       9|
 |Cook et al. 2007            |Cook EJ, J |       4|
 |Damas 1938                  |Damas H (1 |       4|
 |Dewicke 2002                |Dewicke A  |       4|
-|Dumoulin 2004               |           |       4|
+|Dumoulin 2004               |Dumoulin 2 |       4|
 |Faasse and Van Moorsel 2003 |Faasse M,  |       7|
 |Gerard 1986                 |Gérard P ( |       6|
 |Keppens and Mienis 2004     |Keppens M, |       3|
