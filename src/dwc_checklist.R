@@ -252,7 +252,7 @@ distribution %<>%
   rename(source = reference)
 
 #' Visualisation of this merge. 
-#' `Boets. et al. unpub data`, `Collection RBINs` and `Dumoulin 2004` full references were lacking and should thus be empty fields in `source`
+#' (`Boets. et al. unpub data`, `Collection RBINs` and `Dumoulin 2004` full references were lacking in `source`)
 distribution %>% 
   mutate (source = substr(source, 1,10)) %>%  # shorten full reference to make it easier to display 
   rename (citation = raw_reference) %>%
@@ -523,7 +523,7 @@ description_ext %<>%
   rename(source = reference)
 
 #' Visualisation of this merge. 
-#' `Boets. et al. unpub data`, `Collection RBINs` and `Dumoulin 2004` full references were lacking and should thus be empty fields in `source`
+#' (`Boets. et al. unpub data`, `Collection RBINs` and `Dumoulin 2004` full references are lacking in `source`)
 description_ext %>% 
   mutate (source = substr(source, 1,10)) %>%  # shorten full reference to make it easier to display 
   rename (citation = raw_reference) %>%
