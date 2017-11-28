@@ -36,7 +36,7 @@ phylum:
   allowed: [Annelida, Arthropoda, Mollusca, Platyhelminthes]
 
 order:
-  empty: false
+  empty: [Amphipoda, Decapoda, Euheterodonta, Haplotaxida, Isopoda, Littorinimorpha, Myoida, Mysida, Neotaenioglossa, Ostreoida, Pulmonata, Sabellida, Seriata, Sessilia, Spionida, Tanaidacea, Terebellida, Unionoida, Venerida]
 
 family:
   empty: false
