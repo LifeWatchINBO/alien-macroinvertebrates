@@ -24,9 +24,16 @@ library(magrittr)  # For %<>% pipes
 # Other packages
 library(janitor)   # For cleaning input data
 library(knitr)     # For nicer (kable) tables
+library(readxl)    # To read excel files
+library(stringr)   # to perform string operations
 
 #' Set file paths (all paths should be relative to this script):
-raw_data_file = "../data/raw/alien_macroinvertebrates_occurrences.tsv"
+#' 
+#' raw files: 
+raw_data_file = "../data/raw/AI_2016_Boets_etal_Supplement.xls"
+sources_file = "../data/raw/sources.tsv"
+
+#' processed files: 
 dwc_taxon_file = "../data/processed/dwc_checklist/taxon.csv"
 dwc_distribution_file = "../data/processed/dwc_checklist/distribution.csv"
 dwc_description_file = "../data/processed/dwc_checklist/description.csv"
@@ -34,36 +41,27 @@ dwc_description_file = "../data/processed/dwc_checklist/description.csv"
 #' ## Read data
 #' 
 #' Read the source data:
-raw_data <- read.table(raw_data_file, header = TRUE, sep = "\t", quote="", fileEncoding = "UTF-8-BOM") 
+raw_data <- read_excel(raw_data_file, sheet = "checklist", na = "NA") 
+sources <- read.table(sources_file, sep = "\t", quote="", colClasses = "character",  fileEncoding = "UTF8", header = T)
 
 #' Clean data somewhat: remove empty rows if present
-raw_data %<>%  remove_empty_rows() 
+raw_data %<>%
+  remove_empty_rows() %>%     # Remove empty rows
+  clean_names()               # Have sensible (lowercase) column names
 
-#' Add prefix `raw_` to all column names. Although the column names already contain Darwin Core terms, new columns will have to be added between the current columns. To put all columns in the right order, it is easier to create new columns (some of them will be copies of the columns in the raw dataset) and then remove the columns of the raw occurrence dataset:
+#' Add prefix `raw_` to all column names to avoid name clashes with Darwin Core terms:
 colnames(raw_data) <- paste0("raw_", colnames(raw_data))
+
+#' Save those column names as a vector (makes it easier to remove them all later):
+raw_colnames <- colnames(raw_data)
 
 #' Preview data:
 kable(head(raw_data))
 
-#' ## Group by species
-#' 
-#' Group the occurrence data as species data (= one record for each scientific name):
-raw_species <- raw_data # replace by dplyr groupby on taxonID, scientificName, taxonRank and scientificNameAuthorship
-
-#' Order by raw_taxonID:
-# raw_species %<>% arrange(raw_taxonID)
-
-#' Save the raw column names as a list (makes it easier to remove them all later):
-raw_colnames <- colnames(raw_species)
-
-#' Preview data:
-kable(head(raw_species))
-
 #' ## Create taxon core
-#' 
-#' ### Pre-processing
-taxon <- raw_species
+taxon <- raw_data
 
+#' ### Pre-processing
 #' ### Term mapping
 #' 
 #' Map the source data to [Darwin Core Taxon](http://rs.gbif.org/core/dwc_taxon_2015-04-24.xml):
@@ -74,25 +72,25 @@ taxon %<>% mutate(language = "en")
 
 #' #### license
 taxon %<>% mutate(license = "http://creativecommons.org/publicdomain/zero/1.0/")
-
-#' #### rightsHolder
-taxon %<>% mutate(rightsHolder = "Ugent; Aquatic ecolo")
   
+#' #### rightsHolder
+taxon %<>% mutate(rightsHolder = "Ghent University Aquatic Ecology")
+    
 #' #### accessRights
 taxon %<>% mutate(accessRights = "http://www.inbo.be/en/norms-for-data-use")
 
 #' #### bibliographicCitation
 #' #### informationWithheld
 #' #### datasetID
-taxon %<>% mutate(datasetID = "")
-
+taxon  %<>% mutate(datasetID = "")
+ 
 #' #### datasetName
-taxon %<>% mutate(datasetName = "Alien macroinvertebrates checklist for Flanders, Belgium")
+taxon %<>% mutate(datasetName = "Checklist of alien macroinvertebrates in Flanders, Belgium")
 
 #' #### references
 #' #### taxonID
-taxon %<>% mutate(taxonID = "") # Should be taken from source
-
+taxon%<>% mutate(taxonID = raw_id)
+  
 #' #### scientificNameID
 #' #### acceptedNameUsageID
 #' #### parentNameUsageID
@@ -101,32 +99,47 @@ taxon %<>% mutate(taxonID = "") # Should be taken from source
 #' #### namePublishedInID
 #' #### taxonConceptID
 #' #### scientificName
-taxon %<>% mutate(scientificName = raw_scientificName)
+taxon %<>% mutate(scientificName = raw_species)
 
-#' #### acceptedNameUsage
-#' #### parentNameUsage
-#' #### originalNameUsage
-#' #### nameAccordingTo
-#' #### namePublishedIn
+#' verification if scientificName contains unique values:
+any(duplicated(taxon $scientificName))
+
 #' #### namePublishedInYear
 #' #### higherClassification
 #' #### kingdom
 taxon %<>% mutate(kingdom = "Animalia")
 
 #' #### phylum
+#' 
+#' Crustacea is not a phylum but a subphylum. The phylum to which crustaceans belong is "Arthropoda"
+taxon %<>% mutate (phylum = recode (raw_phylum, "Crustacea" = "Arthropoda"))
+  
 #' #### class
 #' #### order
+taxon %<>% 
+  mutate(order = recode(raw_order, 
+                        "Tubficida" = "Haplotaxida",
+                        "Veneroidea" = "Venerida")) %<>%
+  mutate (order = str_trim(order))
+
+
 #' #### family
+taxon %<>% mutate(family = raw_family)
+
 #' #### genus
 #' #### subgenus
 #' #### specificEpithet
 #' #### infraspecificEpithet
 #' #### taxonRank
-taxon %<>% mutate(taxonRank = raw_taxonRank)
+taxon %<>% mutate(taxonRank = case_when(
+  raw_species == "Dreissena rostriformis bugensis" ~ "subspecies",
+  raw_species != "Dreissena rostriformis bugensis" ~ "species")
+  )
 
 #' #### verbatimTaxonRank
 #' #### scientificNameAuthorship
-taxon %<>% mutate(scientificNameAuthorship = raw_scientificNameAuthorship)
+
+#' To be completed!
 
 #' #### vernacularName
 #' #### nomenclaturalCode
@@ -147,16 +160,19 @@ kable(head(taxon))
 #' Save to CSV:
 write.csv(taxon, file = dwc_taxon_file, na = "", row.names = FALSE, fileEncoding = "UTF-8")
 
+
 #' ## Create distribution extension
 #' 
 #' ### Pre-processing
-distribution <- raw_species
+distribution <- raw_data
 
 #' ### Term mapping
+#' 
+#' Map the source data to [Species Distribution](http://rs.gbif.org/extension/gbif/1.0/distribution.xml):
 
-#' #### id
-distribution %<>% mutate(id = "")
-
+#' #### taxonID
+distribution %<>% mutate(taxonID = raw_id)
+  
 #' #### locationID
 distribution %<>% mutate(locationID = "ISO_3166-2:BE-VLG")
 
@@ -174,39 +190,378 @@ distribution %<>% mutate(occurrenceStatus = "present")
 #' #### establishmentMeans
 #' #### appendixCITES
 #' #### eventDate
+#'
+#' Inspect content of `raw_first_occurrence_in_flanders`:
+distribution %>%
+  distinct(raw_first_occurrence_in_flanders) %>%
+  arrange(raw_first_occurrence_in_flanders) %>%
+  kable()
+
+#' `eventDate` will be of format `start_year`/`current_year` (yyyy/yyyy).
+#' `start_year` (yyyy) will contain the information from the following formats in `raw_first_occurrence_in_flanders`: "yyyy", "< yyyy", "<yyyy" and "before yyyy" OR the first year of the interval "yyyy-yyyy":
+#' `current_year` (yyyy) will contain the current year OR the last year of the interval "yyyy-yyyy":
+#' Before further processing, `raw_first_occurrence_in_flanders` needs to be cleaned, i.e. remove "<","< " and "before ":
+distribution %<>% mutate(year = str_replace_all(raw_first_occurrence_in_flanders, "(< |before |<)", ""))
+
+#' Create `start_year`:
+distribution %<>%
+  mutate(start_year = 
+           case_when(
+             str_detect(year, "-") == "TRUE" ~ "1730",   # when `year` = range --> pick first year (1730 in 1730-1732)
+             str_detect(year, "-") == "FALSE" ~ year))   
+
+#' Create `current_year`:
+distribution %<>%
+  mutate (current_year = 
+            case_when(
+              str_detect(year, "-") == TRUE ~ "1732",    # when `year` = range --> pick last year (1730 in 1730-1732)
+              str_detect(year, "-") == FALSE ~ format(Sys.Date(), "%Y")))
+
+#' Create `eventDate` by binding `start_year` and `current_year`:
+distribution %<>% 
+  mutate (eventDate = paste (start_year, current_year, sep ="/")) 
+
+#' Compare formatted dates with `raw_first_occurrence_in_flanders`:
+distribution %>% 
+  select (raw_first_occurrence_in_flanders, eventDate) %>%
+  kable()
+
+#' remove intermediary steps `year`, `start_year`, `current_year`:
+distribution %<>% select (-c(year, start_year, current_year))
+
 #' #### startDayOfYear
 #' #### endDayOfYear
 #' #### source
+#'
+#' Clean `raw_reference` somewhat:
+distribution %<>% mutate (raw_reference = recode(
+raw_reference,
+"Adam  and Leloup 1934" = "Adam and Leloup 1934",  # remove whitespace
+"Van  Haaren and Soors 2009" = "van Haaren and Soors 2009", # remove whitespace and lowercase "van"
+"This study" = "Boets et al. 2016",
+"Nyst 1835; Adam 1947" = "Nyst 1835 | Adam 1947" ))
+
+#' The full reference for source can be found in the raw file `sources`.
+#' We will combine `sources` with `distribution`, based on their respective columns `citation` and `raw_reference`. 
+#' For this, `citation` must be equal to `raw_reference`:
+sort(unique(distribution $ raw_reference)) == sort(unique(sources $ citation)) # --> Yes!
+
+#' Merge `sources` with `distribution`:
+distribution %<>% 
+  left_join(sources, by = c("raw_reference" = "citation")) %<>% 
+  rename(source = reference)
+
+#' Visualisation of this merge. 
+#' (`Boets. et al. unpub data`, `Collection RBINs` and `Dumoulin 2004` full references were lacking in `source`)
+distribution %>% 
+  mutate (source = substr(source, 1,10)) %>%  # shorten full reference to make it easier to display 
+  rename (citation = raw_reference) %>%
+  select (citation, source) %>%
+  group_by(citation, source) %>%
+  summarise(records = n()) %>%
+  arrange (citation) %>%
+  kable()
+
 #' #### occurrenceRemarks
-#' #### datasetID
 
 #' ### Post-processing
 #' 
 #' Remove the original columns:
-
 distribution %<>% select(-one_of(raw_colnames))
 
 #' Preview data:
-kable(head(distribution))
+distribution %>% 
+  mutate (source = substr(source, 1,10)) %>%
+  head() %>%
+  kable()
 
 #' Save to CSV:
 write.csv(distribution, file = dwc_distribution_file, na = "", row.names = FALSE, fileEncoding = "UTF-8")
 
-#' ## Summary
+#' ## Create description extension
 #' 
-#' ### Number of records
+#' In the description extension we want to include **native range** (`raw_origin`), **pathway** (`raw_pathway_of_introduction`) and **habitat** (`raw_salinity_zone`) information. We'll create a separate data frame for each and then combine these with union.
 #' 
-#' * Source file: `r nrow(raw_data)`
-#' * Taxon core: `r nrow(taxon)`
-#' * Distribution extension: `r nrow(distribution)`
-#' * Description extension: `TODO`
-#'
-#' ### Taxon core
+#' ### Pre-processing
 #' 
-#' Number of duplicates: `r anyDuplicated(taxon[["taxonID"]])` (should be 0)
+#' #### Native range
 #' 
-#' The following numbers are expected to be the same:
+#' `raw_origin` contains native range information (e.g. `South-America`). We'll separate, clean, map and combine these values.
 #' 
-#' * Number of records: `r nrow(taxon)`
-#' * Number of distinct `taxonID`: `r n_distinct(taxon[["taxonID"]], na.rm = TRUE)`
-#' * Number of distinct `scientificName`: `r n_distinct(taxon[["scientificName"]], na.rm = TRUE)`
+#' Create new data frame:
+native_range <- raw_data
+
+#' Inspect native_range:
+native_range %>%
+  distinct(raw_origin) %>%
+  arrange(raw_origin) %>%
+  kable()
+
+
+#' Create `description` from `raw_origin`:
+native_range %<>% mutate(description = raw_origin)
+
+#' Separate `description` on column in 3 columns.
+# In case there are more than 3 values, these will be merged in native_range_3. 
+# The dataset currently contains no more than 3 values per record.
+native_range %<>% 
+  separate(description, 
+           into = c("native_range_1", "native_range_2", "native_range_3"),
+           sep = ", ",
+           remove = TRUE,
+           convert = FALSE,
+           extra = "merge",
+           fill = "right"
+  )
+
+#' Gather native ranges in a key and value column:
+native_range %<>% gather(
+  key, value,
+  native_range_1, native_range_2, native_range_3,
+  na.rm = TRUE, # Also removes records for which there is no native_range_1
+  convert = FALSE
+)
+
+#' Manually cleaning of `value` to make them more standardized
+native_range %<>% 
+  mutate(mapped_value = recode(
+    value,
+    "East-Asia" = "Eastern Asia",
+    "East-Europe" = "Eastern Europe",
+    "Indio-Pacific" = "Indo-Pacific",
+    "North-Africa" = "Northern Africa",
+    "North-America" = "Northern America",
+    "Northeast-Asia" = "North-eastern Asia",
+    "South-America" = "South America",
+    "South-Europe" = "Southern Europe",
+    "Southeast-Asia" = "South-eastern Asia",
+    "USA" = "United States of America",
+    "West-Africa" = "Western Africa",
+    "West-Atlantic" = "Western Atlantic"))
+
+#' Show mapped values:
+native_range %>%
+  select(value, mapped_value) %>%
+  group_by(value, mapped_value) %>%
+  summarize(records = n()) %>%
+  arrange(value) %>%
+  kable()
+
+#' Drop `key` and `value` column and rename `mapped value`:
+native_range %<>% select(-key, -value)
+native_range %<>% rename(description = mapped_value)
+
+#' Keep only non-empty descriptions:
+native_range %<>% filter(!is.na(description) & description != "")
+
+#' Create a `type` field to indicate the type of description:
+native_range %<>% mutate(type = "native range")
+
+#' Preview data:
+kable(head(native_range))
+
+#' #### Pathway (pathway of introduction)
+#' 
+#' `raw_pathway_of_introduction` contains information on the pathway of introduction (e.g. `aquaculture`). We'll separate, clean, map and combine these values.
+#' 
+#' Create new data frame:
+pathway <- raw_data
+
+#' Inspect `pathway`:
+pathway %>%
+  distinct(raw_pathway_of_introduction) %>%
+  arrange(raw_pathway_of_introduction) %>%
+  kable()
+
+#' Similar as for `native_range`, we create a new variable `description` in `pathway` from `raw_pathway_of_introduction`:
+pathway %<>% mutate(description = raw_pathway_of_introduction)
+
+#' Separate `description` on column in 3 columns.
+# In case there are more than 3 values, these will be merged in pathway_3. 
+# The dataset currently contains no more than 3 values per record.
+pathway %<>% 
+  separate(description, 
+           into = c("pathway_1", "pathway_2", "pathway_3"),
+           sep = ", ",
+           remove = TRUE,
+           convert = FALSE,
+           extra = "merge",
+           fill = "right"
+  )
+
+#' Gather pathways in a key and value column:
+pathway %<>% gather(
+  key, value,
+  pathway_1, pathway_2, pathway_3,
+  na.rm = TRUE, # Also removes records for which there is no pathway_1
+  convert = FALSE
+)
+
+#' In `value`, both `other` and `others` is given as a pathway of introduction.
+#' We clean `value` by changing `others` --> `other`
+pathway %<>% mutate(value = recode(value, "others" = "other"))
+
+#' Show new values:
+pathway %>%
+  distinct(value) %>%
+  arrange(value) %>%
+  kable()
+
+#' Drop `key` column and rename `value`:
+pathway %<>% select(-key)
+pathway %<>% rename(description = value)
+
+#' Keep only non-empty descriptions:
+pathway %<>% filter(!is.na(description) & description != "")
+
+#' Create a `type` field to indicate the type of description:
+pathway %<>% mutate(type = "pathway")
+
+#' Preview data:
+kable(head(pathway))
+
+#' #### Habitat
+#' 
+#' `raw_salinity_zone` contains information on the habitat of the species ("B" = brackish, "M" = marine, "freshwater"). We'll separate, clean, map and combine these values.
+#' 
+#' Create new data frame:
+habitat <- raw_data
+
+#' Inspect native_range:
+habitat %>%
+  distinct(raw_salinity_zone) %>%
+  arrange(raw_salinity_zone) %>%
+  kable()
+
+#' Similar as for `native_range` and `pathway`, we create a new variable `description` in `habitat` from `raw_salinity_zone`:
+habitat %<>% mutate(description = raw_salinity_zone)
+
+#' Separate `description` on column in 2 columns.
+# In case there are more than 2 values, these will be merged in habitat_2. 
+# The dataset currently contains no more than 2 values per record.
+habitat %<>% 
+  separate(description, 
+           into = c("habitat_1", "habitat_2"),
+           sep = "/",
+           remove = TRUE,
+           convert = FALSE,
+           extra = "merge",
+           fill = "right"
+  )
+
+#' Gather habitats in a key and value column:
+habitat %<>% gather(
+  key, value,
+  habitat_1, habitat_2,
+  na.rm = TRUE, # Also removes records for which there is no habitat_1
+  convert = FALSE
+)
+
+#' `value now contains` the abbreviations `B`, `M` and `F` --> we substitute these by `brackish`, `marine` and `freshwater` respectively.
+habitat %<>% 
+  mutate(mapped_value = recode(
+    value,
+    "B" = "brackish",
+    "M" = "marine",
+    "F" = "freshwater"))
+
+#' Show mapped values:
+habitat %>%
+  select(value, mapped_value) %>%
+  group_by(value, mapped_value) %>%
+  summarize(records = n()) %>%
+  arrange(value) %>%
+  kable()
+
+#' Drop `key` and `value` column and rename `mapped value`:
+habitat %<>% select(-key, -value)
+habitat %<>% rename(description = mapped_value)
+
+#' Keep only non-empty descriptions:
+habitat %<>% filter(!is.na(description) & description != "")
+
+#' Create a `type` field to indicate the type of description:
+habitat %<>% mutate(type = "habitat")
+
+#' Preview data:
+kable(head(habitat))
+
+#' #### Union native range, pathway and habitat:
+description_ext <- bind_rows(native_range, pathway, habitat)
+
+#' ### Term mapping
+#' 
+#' Map the source data to [Taxon Description](http://rs.gbif.org/extension/gbif/1.0/description.xml):
+
+#' #### taxonID
+description_ext %<>% mutate(taxonID = raw_id)
+
+#' #### description
+description_ext %<>% mutate(description = description)
+
+#' #### type
+description_ext %<>% mutate(type = type)
+
+#' #### source
+#' 
+#' Clean `raw_reference` somewhat:
+description_ext %<>% mutate (raw_reference = recode(
+  raw_reference,
+  "Adam  and Leloup 1934" = "Adam and Leloup 1934",  # remove whitespace
+  "Van  Haaren and Soors 2009" = "van Haaren and Soors 2009", # remove whitespace and lowercase "van"
+  "This study" = "Boets et al. 2016",
+  "Nyst 1835; Adam 1947" = "Nyst 1835 | Adam 1947" ))
+
+#' The full reference for source can be found in the raw file `sources`.
+#' We will combine `sources` with `description_ext`, based on their respective columns `citation` and `raw_reference`. 
+#' For this, `citation` must be equal to `raw_reference`:
+sort(unique(description_ext $ raw_reference)) == sort(unique(sources $ citation)) # --> Yes!
+
+#' Merge `sources` with `description_ext`:
+description_ext %<>% 
+  left_join(sources, by = c("raw_reference" = "citation")) %<>% 
+  rename(source = reference)
+
+#' Visualisation of this merge. 
+#' (`Boets. et al. unpub data`, `Collection RBINs` and `Dumoulin 2004` full references are lacking in `source`)
+description_ext %>% 
+  mutate (source = substr(source, 1,10)) %>%  # shorten full reference to make it easier to display 
+  rename (citation = raw_reference) %>%
+  select (citation, source) %>%
+  group_by(citation, source) %>%
+  summarise(records = n()) %>%
+  arrange (citation) %>%
+  kable()
+
+#' #### language
+description_ext %<>% mutate(language = "en")
+
+#' #### created
+#' #### creator
+#' #### contributor
+#' #### audience
+#' #### license
+#' #### rightsHolder
+#' #### datasetID
+
+
+#' ### Post-processing
+#' 
+#' Remove the original columns:
+description_ext %<>% select(-one_of(raw_colnames))
+
+#' Move `taxonID` to the first position:
+description_ext %<>% select(taxonID, everything())
+
+#' Sort on `taxonID`:
+description_ext %<>% arrange(taxonID)
+
+#' Preview data:
+description_ext %>% 
+  mutate (source = substr(source, 1,10)) %>%
+  head() %>%
+  kable()
+
+#' Save to CSV:
+write.csv(description_ext, file = dwc_description_file, na = "", row.names = FALSE, fileEncoding = "UTF-8")
+

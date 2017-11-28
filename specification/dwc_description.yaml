@@ -1,0 +1,30 @@
+# Dataset: alien-macroinvertebrates-checklist
+# DOI: 
+# 
+# Scope: dwc-description
+# Author: Peter Desmet
+# Syntax version: 0.1
+
+taxonID:
+  regex: 'alien-macroinvertebrates-checklist:taxon:\d'
+
+description:
+  if:
+    - type:
+        allowed: habitat
+      allowed: [brackish, freshwater, marine]
+    - type:
+        allowed: native range
+      empty: false
+    - type:
+        allowed: pathway
+      allowed: [aquaculture, aquarium trade, corridors, other, shipping]
+
+type:
+  allowed: [habitat, native range, pathway]
+
+source:
+  empty: false
+
+language:
+  allowed: en
