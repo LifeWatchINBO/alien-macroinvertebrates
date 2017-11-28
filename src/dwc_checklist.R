@@ -28,7 +28,12 @@ library(readxl)    # To read excel files
 library(stringr)   # to perform string operations
 
 #' Set file paths (all paths should be relative to this script):
+#' 
+#' raw files: 
 raw_data_file = "../data/raw/AI_2016_Boets_etal_Supplement.xls"
+sources_file = "../data/raw/sources.tsv"
+
+#' processed files: 
 dwc_taxon_file = "../data/processed/dwc_checklist/taxon.csv"
 dwc_distribution_file = "../data/processed/dwc_checklist/distribution.csv"
 dwc_description_file = "../data/processed/dwc_checklist/description.csv"
@@ -37,6 +42,7 @@ dwc_description_file = "../data/processed/dwc_checklist/description.csv"
 #' 
 #' Read the source data:
 raw_data <- read_excel(raw_data_file, sheet = "checklist", na = "NA") 
+sources <- read.table(sources_file, sep = "\t", quote="", colClasses = "character",  fileEncoding = "UTF8", header = T)
 
 #' Clean data somewhat: remove empty rows if present
 raw_data %<>%
@@ -226,12 +232,35 @@ distribution %<>% select (-c(year, start_year, current_year))
 #' #### startDayOfYear
 #' #### endDayOfYear
 #' #### source
-distribution %<>% mutate (source = recode(
-  raw_reference,
-  "Adam  and Leloup 1934" = "Adam and Leloup 1934",  # remove whitespace
-  "Van  Haaren and Soors 2009" = "van Haaren and Soors 2009", # remove whitespace and lowercase "van"
-  "This study" = "Boets et al. 2016",
-  "Nyst 1835; Adam 1947" = "Nyst 1835 | Adam 1947" ))
+#'
+#' Clean `raw_reference` somewhat:
+distribution %<>% mutate (raw_reference = recode(
+raw_reference,
+"Adam  and Leloup 1934" = "Adam and Leloup 1934",  # remove whitespace
+"Van  Haaren and Soors 2009" = "van Haaren and Soors 2009", # remove whitespace and lowercase "van"
+"This study" = "Boets et al. 2016",
+"Nyst 1835; Adam 1947" = "Nyst 1835 | Adam 1947" ))
+
+#' The full reference for source can be found in the raw file `sources`.
+#' We will combine `sources` with `distribution`, based on their respective columns `citation` and `raw_reference`. 
+#' For this, `citation` must be equal to `raw_reference`:
+sort(unique(distribution $ raw_reference)) == sort(unique(sources $ citation)) # --> Yes!
+
+#' Merge `sources` with `distribution`:
+distribution %<>% 
+  left_join(sources, by = c("raw_reference" = "citation")) %<>% 
+  rename(source = reference)
+
+#' Visualisation of this merge. 
+#' `Boets. et al. unpub data`, `Collection RBINs` and `Dumoulin 2004` full references were lacking and should thus be empty fields in `source`
+distribution %>% 
+  mutate (source = substr(source, 1,10)) %>%  # shorten full reference to make it easier to display 
+  rename (citation = raw_reference) %>%
+  select (citation, source) %>%
+  group_by(citation, source) %>%
+  summarise(records = n()) %>%
+  arrange (citation) %>%
+  kable()
 
 #' #### occurrenceRemarks
 
@@ -241,7 +270,10 @@ distribution %<>% mutate (source = recode(
 distribution %<>% select(-one_of(raw_colnames))
 
 #' Preview data:
-kable(head(distribution))
+distribution %>% 
+  mutate (source = substr(source, 1,10)) %>%
+  head() %>%
+  kable()
 
 #' Save to CSV:
 write.csv(distribution, file = dwc_distribution_file, na = "", row.names = FALSE, fileEncoding = "UTF-8")
@@ -471,12 +503,35 @@ description_ext %<>% mutate(description = description)
 description_ext %<>% mutate(type = type)
 
 #' #### source
-description_ext %<>% mutate (source = recode(
+#' 
+#' Clean `raw_reference` somewhat:
+description_ext %<>% mutate (raw_reference = recode(
   raw_reference,
   "Adam  and Leloup 1934" = "Adam and Leloup 1934",  # remove whitespace
   "Van  Haaren and Soors 2009" = "van Haaren and Soors 2009", # remove whitespace and lowercase "van"
   "This study" = "Boets et al. 2016",
   "Nyst 1835; Adam 1947" = "Nyst 1835 | Adam 1947" ))
+
+#' The full reference for source can be found in the raw file `sources`.
+#' We will combine `sources` with `description_ext`, based on their respective columns `citation` and `raw_reference`. 
+#' For this, `citation` must be equal to `raw_reference`:
+sort(unique(description_ext $ raw_reference)) == sort(unique(sources $ citation)) # --> Yes!
+
+#' Merge `sources` with `description_ext`:
+description_ext %<>% 
+  left_join(sources, by = c("raw_reference" = "citation")) %<>% 
+  rename(source = reference)
+
+#' Visualisation of this merge. 
+#' `Boets. et al. unpub data`, `Collection RBINs` and `Dumoulin 2004` full references were lacking and should thus be empty fields in `source`
+description_ext %>% 
+  mutate (source = substr(source, 1,10)) %>%  # shorten full reference to make it easier to display 
+  rename (citation = raw_reference) %>%
+  select (citation, source) %>%
+  group_by(citation, source) %>%
+  summarise(records = n()) %>%
+  arrange (citation) %>%
+  kable()
 
 #' #### language
 description_ext %<>% mutate(language = "en")
@@ -502,7 +557,11 @@ description_ext %<>% select(taxonID, everything())
 description_ext %<>% arrange(taxonID)
 
 #' Preview data:
-kable(head(description_ext, 10))
+description_ext %>% 
+  mutate (source = substr(source, 1,10)) %>%
+  head() %>%
+  kable()
 
 #' Save to CSV:
 write.csv(description_ext, file = dwc_description_file, na = "", row.names = FALSE, fileEncoding = "UTF-8")
+
