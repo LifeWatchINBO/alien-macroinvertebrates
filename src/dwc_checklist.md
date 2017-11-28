@@ -2,7 +2,7 @@
 
 Lien Reyserhove, Dimitri Brosens, Peter Desmet
 
-2017-11-27
+2017-11-28
 
 This document describes how we map the checklist data to Darwin Core.
 
@@ -41,9 +41,18 @@ library(stringr)   # to perform string operations
 
 Set file paths (all paths should be relative to this script):
 
+raw files: 
+
 
 ```r
 raw_data_file = "../data/raw/AI_2016_Boets_etal_Supplement.xls"
+sources_file = "../data/raw/sources.tsv"
+```
+
+processed files: 
+
+
+```r
 dwc_taxon_file = "../data/processed/dwc_checklist/taxon.csv"
 dwc_distribution_file = "../data/processed/dwc_checklist/distribution.csv"
 dwc_description_file = "../data/processed/dwc_checklist/description.csv"
@@ -56,6 +65,7 @@ Read the source data:
 
 ```r
 raw_data <- read_excel(raw_data_file, sheet = "checklist", na = "NA") 
+sources <- read.table(sources_file, sep = "\t", quote="", colClasses = "character",  fileEncoding = "UTF8", header = T)
 ```
 
 Clean data somewhat: remove empty rows if present
@@ -212,10 +222,11 @@ taxon %<>% mutate (phylum = recode (raw_phylum, "Crustacea" = "Arthropoda"))
 
 
 ```r
-taxon %<>% mutate(order = recode(
-  raw_order,
-  "Tubficida" = "Haplotaxida",
-  "Veneroidea" = "Venerida"))
+taxon %<>% 
+  mutate(order = recode(raw_order, 
+                        "Tubficida" = "Haplotaxida",
+                        "Veneroidea" = "Venerida")) %<>%
+  mutate (order = str_trim(order))
 ```
 
 #### family
@@ -538,15 +549,107 @@ distribution %<>% select (-c(year, start_year, current_year))
 #### endDayOfYear
 #### source
 
+Clean `raw_reference` somewhat:
+
 
 ```r
-distribution %<>% mutate (source = recode(
-  raw_reference,
-  "Adam  and Leloup 1934" = "Adam and Leloup 1934",  # remove whitespace
-  "Van  Haaren and Soors 2009" = "van Haaren and Soors 2009", # remove whitespace and lowercase "van"
-  "This study" = "Boets et al. 2016",
-  "Nyst 1835; Adam 1947" = "Nyst 1835 | Adam 1947" ))
+distribution %<>% mutate (raw_reference = recode(
+raw_reference,
+"Adam  and Leloup 1934" = "Adam and Leloup 1934",  # remove whitespace
+"Van  Haaren and Soors 2009" = "van Haaren and Soors 2009", # remove whitespace and lowercase "van"
+"This study" = "Boets et al. 2016",
+"Nyst 1835; Adam 1947" = "Nyst 1835 | Adam 1947" ))
 ```
+
+The full reference for source can be found in the raw file `sources`.
+We will combine `sources` with `distribution`, based on their respective columns `citation` and `raw_reference`. 
+For this, `citation` must be equal to `raw_reference`:
+
+
+```r
+sort(unique(distribution $ raw_reference)) == sort(unique(sources $ citation)) # --> Yes!
+```
+
+```
+##  [1] TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE
+## [15] TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE
+## [29] TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE
+## [43] TRUE TRUE TRUE
+```
+
+Merge `sources` with `distribution`:
+
+
+```r
+distribution %<>% 
+  left_join(sources, by = c("raw_reference" = "citation")) %<>% 
+  rename(source = reference)
+```
+
+Visualisation of this merge. 
+`Boets. et al. unpub data`, `Collection RBINs` and `Dumoulin 2004` full references were lacking and should thus be empty fields in `source`
+
+
+```r
+distribution %>% 
+  mutate (source = substr(source, 1,10)) %>%  # shorten full reference to make it easier to display 
+  rename (citation = raw_reference) %>%
+  select (citation, source) %>%
+  group_by(citation, source) %>%
+  summarise(records = n()) %>%
+  arrange (citation) %>%
+  kable()
+```
+
+
+
+|citation                    |source     | records|
+|:---------------------------|:----------|-------:|
+|Adam 1947                   |Adam W (19 |       4|
+|Adam and Leloup 1934        |Adam W, Le |       1|
+|Backeljau 1986              |Backeljau  |       1|
+|Boets et al. 2009           |Boets P, L |       1|
+|Boets et al. 2010b          |Boets P, L |       1|
+|Boets et al. 2011b          |Boets P, L |       1|
+|Boets et al. 2012c          |Boets P, L |       1|
+|Boets et al. 2016           |Boets P, B |       1|
+|Boets et al. unpub data     |           |       1|
+|Collection RBINS            |           |       2|
+|Cook et al. 2007            |Cook EJ, J |       1|
+|Damas 1938                  |Damas H (1 |       1|
+|Dewicke 2002                |Dewicke A  |       1|
+|Dumoulin 2004               |           |       1|
+|Faasse and Van Moorsel 2003 |Faasse M,  |       2|
+|Gerard 1986                 |Gérard P ( |       2|
+|Keppens and Mienis 2004     |Keppens M, |       1|
+|Kerckhof and Catrijsse 2001 |Kerckhof F |       5|
+|Kerckhof and Dumoulin 1987  |Kerckhof F |       1|
+|Kerckhof et al. 2007        |Kerckhof F |       1|
+|Leloup 1971                 |Leloup E ( |       1|
+|Leloup and Lefevre 1952     |Leloup E,  |       2|
+|Lock et al. 2007            |Lock K, Va |       1|
+|Loppens 1902                |Loppens K  |       1|
+|Messiaen et al. 2010        |Messiaen M |       3|
+|Nuyttens et al. 2006        |Nuyttens F |       1|
+|Nyst 1835 &#124; Adam 1947  |Nyst HJP ( |       1|
+|Sablon et al. 2010a         |Sablon R,  |       1|
+|Sablon et al. 2010b         |Sablon R,  |       1|
+|Sellius 1733                |Sellius G  |       1|
+|Seys et al. 1999            |Seys J, Vi |       1|
+|Soors et al. 2010           |Soors J, F |       1|
+|Soors et al. 2013           |Soors J, v |       8|
+|Swinnen et al. 1998         |Swinnen F, |       2|
+|Van Damme and Maes 1993     |Van Damme  |       1|
+|Van Damme et al. 1992       |Van Damme  |       1|
+|Van Goethem and Sablon 1986 |Van Goethe |       1|
+|van Haaren and Soors 2009   |van Haaren |       1|
+|Vandepitte et al. 2012      |Vandepitte |       1|
+|Vercauteren et al. 2005     |Vercautere |       2|
+|Vercauteren et al. 2006     |Vercautere |       2|
+|Verslycke et al. 2000       |Verslycke  |       1|
+|Verween et al. 2006         |Verween A, |       1|
+|Wouters 2002                |Wouters K  |       6|
+|Ysebaert et al. 1997        |Ysebaert T |       1|
 
 #### occurrenceRemarks
 ### Post-processing
@@ -562,19 +665,22 @@ Preview data:
 
 
 ```r
-kable(head(distribution))
+distribution %>% 
+  mutate (source = substr(source, 1,10)) %>%
+  head() %>%
+  kable()
 ```
 
 
 
-|taxonID                                    |locationID        |locality |countryCode |occurrenceStatus |eventDate |source                      |
-|:------------------------------------------|:-----------------|:--------|:-----------|:----------------|:---------|:---------------------------|
-|alien-macroinvertebrates-checklist:taxon:1 |ISO_3166-2:BE-VLG |Flanders |BE          |present          |1952/2017 |Kerckhof and Catrijsse 2001 |
-|alien-macroinvertebrates-checklist:taxon:2 |ISO_3166-2:BE-VLG |Flanders |BE          |present          |1700/2017 |Kerckhof and Catrijsse 2001 |
-|alien-macroinvertebrates-checklist:taxon:3 |ISO_3166-2:BE-VLG |Flanders |BE          |present          |1997/2017 |Kerckhof and Catrijsse 2001 |
-|alien-macroinvertebrates-checklist:taxon:4 |ISO_3166-2:BE-VLG |Flanders |BE          |present          |1986/2017 |Gerard 1986                 |
-|alien-macroinvertebrates-checklist:taxon:5 |ISO_3166-2:BE-VLG |Flanders |BE          |present          |1895/2017 |Wouters 2002                |
-|alien-macroinvertebrates-checklist:taxon:6 |ISO_3166-2:BE-VLG |Flanders |BE          |present          |1950/2017 |Leloup and Lefevre 1952     |
+|taxonID                                    |locationID        |locality |countryCode |occurrenceStatus |eventDate |source     |
+|:------------------------------------------|:-----------------|:--------|:-----------|:----------------|:---------|:----------|
+|alien-macroinvertebrates-checklist:taxon:1 |ISO_3166-2:BE-VLG |Flanders |BE          |present          |1952/2017 |Kerckhof F |
+|alien-macroinvertebrates-checklist:taxon:2 |ISO_3166-2:BE-VLG |Flanders |BE          |present          |1700/2017 |Kerckhof F |
+|alien-macroinvertebrates-checklist:taxon:3 |ISO_3166-2:BE-VLG |Flanders |BE          |present          |1997/2017 |Kerckhof F |
+|alien-macroinvertebrates-checklist:taxon:4 |ISO_3166-2:BE-VLG |Flanders |BE          |present          |1986/2017 |Gérard P ( |
+|alien-macroinvertebrates-checklist:taxon:5 |ISO_3166-2:BE-VLG |Flanders |BE          |present          |1895/2017 |Wouters K  |
+|alien-macroinvertebrates-checklist:taxon:6 |ISO_3166-2:BE-VLG |Flanders |BE          |present          |1950/2017 |Leloup E,  |
 
 Save to CSV:
 
@@ -1082,15 +1188,107 @@ description_ext %<>% mutate(type = type)
 
 #### source
 
+Clean `raw_reference` somewhat:
+
 
 ```r
-description_ext %<>% mutate (source = recode(
+description_ext %<>% mutate (raw_reference = recode(
   raw_reference,
   "Adam  and Leloup 1934" = "Adam and Leloup 1934",  # remove whitespace
   "Van  Haaren and Soors 2009" = "van Haaren and Soors 2009", # remove whitespace and lowercase "van"
   "This study" = "Boets et al. 2016",
   "Nyst 1835; Adam 1947" = "Nyst 1835 | Adam 1947" ))
 ```
+
+The full reference for source can be found in the raw file `sources`.
+We will combine `sources` with `description_ext`, based on their respective columns `citation` and `raw_reference`. 
+For this, `citation` must be equal to `raw_reference`:
+
+
+```r
+sort(unique(description_ext $ raw_reference)) == sort(unique(sources $ citation)) # --> Yes!
+```
+
+```
+##  [1] TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE
+## [15] TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE
+## [29] TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE
+## [43] TRUE TRUE TRUE
+```
+
+Merge `sources` with `description_ext`:
+
+
+```r
+description_ext %<>% 
+  left_join(sources, by = c("raw_reference" = "citation")) %<>% 
+  rename(source = reference)
+```
+
+Visualisation of this merge. 
+`Boets. et al. unpub data`, `Collection RBINs` and `Dumoulin 2004` full references were lacking and should thus be empty fields in `source`
+
+
+```r
+description_ext %>% 
+  mutate (source = substr(source, 1,10)) %>%  # shorten full reference to make it easier to display 
+  rename (citation = raw_reference) %>%
+  select (citation, source) %>%
+  group_by(citation, source) %>%
+  summarise(records = n()) %>%
+  arrange (citation) %>%
+  kable()
+```
+
+
+
+|citation                    |source     | records|
+|:---------------------------|:----------|-------:|
+|Adam 1947                   |Adam W (19 |      13|
+|Adam and Leloup 1934        |Adam W, Le |       4|
+|Backeljau 1986              |Backeljau  |       3|
+|Boets et al. 2009           |Boets P, L |       4|
+|Boets et al. 2010b          |Boets P, L |       3|
+|Boets et al. 2011b          |Boets P, L |       4|
+|Boets et al. 2012c          |Boets P, L |       3|
+|Boets et al. 2016           |Boets P, B |       4|
+|Boets et al. unpub data     |           |       6|
+|Collection RBINS            |           |       9|
+|Cook et al. 2007            |Cook EJ, J |       4|
+|Damas 1938                  |Damas H (1 |       4|
+|Dewicke 2002                |Dewicke A  |       4|
+|Dumoulin 2004               |           |       4|
+|Faasse and Van Moorsel 2003 |Faasse M,  |       7|
+|Gerard 1986                 |Gérard P ( |       6|
+|Keppens and Mienis 2004     |Keppens M, |       3|
+|Kerckhof and Catrijsse 2001 |Kerckhof F |      16|
+|Kerckhof and Dumoulin 1987  |Kerckhof F |       4|
+|Kerckhof et al. 2007        |Kerckhof F |       4|
+|Leloup 1971                 |Leloup E ( |       4|
+|Leloup and Lefevre 1952     |Leloup E,  |       8|
+|Lock et al. 2007            |Lock K, Va |       4|
+|Loppens 1902                |Loppens K  |       4|
+|Messiaen et al. 2010        |Messiaen M |      12|
+|Nuyttens et al. 2006        |Nuyttens F |       4|
+|Nyst 1835 &#124; Adam 1947  |Nyst HJP ( |       4|
+|Sablon et al. 2010a         |Sablon R,  |       4|
+|Sablon et al. 2010b         |Sablon R,  |       3|
+|Sellius 1733                |Sellius G  |       3|
+|Seys et al. 1999            |Seys J, Vi |       3|
+|Soors et al. 2010           |Soors J, F |       3|
+|Soors et al. 2013           |Soors J, v |      30|
+|Swinnen et al. 1998         |Swinnen F, |       8|
+|Van Damme and Maes 1993     |Van Damme  |       4|
+|Van Damme et al. 1992       |Van Damme  |       4|
+|Van Goethem and Sablon 1986 |Van Goethe |       3|
+|van Haaren and Soors 2009   |van Haaren |       3|
+|Vandepitte et al. 2012      |Vandepitte |       3|
+|Vercauteren et al. 2005     |Vercautere |       6|
+|Vercauteren et al. 2006     |Vercautere |       7|
+|Verslycke et al. 2000       |Verslycke  |       5|
+|Verween et al. 2006         |Verween A, |       4|
+|Wouters 2002                |Wouters K  |      22|
+|Ysebaert et al. 1997        |Ysebaert T |       3|
 
 #### language
 
@@ -1133,23 +1331,22 @@ Preview data:
 
 
 ```r
-kable(head(description_ext, 10))
+description_ext %>% 
+  mutate (source = substr(source, 1,10)) %>%
+  head() %>%
+  kable()
 ```
 
 
 
-|taxonID                                     |description        |type         |source                      |language |
-|:-------------------------------------------|:------------------|:------------|:---------------------------|:--------|
-|alien-macroinvertebrates-checklist:taxon:1  |Southern Europe    |native range |Kerckhof and Catrijsse 2001 |en       |
-|alien-macroinvertebrates-checklist:taxon:1  |shipping           |pathway      |Kerckhof and Catrijsse 2001 |en       |
-|alien-macroinvertebrates-checklist:taxon:1  |marine             |habitat      |Kerckhof and Catrijsse 2001 |en       |
-|alien-macroinvertebrates-checklist:taxon:10 |Northern America   |native range |Van Damme and Maes 1993     |en       |
-|alien-macroinvertebrates-checklist:taxon:10 |shipping           |pathway      |Van Damme and Maes 1993     |en       |
-|alien-macroinvertebrates-checklist:taxon:10 |brackish           |habitat      |Van Damme and Maes 1993     |en       |
-|alien-macroinvertebrates-checklist:taxon:10 |marine             |habitat      |Van Damme and Maes 1993     |en       |
-|alien-macroinvertebrates-checklist:taxon:11 |North-eastern Asia |native range |Cook et al. 2007            |en       |
-|alien-macroinvertebrates-checklist:taxon:11 |shipping           |pathway      |Cook et al. 2007            |en       |
-|alien-macroinvertebrates-checklist:taxon:11 |aquaculture        |pathway      |Cook et al. 2007            |en       |
+|taxonID                                     |description      |type         |source     |language |
+|:-------------------------------------------|:----------------|:------------|:----------|:--------|
+|alien-macroinvertebrates-checklist:taxon:1  |Southern Europe  |native range |Kerckhof F |en       |
+|alien-macroinvertebrates-checklist:taxon:1  |shipping         |pathway      |Kerckhof F |en       |
+|alien-macroinvertebrates-checklist:taxon:1  |marine           |habitat      |Kerckhof F |en       |
+|alien-macroinvertebrates-checklist:taxon:10 |Northern America |native range |Van Damme  |en       |
+|alien-macroinvertebrates-checklist:taxon:10 |shipping         |pathway      |Van Damme  |en       |
+|alien-macroinvertebrates-checklist:taxon:10 |brackish         |habitat      |Van Damme  |en       |
 
 Save to CSV:
 
