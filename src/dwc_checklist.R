@@ -197,9 +197,9 @@ distribution %>%
   arrange(raw_first_occurrence_in_flanders) %>%
   kable()
 
-#' `eventDate` will be of format `start_year`/`current_year` (yyyy/yyyy).
+#' `eventDate` will be of format `start_year`/`current_year` (yyyy/now or yyyy/yyyy).
 #' `start_year` (yyyy) will contain the information from the following formats in `raw_first_occurrence_in_flanders`: "yyyy", "< yyyy", "<yyyy" and "before yyyy" OR the first year of the interval "yyyy-yyyy":
-#' `current_year` (yyyy) will contain the current year OR the last year of the interval "yyyy-yyyy":
+#' `current_year` (yyyy) is `now` OR will contain the last year of the interval "yyyy-yyyy" in `raw_first_occurrence_in_flanders`:
 #' Before further processing, `raw_first_occurrence_in_flanders` needs to be cleaned, i.e. remove "<","< " and "before ":
 distribution %<>% mutate(year = str_replace_all(raw_first_occurrence_in_flanders, "(< |before |<)", ""))
 
@@ -215,7 +215,7 @@ distribution %<>%
   mutate (current_year = 
             case_when(
               str_detect(year, "-") == TRUE ~ "1732",    # when `year` = range --> pick last year (1730 in 1730-1732)
-              str_detect(year, "-") == FALSE ~ format(Sys.Date(), "%Y")))
+              str_detect(year, "-") == FALSE ~ "now"))
 
 #' Create `eventDate` by binding `start_year` and `current_year`:
 distribution %<>% 
@@ -564,4 +564,3 @@ description_ext %>%
 
 #' Save to CSV:
 write.csv(description_ext, file = dwc_description_file, na = "", row.names = FALSE, fileEncoding = "UTF-8")
-

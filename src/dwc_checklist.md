@@ -2,7 +2,7 @@
 
 Lien Reyserhove, Dimitri Brosens, Peter Desmet
 
-2017-11-28
+2017-11-29
 
 This document describes how we map the checklist data to Darwin Core.
 
@@ -411,9 +411,9 @@ distribution %>%
 |2014                             |
 |before 1700                      |
 
-`eventDate` will be of format `start_year`/`current_year` (yyyy/yyyy).
+`eventDate` will be of format `start_year`/`current_year` (yyyy/now or yyyy/yyyy).
 `start_year` (yyyy) will contain the information from the following formats in `raw_first_occurrence_in_flanders`: "yyyy", "< yyyy", "<yyyy" and "before yyyy" OR the first year of the interval "yyyy-yyyy":
-`current_year` (yyyy) will contain the current year OR the last year of the interval "yyyy-yyyy":
+`current_year` (yyyy) is `now` OR will contain the last year of the interval "yyyy-yyyy" in `raw_first_occurrence_in_flanders`:
 Before further processing, `raw_first_occurrence_in_flanders` needs to be cleaned, i.e. remove "<","< " and "before ":
 
 
@@ -440,7 +440,7 @@ distribution %<>%
   mutate (current_year = 
             case_when(
               str_detect(year, "-") == TRUE ~ "1732",    # when `year` = range --> pick last year (1730 in 1730-1732)
-              str_detect(year, "-") == FALSE ~ format(Sys.Date(), "%Y")))
+              str_detect(year, "-") == FALSE ~ "now"))
 ```
 
 Create `eventDate` by binding `start_year` and `current_year`:
@@ -464,78 +464,78 @@ distribution %>%
 
 |raw_first_occurrence_in_flanders |eventDate |
 |:--------------------------------|:---------|
-|1952                             |1952/2017 |
-|before 1700                      |1700/2017 |
-|1997                             |1997/2017 |
-|1986                             |1986/2017 |
-|1895                             |1895/2017 |
-|1950                             |1950/2017 |
-|2010                             |2010/2017 |
-|1931                             |1931/2017 |
-|2002                             |2002/2017 |
-|1993                             |1993/2017 |
-|1998                             |1998/2017 |
-|1990                             |1990/2017 |
-|1992                             |1992/2017 |
-|1992                             |1992/2017 |
-|1992                             |1992/2017 |
-|1969                             |1969/2017 |
-|1911                             |1911/2017 |
-|2001                             |2001/2017 |
-|1997                             |1997/2017 |
-|1834                             |1834/2017 |
-|2009                             |2009/2017 |
-|2004                             |2004/2017 |
-|1925                             |1925/2017 |
-|2009                             |2009/2017 |
-|1987                             |1987/2017 |
-|1933                             |1933/2017 |
-|1937                             |1937/2017 |
-|1950                             |1950/2017 |
-|1937                             |1937/2017 |
-|1991                             |1991/2017 |
-|2006                             |2006/2017 |
-|2003                             |2003/2017 |
-|1999                             |1999/2017 |
-|2000                             |2000/2017 |
-|1996                             |1996/2017 |
-|2000                             |2000/2017 |
-|2014                             |2014/2017 |
-|2009                             |2009/2017 |
-|2005                             |2005/2017 |
-|1924                             |1924/2017 |
-|2008                             |2008/2017 |
-|1995                             |1995/2017 |
-|1997                             |1997/2017 |
-|1998                             |1998/2017 |
-|1996                             |1996/2017 |
-|1998                             |1998/2017 |
-|1933                             |1933/2017 |
-|1993                             |1993/2017 |
-|2002                             |2002/2017 |
-|< 1700                           |1700/2017 |
-|1835                             |1835/2017 |
-|1927                             |1927/2017 |
-|1977                             |1977/2017 |
-|1986                             |1986/2017 |
-|1999                             |1999/2017 |
-|1899                             |1899/2017 |
-|1869                             |1869/2017 |
-|1927                             |1927/2017 |
-|2009                             |2009/2017 |
-|1998                             |1998/2017 |
-|1945                             |1945/2017 |
-|2008                             |2008/2017 |
-|2008                             |2008/2017 |
-|<1600                            |1600/2017 |
-|1996                             |1996/2017 |
-|2004                             |2004/2017 |
-|1991                             |1991/2017 |
-|1999                             |1999/2017 |
-|2007                             |2007/2017 |
-|2005                             |2005/2017 |
-|2003                             |2003/2017 |
-|2006                             |2006/2017 |
+|1952                             |1952/now  |
+|before 1700                      |1700/now  |
+|1997                             |1997/now  |
+|1986                             |1986/now  |
+|1895                             |1895/now  |
+|1950                             |1950/now  |
+|2010                             |2010/now  |
+|1931                             |1931/now  |
+|2002                             |2002/now  |
+|1993                             |1993/now  |
+|1998                             |1998/now  |
+|1990                             |1990/now  |
+|1992                             |1992/now  |
+|1992                             |1992/now  |
+|1992                             |1992/now  |
+|1969                             |1969/now  |
+|1911                             |1911/now  |
+|2001                             |2001/now  |
+|1997                             |1997/now  |
+|1834                             |1834/now  |
+|2009                             |2009/now  |
+|2004                             |2004/now  |
+|1925                             |1925/now  |
+|2009                             |2009/now  |
+|1987                             |1987/now  |
+|1933                             |1933/now  |
+|1937                             |1937/now  |
+|1950                             |1950/now  |
+|1937                             |1937/now  |
+|1991                             |1991/now  |
+|2006                             |2006/now  |
+|2003                             |2003/now  |
+|1999                             |1999/now  |
+|2000                             |2000/now  |
+|1996                             |1996/now  |
+|2000                             |2000/now  |
+|2014                             |2014/now  |
+|2009                             |2009/now  |
+|2005                             |2005/now  |
+|1924                             |1924/now  |
+|2008                             |2008/now  |
+|1995                             |1995/now  |
+|1997                             |1997/now  |
+|1998                             |1998/now  |
+|1996                             |1996/now  |
+|1998                             |1998/now  |
+|1933                             |1933/now  |
+|1993                             |1993/now  |
+|2002                             |2002/now  |
+|< 1700                           |1700/now  |
+|1835                             |1835/now  |
+|1927                             |1927/now  |
+|1977                             |1977/now  |
+|1986                             |1986/now  |
+|1999                             |1999/now  |
+|1899                             |1899/now  |
+|1869                             |1869/now  |
+|1927                             |1927/now  |
+|2009                             |2009/now  |
+|1998                             |1998/now  |
+|1945                             |1945/now  |
+|2008                             |2008/now  |
+|2008                             |2008/now  |
+|<1600                            |1600/now  |
+|1996                             |1996/now  |
+|2004                             |2004/now  |
+|1991                             |1991/now  |
+|1999                             |1999/now  |
+|2007                             |2007/now  |
+|2005                             |2005/now  |
+|2003                             |2003/now  |
+|2006                             |2006/now  |
 |1730-1732                        |1730/1732 |
 
 remove intermediary steps `year`, `start_year`, `current_year`:
@@ -675,12 +675,12 @@ distribution %>%
 
 |taxonID                                    |locationID        |locality |countryCode |occurrenceStatus |eventDate |source     |
 |:------------------------------------------|:-----------------|:--------|:-----------|:----------------|:---------|:----------|
-|alien-macroinvertebrates-checklist:taxon:1 |ISO_3166-2:BE-VLG |Flanders |BE          |present          |1952/2017 |Kerckhof F |
-|alien-macroinvertebrates-checklist:taxon:2 |ISO_3166-2:BE-VLG |Flanders |BE          |present          |1700/2017 |Kerckhof F |
-|alien-macroinvertebrates-checklist:taxon:3 |ISO_3166-2:BE-VLG |Flanders |BE          |present          |1997/2017 |Kerckhof F |
-|alien-macroinvertebrates-checklist:taxon:4 |ISO_3166-2:BE-VLG |Flanders |BE          |present          |1986/2017 |Gérard P ( |
-|alien-macroinvertebrates-checklist:taxon:5 |ISO_3166-2:BE-VLG |Flanders |BE          |present          |1895/2017 |Wouters K  |
-|alien-macroinvertebrates-checklist:taxon:6 |ISO_3166-2:BE-VLG |Flanders |BE          |present          |1950/2017 |Leloup E,  |
+|alien-macroinvertebrates-checklist:taxon:1 |ISO_3166-2:BE-VLG |Flanders |BE          |present          |1952/now  |Kerckhof F |
+|alien-macroinvertebrates-checklist:taxon:2 |ISO_3166-2:BE-VLG |Flanders |BE          |present          |1700/now  |Kerckhof F |
+|alien-macroinvertebrates-checklist:taxon:3 |ISO_3166-2:BE-VLG |Flanders |BE          |present          |1997/now  |Kerckhof F |
+|alien-macroinvertebrates-checklist:taxon:4 |ISO_3166-2:BE-VLG |Flanders |BE          |present          |1986/now  |Gérard P ( |
+|alien-macroinvertebrates-checklist:taxon:5 |ISO_3166-2:BE-VLG |Flanders |BE          |present          |1895/now  |Wouters K  |
+|alien-macroinvertebrates-checklist:taxon:6 |ISO_3166-2:BE-VLG |Flanders |BE          |present          |1950/now  |Leloup E,  |
 
 Save to CSV:
 
