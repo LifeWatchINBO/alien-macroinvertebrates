@@ -2,7 +2,7 @@
 
 Lien Reyserhove, Dimitri Brosens, Peter Desmet
 
-2017-11-29
+2017-12-01
 
 This document describes how we map the checklist data to Darwin Core.
 
@@ -329,7 +329,7 @@ distribution %<>% mutate(locationID = "ISO_3166-2:BE-VLG")
 
 
 ```r
-distribution %<>% mutate(locality = "Flanders")
+distribution %<>% mutate(locality = "Flemish Region")
 ```
 
 #### countryCode
@@ -673,14 +673,14 @@ distribution %>%
 
 
 
-|taxonID                                    |locationID        |locality |countryCode |occurrenceStatus |eventDate |source     |
-|:------------------------------------------|:-----------------|:--------|:-----------|:----------------|:---------|:----------|
-|alien-macroinvertebrates-checklist:taxon:1 |ISO_3166-2:BE-VLG |Flanders |BE          |present          |1952/now  |Kerckhof F |
-|alien-macroinvertebrates-checklist:taxon:2 |ISO_3166-2:BE-VLG |Flanders |BE          |present          |1700/now  |Kerckhof F |
-|alien-macroinvertebrates-checklist:taxon:3 |ISO_3166-2:BE-VLG |Flanders |BE          |present          |1997/now  |Kerckhof F |
-|alien-macroinvertebrates-checklist:taxon:4 |ISO_3166-2:BE-VLG |Flanders |BE          |present          |1986/now  |Gérard P ( |
-|alien-macroinvertebrates-checklist:taxon:5 |ISO_3166-2:BE-VLG |Flanders |BE          |present          |1895/now  |Wouters K  |
-|alien-macroinvertebrates-checklist:taxon:6 |ISO_3166-2:BE-VLG |Flanders |BE          |present          |1950/now  |Leloup E,  |
+|taxonID                                    |locationID        |locality       |countryCode |occurrenceStatus |eventDate |source     |
+|:------------------------------------------|:-----------------|:--------------|:-----------|:----------------|:---------|:----------|
+|alien-macroinvertebrates-checklist:taxon:1 |ISO_3166-2:BE-VLG |Flemish Region |BE          |present          |1952/now  |Kerckhof F |
+|alien-macroinvertebrates-checklist:taxon:2 |ISO_3166-2:BE-VLG |Flemish Region |BE          |present          |1700/now  |Kerckhof F |
+|alien-macroinvertebrates-checklist:taxon:3 |ISO_3166-2:BE-VLG |Flemish Region |BE          |present          |1997/now  |Kerckhof F |
+|alien-macroinvertebrates-checklist:taxon:4 |ISO_3166-2:BE-VLG |Flemish Region |BE          |present          |1986/now  |Gérard P ( |
+|alien-macroinvertebrates-checklist:taxon:5 |ISO_3166-2:BE-VLG |Flemish Region |BE          |present          |1895/now  |Wouters K  |
+|alien-macroinvertebrates-checklist:taxon:6 |ISO_3166-2:BE-VLG |Flemish Region |BE          |present          |1950/now  |Leloup E,  |
 
 Save to CSV:
 
