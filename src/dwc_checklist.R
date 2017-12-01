@@ -177,7 +177,7 @@ distribution %<>% mutate(taxonID = raw_id)
 distribution %<>% mutate(locationID = "ISO_3166-2:BE-VLG")
 
 #' #### locality
-distribution %<>% mutate(locality = "Flanders")
+distribution %<>% mutate(locality = "Flemish Region")
 
 #' #### countryCode
 distribution %<>% mutate(countryCode = "BE")
