@@ -586,7 +586,7 @@ distribution %<>%
 ```
 
 Visualisation of this merge. 
-(`Boets. et al. unpub data`, `Collection RBINs` and `Dumoulin 2004` full references were lacking in `source`)
+(`Boets. et al. unpub data` and `Collection RBINS` full references were lacking in `source`)
 
 
 ```r
@@ -617,7 +617,7 @@ distribution %>%
 |Cook et al. 2007            |Cook EJ, J |       1|
 |Damas 1938                  |Damas H (1 |       1|
 |Dewicke 2002                |Dewicke A  |       1|
-|Dumoulin 2004               |Dumoulin 2 |       1|
+|Dumoulin 2004               |Dumoulin E |       1|
 |Faasse and Van Moorsel 2003 |Faasse M,  |       2|
 |Gerard 1986                 |Gérard P ( |       2|
 |Keppens and Mienis 2004     |Keppens M, |       1|
@@ -1225,7 +1225,7 @@ description_ext %<>%
 ```
 
 Visualisation of this merge. 
-(`Boets. et al. unpub data`, `Collection RBINs` and `Dumoulin 2004` full references are lacking in `source`)
+(`Boets. et al. unpub data` and `Collection RBINS` full references are lacking in `source`)
 
 
 ```r
@@ -1256,7 +1256,7 @@ description_ext %>%
 |Cook et al. 2007            |Cook EJ, J |       4|
 |Damas 1938                  |Damas H (1 |       4|
 |Dewicke 2002                |Dewicke A  |       4|
-|Dumoulin 2004               |Dumoulin 2 |       4|
+|Dumoulin 2004               |Dumoulin E |       4|
 |Faasse and Van Moorsel 2003 |Faasse M,  |       7|
 |Gerard 1986                 |Gérard P ( |       6|
 |Keppens and Mienis 2004     |Keppens M, |       3|
