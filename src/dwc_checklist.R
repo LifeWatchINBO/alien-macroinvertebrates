@@ -118,7 +118,6 @@ taxon %<>% mutate (phylum = recode (raw_phylum, "Crustacea" = "Arthropoda"))
 #' #### order
 taxon %<>% 
   mutate(order = recode(raw_order, 
-                        "Tubficida" = "Haplotaxida",
                         "Veneroidea" = "Venerida")) %<>%
   mutate (order = str_trim(order))
 
@@ -252,7 +251,7 @@ distribution %<>%
   rename(source = reference)
 
 #' Visualisation of this merge. 
-#' (`Boets. et al. unpub data`, `Collection RBINs` and `Dumoulin 2004` full references were lacking in `source`)
+#' (`Boets. et al. unpub data` and `Collection RBINS` full references were lacking in `source`)
 distribution %>% 
   mutate (source = substr(source, 1,10)) %>%  # shorten full reference to make it easier to display 
   rename (citation = raw_reference) %>%
@@ -523,7 +522,7 @@ description_ext %<>%
   rename(source = reference)
 
 #' Visualisation of this merge. 
-#' (`Boets. et al. unpub data`, `Collection RBINs` and `Dumoulin 2004` full references are lacking in `source`)
+#' (`Boets. et al. unpub data` and `Collection RBINS` full references are lacking in `source`)
 description_ext %>% 
   mutate (source = substr(source, 1,10)) %>%  # shorten full reference to make it easier to display 
   rename (citation = raw_reference) %>%
@@ -564,3 +563,4 @@ description_ext %>%
 
 #' Save to CSV:
 write.csv(description_ext, file = dwc_description_file, na = "", row.names = FALSE, fileEncoding = "UTF-8")
+
