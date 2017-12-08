@@ -2,7 +2,7 @@
 
 Lien Reyserhove, Dimitri Brosens, Peter Desmet
 
-2017-12-01
+2017-12-08
 
 This document describes how we map the checklist data to Darwin Core.
 
@@ -224,7 +224,6 @@ taxon %<>% mutate (phylum = recode (raw_phylum, "Crustacea" = "Arthropoda"))
 ```r
 taxon %<>% 
   mutate(order = recode(raw_order, 
-                        "Tubficida" = "Haplotaxida",
                         "Veneroidea" = "Venerida")) %<>%
   mutate (order = str_trim(order))
 ```

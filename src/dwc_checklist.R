@@ -118,7 +118,6 @@ taxon %<>% mutate (phylum = recode (raw_phylum, "Crustacea" = "Arthropoda"))
 #' #### order
 taxon %<>% 
   mutate(order = recode(raw_order, 
-                        "Tubficida" = "Haplotaxida",
                         "Veneroidea" = "Venerida")) %<>%
   mutate (order = str_trim(order))
 
