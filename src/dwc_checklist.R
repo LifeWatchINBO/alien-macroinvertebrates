@@ -361,19 +361,16 @@ kable(head(native_range))
 
 #' #### Pathway (pathway of introduction)
 #' 
-#' `raw_pathway_of_introduction` contains information on the pathway of introduction (e.g. `aquaculture`). We'll separate, clean, map and combine these values.
+#' `raw_pathway_of_introduction` contains the raw information on the pathway of introduction (e.g. `aquaculture`).
+#' `raw_pathway_mapping` contains the interpretation of this pathway information bij @timadriaens. We will use this information to further process our mapping to DwC Archive.
+#' (Remarks on this interpretation are given in `raw_pathway_mapping_remarks`)
+#'  We'll separate, clean, map and combine these values.
 #' 
 #' Create new data frame:
 pathway <- raw_data
 
-#' Inspect `pathway`:
-pathway %>%
-  distinct(raw_pathway_of_introduction) %>%
-  arrange(raw_pathway_of_introduction) %>%
-  kable()
-
-#' Similar as for `native_range`, we create a new variable `description` in `pathway` from `raw_pathway_of_introduction`:
-pathway %<>% mutate(description = raw_pathway_of_introduction)
+#' Similar as for `native_range`, we create a new variable `description` in `pathway` from `raw_pathway_mapping`:
+pathway %<>% mutate(description = raw_pathway_mapping)
 
 #' Separate `description` on column in 3 columns.
 # In case there are more than 3 values, these will be merged in pathway_3. 
@@ -381,7 +378,7 @@ pathway %<>% mutate(description = raw_pathway_of_introduction)
 pathway %<>% 
   separate(description, 
            into = c("pathway_1", "pathway_2", "pathway_3"),
-           sep = ", ",
+           sep = " \\| ",
            remove = TRUE,
            convert = FALSE,
            extra = "merge",
@@ -396,11 +393,7 @@ pathway %<>% gather(
   convert = FALSE
 )
 
-#' In `value`, both `other` and `others` is given as a pathway of introduction.
-#' We clean `value` by changing `others` --> `other`
-pathway %<>% mutate(value = recode(value, "others" = "other"))
-
-#' Show new values:
+#' Inspect new values:
 pathway %>%
   distinct(value) %>%
   arrange(value) %>%
