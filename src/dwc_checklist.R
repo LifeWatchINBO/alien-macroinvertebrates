@@ -332,6 +332,7 @@ native_range %<>% mutate(mapped_value = recode(value,
     "South-America" = "South America",
     "South-Europe" = "Southern Europe",
     "Southeast-Asia" = "Southeast Asia",
+    "Southern hemisphere" = "Southern Hemisphere",
     "USA" = "United States",
     "West-Africa" = "West Africa",
     "West-Atlantic" = "Western Atlantic"
