@@ -322,21 +322,21 @@ native_range %<>% gather(
 )
 
 #' Manually cleaning of `value` to make them more standardized
-native_range %<>% 
-  mutate(mapped_value = recode(
-    value,
-    "East-Asia" = "Eastern Asia",
+native_range %<>% mutate(mapped_value = recode(value,
+    "East-Asia" = "East Asia",
     "East-Europe" = "Eastern Europe",
     "Indio-Pacific" = "Indo-Pacific",
-    "North-Africa" = "Northern Africa",
+    "North-Africa" = "North Africa",
     "North-America" = "Northern America",
-    "Northeast-Asia" = "North-eastern Asia",
+    "Northeast-Asia" = "Northeast Asia",
     "South-America" = "South America",
     "South-Europe" = "Southern Europe",
-    "Southeast-Asia" = "South-eastern Asia",
-    "USA" = "United States of America",
-    "West-Africa" = "Western Africa",
-    "West-Atlantic" = "Western Atlantic"))
+    "Southeast-Asia" = "Southeast Asia",
+    "Southern hemisphere" = "Southern Hemisphere",
+    "USA" = "United States",
+    "West-Africa" = "West Africa",
+    "West-Atlantic" = "Western Atlantic"
+))
 
 #' Show mapped values:
 native_range %>%
@@ -556,4 +556,3 @@ description_ext %>%
 
 #' Save to CSV:
 write.csv(description_ext, file = dwc_description_file, na = "", row.names = FALSE, fileEncoding = "UTF-8")
-
