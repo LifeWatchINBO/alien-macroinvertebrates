@@ -393,15 +393,36 @@ pathway %<>% gather(
   convert = FALSE
 )
 
-#' Inspect new values:
+#' Inspect values:
 pathway %>%
   distinct(value) %>%
   arrange(value) %>%
   kable()
 
-#' Drop `key` column and rename `value`:
-pathway %<>% select(-key)
-pathway %<>% rename(description = value)
+#' recode values:
+pathway %<>% mutate (mapped_value = recode (value,
+  "Aquaculture" = "escape_aquaculture",
+  "Aquaculture / mariculture" = "escape_aquaculture",
+  "Contaminant on animals (except parasites, species transported by host/vector)" = "contaminant_on_animals",
+  "Interconnected waterways/basins/seas" = "corridor_water",
+  "Mariculture" = "escape_aquaculture",
+  "Other means of transport" = "stowaway_transport",
+  "Pet/aquarium/terrarium species (including live food for such species )" = "escape_pet",
+  "Ship/boat ballast water" = "stowaway_ballast_water",
+  "Ship/boat hull fouling" = "stowaway_hull_fouling"))
+
+#' Inspect new_pathways:
+pathway %>%
+  select(value, mapped_value) %>%
+  group_by(value, mapped_value) %>%
+  summarize(records = n()) %>%
+  arrange(value) %>%
+  kable()
+
+
+#' Drop `key` and `value` column and rename `mapped_value`:
+pathway %<>% select(-key, - value)
+pathway %<>% rename(description = mapped_value)
 
 #' Keep only non-empty descriptions:
 pathway %<>% filter(!is.na(description) & description != "")
