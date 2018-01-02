@@ -404,7 +404,7 @@ pathway %>%
 
 #' recode values:
 pathway %<>% mutate (mapped_value = recode (value,
-  "Aquaculture" = "cbd_2014_pathwayescape_aquaculture",
+  "Aquaculture" = "cbd_2014_pathway:escape_aquaculture",
   "Aquaculture / mariculture" = "cbd_2014_pathway:escape_aquaculture",
   "Contaminant on animals (except parasites, species transported by host/vector)" = "cbd_2014_pathway:contaminant_on_animals",
   "Interconnected waterways/basins/seas" = "cbd_2014_pathway:corridor_water",
