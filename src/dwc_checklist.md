@@ -2,7 +2,7 @@
 
 Lien Reyserhove, Dimitri Brosens, Peter Desmet
 
-2017-12-11
+2018-01-02
 
 This document describes how we map the checklist data to Darwin Core.
 
@@ -779,21 +779,21 @@ Manually cleaning of `value` to make them more standardized
 
 
 ```r
-native_range %<>% 
-  mutate(mapped_value = recode(
-    value,
-    "East-Asia" = "Eastern Asia",
+native_range %<>% mutate(mapped_value = recode(value,
+    "East-Asia" = "East Asia",
     "East-Europe" = "Eastern Europe",
     "Indio-Pacific" = "Indo-Pacific",
-    "North-Africa" = "Northern Africa",
+    "North-Africa" = "North Africa",
     "North-America" = "Northern America",
-    "Northeast-Asia" = "North-eastern Asia",
+    "Northeast-Asia" = "Northeast Asia",
     "South-America" = "South America",
     "South-Europe" = "Southern Europe",
-    "Southeast-Asia" = "South-eastern Asia",
-    "USA" = "United States of America",
-    "West-Africa" = "Western Africa",
-    "West-Atlantic" = "Western Atlantic"))
+    "Southeast-Asia" = "Southeast Asia",
+    "Southern hemisphere" = "Southern Hemisphere",
+    "USA" = "United States",
+    "West-Africa" = "West Africa",
+    "West-Atlantic" = "Western Atlantic"
+))
 ```
 
 Show mapped values:
@@ -810,28 +810,28 @@ native_range %>%
 
 
 
-|value                  |mapped_value             | records|
-|:----------------------|:------------------------|-------:|
-|Africa                 |Africa                   |       1|
-|Asia                   |Asia                     |       7|
-|Australia              |Australia                |       3|
-|China                  |China                    |       1|
-|East-Asia              |Eastern Asia             |       1|
-|East-Europe            |Eastern Europe           |       1|
-|Indio-Pacific          |Indo-Pacific             |       1|
-|New Zealand            |New Zealand              |       2|
-|North-Africa           |Northern Africa          |       1|
-|North-America          |Northern America         |      27|
-|Northeast-Asia         |North-eastern Asia       |       1|
-|Ponto-Caspian          |Ponto-Caspian            |      15|
-|South-America          |South America            |       1|
-|South-Europe           |Southern Europe          |       6|
-|Southeast-Asia         |South-eastern Asia       |       3|
-|Southern hemisphere    |Southern hemisphere      |       1|
-|Tropical and warm seas |Tropical and warm seas   |       1|
-|USA                    |United States of America |       1|
-|West-Africa            |Western Africa           |       1|
-|West-Atlantic          |Western Atlantic         |       1|
+|value                  |mapped_value           | records|
+|:----------------------|:----------------------|-------:|
+|Africa                 |Africa                 |       1|
+|Asia                   |Asia                   |       7|
+|Australia              |Australia              |       3|
+|China                  |China                  |       1|
+|East-Asia              |East Asia              |       1|
+|East-Europe            |Eastern Europe         |       1|
+|Indio-Pacific          |Indo-Pacific           |       1|
+|New Zealand            |New Zealand            |       2|
+|North-Africa           |North Africa           |       1|
+|North-America          |Northern America       |      27|
+|Northeast-Asia         |Northeast Asia         |       1|
+|Ponto-Caspian          |Ponto-Caspian          |      15|
+|South-America          |South America          |       1|
+|South-Europe           |Southern Europe        |       6|
+|Southeast-Asia         |Southeast Asia         |       3|
+|Southern hemisphere    |Southern Hemisphere    |       1|
+|Tropical and warm seas |Tropical and warm seas |       1|
+|USA                    |United States          |       1|
+|West-Africa            |West Africa            |       1|
+|West-Atlantic          |Western Atlantic       |       1|
 
 Drop `key` and `value` column and rename `mapped value`:
 
@@ -923,7 +923,7 @@ pathway %<>% gather(
 )
 ```
 
-Inspect new values:
+Inspect values:
 
 
 ```r
@@ -947,12 +947,56 @@ pathway %>%
 |Ship/boat ballast water                                                       |
 |Ship/boat hull fouling                                                        |
 
-Drop `key` column and rename `value`:
+For `pathway` information, we use the suggested vocabulary for introduction pathways used in the TrIAS project, summarized [here]((https://github.com/trias-project/vocab/tree/master/vocabulary/pathway).
+This standardized vocabulary is based on the [CBD 2014 standard](https://www.cbd.int/doc/meetings/sbstta/sbstta-18/official/sbstta-18-09-add1-en.pdf)
+recode values:
 
 
 ```r
-pathway %<>% select(-key)
-pathway %<>% rename(description = value)
+pathway %<>% mutate (mapped_value = recode (value,
+  "Aquaculture" = "cbd_2014_pathway:escape_aquaculture",
+  "Aquaculture / mariculture" = "cbd_2014_pathway:escape_aquaculture",
+  "Contaminant on animals (except parasites, species transported by host/vector)" = "cbd_2014_pathway:contaminant_on_animals",
+  "Interconnected waterways/basins/seas" = "cbd_2014_pathway:corridor_water",
+  "Mariculture" = "cbd_2014_pathway:escape_aquaculture",
+  "Other means of transport" = "cbd_2014_pathway:stowaway_other",
+  "Pet/aquarium/terrarium species (including live food for such species )" = "cbd_2014_pathway:escape_pet",
+  "Ship/boat ballast water" = "cbd_2014_pathway:stowaway_ballast_water",
+  "Ship/boat hull fouling" = "cbd_2014_pathway:stowaway_hull_fouling"))
+```
+
+Inspect new_pathways:
+
+
+```r
+pathway %>%
+  select(value, mapped_value) %>%
+  group_by(value, mapped_value) %>%
+  summarize(records = n()) %>%
+  arrange(value) %>%
+  kable()
+```
+
+
+
+|value                                                                         |mapped_value                            | records|
+|:-----------------------------------------------------------------------------|:---------------------------------------|-------:|
+|Aquaculture                                                                   |cbd_2014_pathway:escape_aquaculture     |       7|
+|Aquaculture / mariculture                                                     |cbd_2014_pathway:escape_aquaculture     |       1|
+|Contaminant on animals (except parasites, species transported by host/vector) |cbd_2014_pathway:contaminant_on_animals |       5|
+|Interconnected waterways/basins/seas                                          |cbd_2014_pathway:corridor_water         |      18|
+|Mariculture                                                                   |cbd_2014_pathway:escape_aquaculture     |       1|
+|Other means of transport                                                      |cbd_2014_pathway:stowaway_other         |      11|
+|Pet/aquarium/terrarium species (including live food for such species )        |cbd_2014_pathway:escape_pet             |       4|
+|Ship/boat ballast water                                                       |cbd_2014_pathway:stowaway_ballast_water |      31|
+|Ship/boat hull fouling                                                        |cbd_2014_pathway:stowaway_hull_fouling  |      26|
+
+Drop `key` and `value` column and rename `mapped_value`:
+
+
+```r
+pathway %<>% select(-key, - value)
+pathway %<>% rename(description = mapped_value)
 ```
 
 Keep only non-empty descriptions:
@@ -978,14 +1022,14 @@ kable(head(pathway))
 
 
 
-|raw_id                                     |raw_phylum |raw_order |raw_family      |raw_species              |raw_origin             |raw_first_occurrence_in_flanders |raw_pathway_of_introduction |raw_pathway_mapping                                                                                                                        |raw_salinity_zone |raw_reference               |raw_pathway_mapping_remarks                                       |description                                                            |type    |
-|:------------------------------------------|:----------|:---------|:---------------|:------------------------|:----------------------|:--------------------------------|:---------------------------|:------------------------------------------------------------------------------------------------------------------------------------------|:-----------------|:---------------------------|:-----------------------------------------------------------------|:----------------------------------------------------------------------|:-------|
-|alien-macroinvertebrates-checklist:taxon:1 |Crustacea  |Sessilia  |Balanidae       |Amphibalanus amphitrite  |South-Europe           |1952                             |shipping                    |Ship/boat hull fouling                                                                                                                     |M                 |Kerckhof and Catrijsse 2001 |NA                                                                |Ship/boat hull fouling                                                 |pathway |
-|alien-macroinvertebrates-checklist:taxon:2 |Crustacea  |Sessilia  |Balanidae       |Amphibalanus improvisus  |West-Atlantic          |before 1700                      |shipping                    |Ship/boat hull fouling &#124; Ship/boat ballast water &#124; Contaminant on animals (except parasites, species transported by host/vector) |M                 |Kerckhof and Catrijsse 2001 |considered transport with oyster lots as 'Contaminant on animals' |Ship/boat hull fouling                                                 |pathway |
-|alien-macroinvertebrates-checklist:taxon:3 |Crustacea  |Sessilia  |Balanidae       |Amphibalanus reticulatus |Tropical and warm seas |1997                             |shipping                    |Ship/boat hull fouling                                                                                                                     |M                 |Kerckhof and Catrijsse 2001 |NA                                                                |Ship/boat hull fouling                                                 |pathway |
-|alien-macroinvertebrates-checklist:taxon:4 |Crustacea  |Decapoda  |Astacidae       |Astacus leptodactylus    |East-Europe            |1986                             |aquaculture                 |Aquaculture                                                                                                                                |F                 |Gerard 1986                 |NA                                                                |Aquaculture                                                            |pathway |
-|alien-macroinvertebrates-checklist:taxon:5 |Crustacea  |Decapoda  |Atyidae         |Atyaephyra desmaresti    |South-Europe           |1895                             |aquarium trade              |Pet/aquarium/terrarium species (including live food for such species )                                                                     |F                 |Wouters 2002                |NA                                                                |Pet/aquarium/terrarium species (including live food for such species ) |pathway |
-|alien-macroinvertebrates-checklist:taxon:6 |Crustacea  |Sessilia  |Austrobalanidae |Austrominius modestus    |Australia, Asia        |1950                             |shipping                    |Ship/boat hull fouling                                                                                                                     |M                 |Leloup and Lefevre 1952     |NA                                                                |Ship/boat hull fouling                                                 |pathway |
+|raw_id                                     |raw_phylum |raw_order |raw_family      |raw_species              |raw_origin             |raw_first_occurrence_in_flanders |raw_pathway_of_introduction |raw_pathway_mapping                                                                                                                        |raw_salinity_zone |raw_reference               |raw_pathway_mapping_remarks                                       |description                            |type    |
+|:------------------------------------------|:----------|:---------|:---------------|:------------------------|:----------------------|:--------------------------------|:---------------------------|:------------------------------------------------------------------------------------------------------------------------------------------|:-----------------|:---------------------------|:-----------------------------------------------------------------|:--------------------------------------|:-------|
+|alien-macroinvertebrates-checklist:taxon:1 |Crustacea  |Sessilia  |Balanidae       |Amphibalanus amphitrite  |South-Europe           |1952                             |shipping                    |Ship/boat hull fouling                                                                                                                     |M                 |Kerckhof and Catrijsse 2001 |NA                                                                |cbd_2014_pathway:stowaway_hull_fouling |pathway |
+|alien-macroinvertebrates-checklist:taxon:2 |Crustacea  |Sessilia  |Balanidae       |Amphibalanus improvisus  |West-Atlantic          |before 1700                      |shipping                    |Ship/boat hull fouling &#124; Ship/boat ballast water &#124; Contaminant on animals (except parasites, species transported by host/vector) |M                 |Kerckhof and Catrijsse 2001 |considered transport with oyster lots as 'Contaminant on animals' |cbd_2014_pathway:stowaway_hull_fouling |pathway |
+|alien-macroinvertebrates-checklist:taxon:3 |Crustacea  |Sessilia  |Balanidae       |Amphibalanus reticulatus |Tropical and warm seas |1997                             |shipping                    |Ship/boat hull fouling                                                                                                                     |M                 |Kerckhof and Catrijsse 2001 |NA                                                                |cbd_2014_pathway:stowaway_hull_fouling |pathway |
+|alien-macroinvertebrates-checklist:taxon:4 |Crustacea  |Decapoda  |Astacidae       |Astacus leptodactylus    |East-Europe            |1986                             |aquaculture                 |Aquaculture                                                                                                                                |F                 |Gerard 1986                 |NA                                                                |cbd_2014_pathway:escape_aquaculture    |pathway |
+|alien-macroinvertebrates-checklist:taxon:5 |Crustacea  |Decapoda  |Atyidae         |Atyaephyra desmaresti    |South-Europe           |1895                             |aquarium trade              |Pet/aquarium/terrarium species (including live food for such species )                                                                     |F                 |Wouters 2002                |NA                                                                |cbd_2014_pathway:escape_pet            |pathway |
+|alien-macroinvertebrates-checklist:taxon:6 |Crustacea  |Sessilia  |Austrobalanidae |Austrominius modestus    |Australia, Asia        |1950                             |shipping                    |Ship/boat hull fouling                                                                                                                     |M                 |Leloup and Lefevre 1952     |NA                                                                |cbd_2014_pathway:stowaway_hull_fouling |pathway |
 
 #### Habitat
 
@@ -1310,14 +1354,14 @@ description_ext %>%
 
 
 
-|taxonID                                     |description              |type         |source     |language |
-|:-------------------------------------------|:------------------------|:------------|:----------|:--------|
-|alien-macroinvertebrates-checklist:taxon:1  |Southern Europe          |native range |Kerckhof F |en       |
-|alien-macroinvertebrates-checklist:taxon:1  |Ship/boat hull fouling   |pathway      |Kerckhof F |en       |
-|alien-macroinvertebrates-checklist:taxon:1  |marine                   |habitat      |Kerckhof F |en       |
-|alien-macroinvertebrates-checklist:taxon:10 |Northern America         |native range |Van Damme  |en       |
-|alien-macroinvertebrates-checklist:taxon:10 |Ship/boat hull fouling   |pathway      |Van Damme  |en       |
-|alien-macroinvertebrates-checklist:taxon:10 |Other means of transport |pathway      |Van Damme  |en       |
+|taxonID                                     |description                            |type         |source     |language |
+|:-------------------------------------------|:--------------------------------------|:------------|:----------|:--------|
+|alien-macroinvertebrates-checklist:taxon:1  |Southern Europe                        |native range |Kerckhof F |en       |
+|alien-macroinvertebrates-checklist:taxon:1  |cbd_2014_pathway:stowaway_hull_fouling |pathway      |Kerckhof F |en       |
+|alien-macroinvertebrates-checklist:taxon:1  |marine                                 |habitat      |Kerckhof F |en       |
+|alien-macroinvertebrates-checklist:taxon:10 |Northern America                       |native range |Van Damme  |en       |
+|alien-macroinvertebrates-checklist:taxon:10 |cbd_2014_pathway:stowaway_hull_fouling |pathway      |Van Damme  |en       |
+|alien-macroinvertebrates-checklist:taxon:10 |cbd_2014_pathway:stowaway_other        |pathway      |Van Damme  |en       |
 
 Save to CSV:
 
