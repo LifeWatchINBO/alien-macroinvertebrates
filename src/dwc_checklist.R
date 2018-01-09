@@ -403,16 +403,19 @@ pathway %>%
 #' This standardized vocabulary is based on the [CBD 2014 standard](https://www.cbd.int/doc/meetings/sbstta/sbstta-18/official/sbstta-18-09-add1-en.pdf)
 
 #' recode values:
-pathway %<>% mutate (mapped_value = recode (value,
-  "Aquaculture" = "cbd_2014_pathway:escape_aquaculture",
-  "Aquaculture / mariculture" = "cbd_2014_pathway:escape_aquaculture",
-  "Contaminant on animals (except parasites, species transported by host/vector)" = "cbd_2014_pathway:contaminant_on_animals",
-  "Interconnected waterways/basins/seas" = "cbd_2014_pathway:corridor_water",
-  "Mariculture" = "cbd_2014_pathway:escape_aquaculture",
-  "Other means of transport" = "cbd_2014_pathway:stowaway_other",
-  "Pet/aquarium/terrarium species (including live food for such species )" = "cbd_2014_pathway:escape_pet",
-  "Ship/boat ballast water" = "cbd_2014_pathway:stowaway_ballast_water",
-  "Ship/boat hull fouling" = "cbd_2014_pathway:stowaway_hull_fouling"))
+pathway %<>% mutate (cbd_stand = recode (value,
+  "Aquaculture" = "escape_aquaculture",
+  "Aquaculture / mariculture" = "escape_aquaculture",
+  "Contaminant on animals (except parasites, species transported by host/vector)" = "contaminant_on_animals",
+  "Interconnected waterways/basins/seas" = "corridor_water",
+  "Mariculture" = "escape_aquaculture",
+  "Other means of transport" = "stowaway_other",
+  "Pet/aquarium/terrarium species (including live food for such species )" = "escape_pet",
+  "Ship/boat ballast water" = "stowaway_ballast_water",
+  "Ship/boat hull fouling" = "stowaway_hull_fouling"))
+
+#' Add prefix `cbd_2014_pathway`:
+pathway %<>% mutate(mapped_value = paste ("cbd_2014_pathway", cbd_stand, sep = ":"))
 
 #' Inspect new_pathways:
 pathway %>%
@@ -423,8 +426,8 @@ pathway %>%
   kable()
 
 
-#' Drop `key` and `value` column and rename `mapped_value`:
-pathway %<>% select(-key, - value)
+#' Drop `key`, `value` and `cbd_stand` column and rename `mapped_value`:
+pathway %<>% select(-key, - value, -cbd_stand)
 pathway %<>% rename(description = mapped_value)
 
 #' Keep only non-empty descriptions:

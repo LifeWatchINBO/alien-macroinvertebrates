@@ -2,7 +2,7 @@
 
 Lien Reyserhove, Dimitri Brosens, Peter Desmet
 
-2018-01-02
+2018-01-09
 
 This document describes how we map the checklist data to Darwin Core.
 
@@ -953,16 +953,23 @@ recode values:
 
 
 ```r
-pathway %<>% mutate (mapped_value = recode (value,
-  "Aquaculture" = "cbd_2014_pathway:escape_aquaculture",
-  "Aquaculture / mariculture" = "cbd_2014_pathway:escape_aquaculture",
-  "Contaminant on animals (except parasites, species transported by host/vector)" = "cbd_2014_pathway:contaminant_on_animals",
-  "Interconnected waterways/basins/seas" = "cbd_2014_pathway:corridor_water",
-  "Mariculture" = "cbd_2014_pathway:escape_aquaculture",
-  "Other means of transport" = "cbd_2014_pathway:stowaway_other",
-  "Pet/aquarium/terrarium species (including live food for such species )" = "cbd_2014_pathway:escape_pet",
-  "Ship/boat ballast water" = "cbd_2014_pathway:stowaway_ballast_water",
-  "Ship/boat hull fouling" = "cbd_2014_pathway:stowaway_hull_fouling"))
+pathway %<>% mutate (cbd_stand = recode (value,
+  "Aquaculture" = "escape_aquaculture",
+  "Aquaculture / mariculture" = "escape_aquaculture",
+  "Contaminant on animals (except parasites, species transported by host/vector)" = "contaminant_on_animals",
+  "Interconnected waterways/basins/seas" = "corridor_water",
+  "Mariculture" = "escape_aquaculture",
+  "Other means of transport" = "stowaway_other",
+  "Pet/aquarium/terrarium species (including live food for such species )" = "escape_pet",
+  "Ship/boat ballast water" = "stowaway_ballast_water",
+  "Ship/boat hull fouling" = "stowaway_hull_fouling"))
+```
+
+Add prefix `cbd_2014_pathway`:
+
+
+```r
+pathway %<>% mutate(mapped_value = paste ("cbd_2014_pathway", cbd_stand, sep = ":"))
 ```
 
 Inspect new_pathways:
@@ -991,11 +998,11 @@ pathway %>%
 |Ship/boat ballast water                                                       |cbd_2014_pathway:stowaway_ballast_water |      31|
 |Ship/boat hull fouling                                                        |cbd_2014_pathway:stowaway_hull_fouling  |      26|
 
-Drop `key` and `value` column and rename `mapped_value`:
+Drop `key`, `value` and `cbd_stand` column and rename `mapped_value`:
 
 
 ```r
-pathway %<>% select(-key, - value)
+pathway %<>% select(-key, - value, -cbd_stand)
 pathway %<>% rename(description = mapped_value)
 ```
 
