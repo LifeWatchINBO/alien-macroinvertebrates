@@ -393,15 +393,42 @@ pathway %<>% gather(
   convert = FALSE
 )
 
-#' Inspect new values:
+#' Inspect values:
 pathway %>%
   distinct(value) %>%
   arrange(value) %>%
   kable()
 
-#' Drop `key` column and rename `value`:
-pathway %<>% select(-key)
-pathway %<>% rename(description = value)
+#' For `pathway` information, we use the suggested vocabulary for introduction pathways used in the TrIAS project, summarized [here]((https://github.com/trias-project/vocab/tree/master/vocabulary/pathway).
+#' This standardized vocabulary is based on the [CBD 2014 standard](https://www.cbd.int/doc/meetings/sbstta/sbstta-18/official/sbstta-18-09-add1-en.pdf)
+
+#' recode values:
+pathway %<>% mutate (cbd_stand = recode (value,
+  "Aquaculture" = "escape_aquaculture",
+  "Aquaculture / mariculture" = "escape_aquaculture",
+  "Contaminant on animals (except parasites, species transported by host/vector)" = "contaminant_on_animals",
+  "Interconnected waterways/basins/seas" = "corridor_water",
+  "Mariculture" = "escape_aquaculture",
+  "Other means of transport" = "stowaway_other",
+  "Pet/aquarium/terrarium species (including live food for such species )" = "escape_pet",
+  "Ship/boat ballast water" = "stowaway_ballast_water",
+  "Ship/boat hull fouling" = "stowaway_hull_fouling"))
+
+#' Add prefix `cbd_2014_pathway`:
+pathway %<>% mutate(mapped_value = paste ("cbd_2014_pathway", cbd_stand, sep = ":"))
+
+#' Inspect new_pathways:
+pathway %>%
+  select(value, mapped_value) %>%
+  group_by(value, mapped_value) %>%
+  summarize(records = n()) %>%
+  arrange(value) %>%
+  kable()
+
+
+#' Drop `key`, `value` and `cbd_stand` column and rename `mapped_value`:
+pathway %<>% select(-key, - value, -cbd_stand)
+pathway %<>% rename(description = mapped_value)
 
 #' Keep only non-empty descriptions:
 pathway %<>% filter(!is.na(description) & description != "")
