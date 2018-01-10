@@ -25,7 +25,8 @@ library(magrittr)  # For %<>% pipes
 library(janitor)   # For cleaning input data
 library(knitr)     # For nicer (kable) tables
 library(readxl)    # To read excel files
-library(stringr)   # to perform string operations
+library(stringr)   # To perform string operations
+library(digest)    # To generate hashes
 
 #' Set file paths (all paths should be relative to this script):
 #' 
@@ -48,6 +49,15 @@ sources <- read.table(sources_file, sep = "\t", quote="", colClasses = "characte
 raw_data %<>%
   remove_empty_rows() %>%     # Remove empty rows
   clean_names()               # Have sensible (lowercase) column names
+
+#' We need to integrate the DwC term `taxonID` in each of the generated files (Taxon Core and Extensions).
+#' For this reason, it is easier to generate `taxonID` in the raw file. 
+#' First, we vectorize the digest function (The digest() function isn't vectorized. 
+#' So if you pass in a vector, you get one value for the whole vector rather than a digest for each element of the vector):
+vdigest <- Vectorize(digest)
+
+#' Generate `taxonID`:
+raw_data %<>% mutate(taxonID = paste("alien-macroinvertebrates", "taxon", vdigest (species, algo="md5"), sep=":"))
 
 #' Add prefix `raw_` to all column names to avoid name clashes with Darwin Core terms:
 colnames(raw_data) <- paste0("raw_", colnames(raw_data))
@@ -89,7 +99,7 @@ taxon %<>% mutate(datasetName = "Checklist of alien macroinvertebrates in Flande
 
 #' #### references
 #' #### taxonID
-taxon%<>% mutate(taxonID = raw_id)
+taxon%<>% mutate(taxonID = raw_taxonID)
   
 #' #### scientificNameID
 #' #### acceptedNameUsageID
@@ -121,7 +131,6 @@ taxon %<>%
                         "Veneroidea" = "Venerida")) %<>%
   mutate (order = str_trim(order))
 
-
 #' #### family
 taxon %<>% mutate(family = raw_family)
 
@@ -137,9 +146,6 @@ taxon %<>% mutate(taxonRank = case_when(
 
 #' #### verbatimTaxonRank
 #' #### scientificNameAuthorship
-
-#' To be completed!
-
 #' #### vernacularName
 #' #### nomenclaturalCode
 taxon %<>% mutate(nomenclaturalCode = "ICZN")
@@ -170,7 +176,7 @@ distribution <- raw_data
 #' Map the source data to [Species Distribution](http://rs.gbif.org/extension/gbif/1.0/distribution.xml):
 
 #' #### taxonID
-distribution %<>% mutate(taxonID = raw_id)
+distribution %<>% mutate(taxonID = raw_taxonID)
   
 #' #### locationID
 distribution %<>% mutate(locationID = "ISO_3166-2:BE-VLG")
@@ -513,7 +519,7 @@ description_ext <- bind_rows(native_range, pathway, habitat)
 #' Map the source data to [Taxon Description](http://rs.gbif.org/extension/gbif/1.0/description.xml):
 
 #' #### taxonID
-description_ext %<>% mutate(taxonID = raw_id)
+description_ext %<>% mutate(taxonID = raw_taxonID)
 
 #' #### description
 description_ext %<>% mutate(description = description)
