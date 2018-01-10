@@ -2,7 +2,7 @@
 
 Lien Reyserhove, Dimitri Brosens, Peter Desmet
 
-2018-01-09
+2018-01-10
 
 This document describes how we map the checklist data to Darwin Core.
 
@@ -996,7 +996,7 @@ pathway %>%
 |Other means of transport                                                      |cbd_2014_pathway:stowaway_other         |      11|
 |Pet/aquarium/terrarium species (including live food for such species )        |cbd_2014_pathway:escape_pet             |       4|
 |Ship/boat ballast water                                                       |cbd_2014_pathway:stowaway_ballast_water |      31|
-|Ship/boat hull fouling                                                        |cbd_2014_pathway:stowaway_hull_fouling  |      26|
+|Ship/boat hull fouling                                                        |cbd_2014_pathway:stowaway_hull_fouling  |      20|
 
 Drop `key`, `value` and `cbd_stand` column and rename `mapped_value`:
 
@@ -1278,9 +1278,9 @@ description_ext %>%
 |Collection RBINS            |Collection |       9|
 |Cook et al. 2007            |Cook EJ, J |       4|
 |Damas 1938                  |Damas H (1 |       4|
-|Dewicke 2002                |Dewicke A  |       6|
-|Dumoulin 2004               |Dumoulin E |       4|
-|Faasse and Van Moorsel 2003 |Faasse M,  |       8|
+|Dewicke 2002                |Dewicke A  |       5|
+|Dumoulin 2004               |Dumoulin E |       3|
+|Faasse and Van Moorsel 2003 |Faasse M,  |       7|
 |Gerard 1986                 |Gérard P ( |       6|
 |Keppens and Mienis 2004     |Keppens M, |       4|
 |Kerckhof and Catrijsse 2001 |Kerckhof F |      18|
@@ -1291,17 +1291,17 @@ description_ext %>%
 |Lock et al. 2007            |Lock K, Va |       3|
 |Loppens 1902                |Loppens K  |       3|
 |Messiaen et al. 2010        |Messiaen M |      11|
-|Nuyttens et al. 2006        |Nuyttens F |       4|
+|Nuyttens et al. 2006        |Nuyttens F |       3|
 |Nyst 1835 &#124; Adam 1947  |Nyst HJP ( |       5|
 |Sablon et al. 2010a         |Sablon R,  |       3|
 |Sablon et al. 2010b         |Sablon R,  |       3|
 |Sellius 1733                |Sellius G  |       3|
 |Seys et al. 1999            |Seys J, Vi |       3|
-|Soors et al. 2010           |Soors J, F |       4|
+|Soors et al. 2010           |Soors J, F |       3|
 |Soors et al. 2013           |Soors J, v |      28|
 |Swinnen et al. 1998         |Swinnen F, |       6|
 |Van Damme and Maes 1993     |Van Damme  |       5|
-|Van Damme et al. 1992       |Van Damme  |       5|
+|Van Damme et al. 1992       |Van Damme  |       4|
 |Van Goethem and Sablon 1986 |Van Goethe |       3|
 |van Haaren and Soors 2009   |van Haaren |       4|
 |Vandepitte et al. 2012      |Vandepitte |       3|
