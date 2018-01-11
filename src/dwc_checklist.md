@@ -2,7 +2,7 @@
 
 Lien Reyserhove, Dimitri Brosens, Peter Desmet
 
-2018-01-10
+2018-01-11
 
 This document describes how we map the checklist data to Darwin Core.
 
@@ -365,6 +365,12 @@ distribution %<>% mutate(occurrenceStatus = "present")
 
 #### threatStatus
 #### establishmentMeans
+
+
+```r
+distribution %<>% mutate(establishmentMeans = "introduced")
+```
+
 #### appendixCITES
 #### eventDate
 
@@ -689,14 +695,14 @@ distribution %>%
 
 
 
-|taxonID                                                         |locationID        |locality       |countryCode |occurrenceStatus |eventDate |source     |
-|:---------------------------------------------------------------|:-----------------|:--------------|:-----------|:----------------|:---------|:----------|
-|alien-macroinvertebrates:taxon:cebedf4407f487b424807ccd5478bfe6 |ISO_3166-2:BE-VLG |Flemish Region |BE          |present          |1952/now  |Kerckhof F |
-|alien-macroinvertebrates:taxon:db1c88330fce94a3483451f1e0fbc6af |ISO_3166-2:BE-VLG |Flemish Region |BE          |present          |1700/now  |Kerckhof F |
-|alien-macroinvertebrates:taxon:d9c2fd07436f56f3824955c88261e76e |ISO_3166-2:BE-VLG |Flemish Region |BE          |present          |1997/now  |Kerckhof F |
-|alien-macroinvertebrates:taxon:464f0edd615ac93ab279f425dc1060a3 |ISO_3166-2:BE-VLG |Flemish Region |BE          |present          |1986/now  |Gérard P ( |
-|alien-macroinvertebrates:taxon:54cca150e1e0b7c0b3f5b152ae64d62b |ISO_3166-2:BE-VLG |Flemish Region |BE          |present          |1895/now  |Wouters K  |
-|alien-macroinvertebrates:taxon:f9953a68ec0b35fb531b3d1917df59c7 |ISO_3166-2:BE-VLG |Flemish Region |BE          |present          |1950/now  |Leloup E,  |
+|taxonID                                                         |locationID        |locality       |countryCode |occurrenceStatus |establishmentMeans |eventDate |source     |
+|:---------------------------------------------------------------|:-----------------|:--------------|:-----------|:----------------|:------------------|:---------|:----------|
+|alien-macroinvertebrates:taxon:cebedf4407f487b424807ccd5478bfe6 |ISO_3166-2:BE-VLG |Flemish Region |BE          |present          |introduced         |1952/now  |Kerckhof F |
+|alien-macroinvertebrates:taxon:db1c88330fce94a3483451f1e0fbc6af |ISO_3166-2:BE-VLG |Flemish Region |BE          |present          |introduced         |1700/now  |Kerckhof F |
+|alien-macroinvertebrates:taxon:d9c2fd07436f56f3824955c88261e76e |ISO_3166-2:BE-VLG |Flemish Region |BE          |present          |introduced         |1997/now  |Kerckhof F |
+|alien-macroinvertebrates:taxon:464f0edd615ac93ab279f425dc1060a3 |ISO_3166-2:BE-VLG |Flemish Region |BE          |present          |introduced         |1986/now  |Gérard P ( |
+|alien-macroinvertebrates:taxon:54cca150e1e0b7c0b3f5b152ae64d62b |ISO_3166-2:BE-VLG |Flemish Region |BE          |present          |introduced         |1895/now  |Wouters K  |
+|alien-macroinvertebrates:taxon:f9953a68ec0b35fb531b3d1917df59c7 |ISO_3166-2:BE-VLG |Flemish Region |BE          |present          |introduced         |1950/now  |Leloup E,  |
 
 Save to CSV:
 
