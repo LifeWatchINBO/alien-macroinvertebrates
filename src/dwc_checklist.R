@@ -193,6 +193,8 @@ distribution %<>% mutate(occurrenceStatus = "present")
 
 #' #### threatStatus
 #' #### establishmentMeans
+distribution %<>% mutate(establishmentMeans = "introduced")
+
 #' #### appendixCITES
 #' #### eventDate
 #'
