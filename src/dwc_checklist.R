@@ -405,7 +405,7 @@ pathway %>%
   arrange(value) %>%
   kable()
 
-#' For `pathway` information, we use the suggested vocabulary for introduction pathways used in the TrIAS project, summarized [here]((https://github.com/trias-project/vocab/tree/master/vocabulary/pathway).
+#' For `pathway` information, we use the suggested vocabulary for introduction pathways used in the TrIAS project, summarized [here](https://github.com/trias-project/vocab/tree/master/vocabulary/pathway).
 #' This standardized vocabulary is based on the [CBD 2014 standard](https://www.cbd.int/doc/meetings/sbstta/sbstta-18/official/sbstta-18-09-add1-en.pdf)
 
 #' recode values:
