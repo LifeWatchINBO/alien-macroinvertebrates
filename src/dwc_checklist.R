@@ -50,6 +50,10 @@ raw_data %<>%
   remove_empty_rows() %>%     # Remove empty rows
   clean_names()               # Have sensible (lowercase) column names
 
+#' Distributions will have a start date and end date. The start date is the year of first observation (`first occurrence in Flanders`), but for the end date we have to assume when the presence of the species was last verified. 
+#' We'll use the publication year of Boets et al. 2016:
+raw_data %<>% mutate(end_year = "2016")
+
 #' We need to integrate the DwC term `taxonID` in each of the generated files (Taxon Core and Extensions).
 #' For this reason, it is easier to generate `taxonID` in the raw file. 
 #' First, we vectorize the digest function (The digest() function isn't vectorized. 
@@ -204,9 +208,9 @@ distribution %>%
   arrange(raw_first_occurrence_in_flanders) %>%
   kable()
 
-#' `eventDate` will be of format `start_year`/`current_year` (yyyy/now or yyyy/yyyy).
+#' `eventDate` will be of format `start_year`/`end_year` (yyyy/yyyy).
 #' `start_year` (yyyy) will contain the information from the following formats in `raw_first_occurrence_in_flanders`: "yyyy", "< yyyy", "<yyyy" and "before yyyy" OR the first year of the interval "yyyy-yyyy":
-#' `current_year` (yyyy) is `now` OR will contain the last year of the interval "yyyy-yyyy" in `raw_first_occurrence_in_flanders`:
+#' `end_year` (yyyy) is `2016` OR will contain the last year of the interval "yyyy-yyyy" in `raw_first_occurrence_in_flanders`:
 #' Before further processing, `raw_first_occurrence_in_flanders` needs to be cleaned, i.e. remove "<","< " and "before ":
 distribution %<>% mutate(year = str_replace_all(raw_first_occurrence_in_flanders, "(< |before |<)", ""))
 
@@ -217,24 +221,24 @@ distribution %<>%
              str_detect(year, "-") == "TRUE" ~ "1730",   # when `year` = range --> pick first year (1730 in 1730-1732)
              str_detect(year, "-") == "FALSE" ~ year))   
 
-#' Create `current_year`:
+#' Create `end_year`:
 distribution %<>%
-  mutate (current_year = 
+  mutate (end_year = 
             case_when(
               str_detect(year, "-") == TRUE ~ "1732",    # when `year` = range --> pick last year (1730 in 1730-1732)
-              str_detect(year, "-") == FALSE ~ "now"))
+              str_detect(year, "-") == FALSE ~ raw_end_year))
 
-#' Create `eventDate` by binding `start_year` and `current_year`:
+#' Create `eventDate` by binding `start_year` and `end_year`:
 distribution %<>% 
-  mutate (eventDate = paste (start_year, current_year, sep ="/")) 
+  mutate (eventDate = paste (start_year, end_year, sep ="/")) 
 
 #' Compare formatted dates with `raw_first_occurrence_in_flanders`:
 distribution %>% 
   select (raw_first_occurrence_in_flanders, eventDate) %>%
   kable()
 
-#' remove intermediary steps `year`, `start_year`, `current_year`:
-distribution %<>% select (-c(year, start_year, current_year))
+#' remove intermediary steps `year`, `start_year`, `end_year`:
+distribution %<>% select (-c(year, start_year, end_year))
 
 #' #### startDayOfYear
 #' #### endDayOfYear
@@ -407,7 +411,7 @@ pathway %>%
   arrange(value) %>%
   kable()
 
-#' For `pathway` information, we use the suggested vocabulary for introduction pathways used in the TrIAS project, summarized [here]((https://github.com/trias-project/vocab/tree/master/vocabulary/pathway).
+#' For `pathway` information, we use the suggested vocabulary for introduction pathways used in the TrIAS project, summarized [here](https://github.com/trias-project/vocab/tree/master/vocabulary/pathway).
 #' This standardized vocabulary is based on the [CBD 2014 standard](https://www.cbd.int/doc/meetings/sbstta/sbstta-18/official/sbstta-18-09-add1-en.pdf)
 
 #' recode values:

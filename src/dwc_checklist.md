@@ -78,6 +78,14 @@ raw_data %<>%
   clean_names()               # Have sensible (lowercase) column names
 ```
 
+Distributions will have a start date and end date. The start date is the year of first observation (`first occurrence in Flanders`), but for the end date we have to assume when the presence of the species was last verified. 
+We'll use the publication year of Boets et al. 2016:
+
+
+```r
+raw_data %<>% mutate(end_year = "2016")
+```
+
 We need to integrate the DwC term `taxonID` in each of the generated files (Taxon Core and Extensions).
 For this reason, it is easier to generate `taxonID` in the raw file. 
 First, we vectorize the digest function (The digest() function isn't vectorized. 
@@ -118,14 +126,14 @@ kable(head(raw_data))
 
 
 
-|raw_phylum |raw_order |raw_family      |raw_species              |raw_origin             |raw_first_occurrence_in_flanders |raw_pathway_of_introduction |raw_pathway_mapping                                                                                                                        |raw_salinity_zone |raw_reference               |raw_pathway_mapping_remarks                                       |raw_taxonID                                                     |
-|:----------|:---------|:---------------|:------------------------|:----------------------|:--------------------------------|:---------------------------|:------------------------------------------------------------------------------------------------------------------------------------------|:-----------------|:---------------------------|:-----------------------------------------------------------------|:---------------------------------------------------------------|
-|Crustacea  |Sessilia  |Balanidae       |Amphibalanus amphitrite  |South-Europe           |1952                             |shipping                    |Ship/boat hull fouling                                                                                                                     |M                 |Kerckhof and Catrijsse 2001 |NA                                                                |alien-macroinvertebrates:taxon:cebedf4407f487b424807ccd5478bfe6 |
-|Crustacea  |Sessilia  |Balanidae       |Amphibalanus improvisus  |West-Atlantic          |before 1700                      |shipping                    |Ship/boat hull fouling &#124; Ship/boat ballast water &#124; Contaminant on animals (except parasites, species transported by host/vector) |M                 |Kerckhof and Catrijsse 2001 |considered transport with oyster lots as 'Contaminant on animals' |alien-macroinvertebrates:taxon:db1c88330fce94a3483451f1e0fbc6af |
-|Crustacea  |Sessilia  |Balanidae       |Amphibalanus reticulatus |Tropical and warm seas |1997                             |shipping                    |Ship/boat hull fouling                                                                                                                     |M                 |Kerckhof and Catrijsse 2001 |NA                                                                |alien-macroinvertebrates:taxon:d9c2fd07436f56f3824955c88261e76e |
-|Crustacea  |Decapoda  |Astacidae       |Astacus leptodactylus    |East-Europe            |1986                             |aquaculture                 |Aquaculture                                                                                                                                |F                 |Gerard 1986                 |NA                                                                |alien-macroinvertebrates:taxon:464f0edd615ac93ab279f425dc1060a3 |
-|Crustacea  |Decapoda  |Atyidae         |Atyaephyra desmaresti    |South-Europe           |1895                             |aquarium trade              |Pet/aquarium/terrarium species (including live food for such species )                                                                     |F                 |Wouters 2002                |NA                                                                |alien-macroinvertebrates:taxon:54cca150e1e0b7c0b3f5b152ae64d62b |
-|Crustacea  |Sessilia  |Austrobalanidae |Austrominius modestus    |Australia, Asia        |1950                             |shipping                    |Ship/boat hull fouling                                                                                                                     |M                 |Leloup and Lefevre 1952     |NA                                                                |alien-macroinvertebrates:taxon:f9953a68ec0b35fb531b3d1917df59c7 |
+|raw_phylum |raw_order |raw_family      |raw_species              |raw_origin             |raw_first_occurrence_in_flanders |raw_pathway_of_introduction |raw_pathway_mapping                                                                                                                        |raw_salinity_zone |raw_reference               |raw_pathway_mapping_remarks                                       |raw_end_year |raw_taxonID                                                     |
+|:----------|:---------|:---------------|:------------------------|:----------------------|:--------------------------------|:---------------------------|:------------------------------------------------------------------------------------------------------------------------------------------|:-----------------|:---------------------------|:-----------------------------------------------------------------|:------------|:---------------------------------------------------------------|
+|Crustacea  |Sessilia  |Balanidae       |Amphibalanus amphitrite  |South-Europe           |1952                             |shipping                    |Ship/boat hull fouling                                                                                                                     |M                 |Kerckhof and Catrijsse 2001 |NA                                                                |2016         |alien-macroinvertebrates:taxon:cebedf4407f487b424807ccd5478bfe6 |
+|Crustacea  |Sessilia  |Balanidae       |Amphibalanus improvisus  |West-Atlantic          |before 1700                      |shipping                    |Ship/boat hull fouling &#124; Ship/boat ballast water &#124; Contaminant on animals (except parasites, species transported by host/vector) |M                 |Kerckhof and Catrijsse 2001 |considered transport with oyster lots as 'Contaminant on animals' |2016         |alien-macroinvertebrates:taxon:db1c88330fce94a3483451f1e0fbc6af |
+|Crustacea  |Sessilia  |Balanidae       |Amphibalanus reticulatus |Tropical and warm seas |1997                             |shipping                    |Ship/boat hull fouling                                                                                                                     |M                 |Kerckhof and Catrijsse 2001 |NA                                                                |2016         |alien-macroinvertebrates:taxon:d9c2fd07436f56f3824955c88261e76e |
+|Crustacea  |Decapoda  |Astacidae       |Astacus leptodactylus    |East-Europe            |1986                             |aquaculture                 |Aquaculture &#124; Pet/aquarium/terrarium species (including live food for such species )                                                  |F                 |Gerard 1986                 |NA                                                                |2016         |alien-macroinvertebrates:taxon:464f0edd615ac93ab279f425dc1060a3 |
+|Crustacea  |Decapoda  |Atyidae         |Atyaephyra desmaresti    |South-Europe           |1895                             |aquarium trade              |Pet/aquarium/terrarium species (including live food for such species )                                                                     |F                 |Wouters 2002                |NA                                                                |2016         |alien-macroinvertebrates:taxon:54cca150e1e0b7c0b3f5b152ae64d62b |
+|Crustacea  |Sessilia  |Austrobalanidae |Austrominius modestus    |Australia, Asia        |1950                             |shipping                    |Ship/boat hull fouling                                                                                                                     |M                 |Leloup and Lefevre 1952     |NA                                                                |2016         |alien-macroinvertebrates:taxon:f9953a68ec0b35fb531b3d1917df59c7 |
 
 ## Create taxon core
 
@@ -433,9 +441,9 @@ distribution %>%
 |2014                             |
 |before 1700                      |
 
-`eventDate` will be of format `start_year`/`current_year` (yyyy/now or yyyy/yyyy).
+`eventDate` will be of format `start_year`/`end_year` (yyyy/yyyy).
 `start_year` (yyyy) will contain the information from the following formats in `raw_first_occurrence_in_flanders`: "yyyy", "< yyyy", "<yyyy" and "before yyyy" OR the first year of the interval "yyyy-yyyy":
-`current_year` (yyyy) is `now` OR will contain the last year of the interval "yyyy-yyyy" in `raw_first_occurrence_in_flanders`:
+`end_year` (yyyy) is `2016` OR will contain the last year of the interval "yyyy-yyyy" in `raw_first_occurrence_in_flanders`:
 Before further processing, `raw_first_occurrence_in_flanders` needs to be cleaned, i.e. remove "<","< " and "before ":
 
 
@@ -454,23 +462,23 @@ distribution %<>%
              str_detect(year, "-") == "FALSE" ~ year))   
 ```
 
-Create `current_year`:
+Create `end_year`:
 
 
 ```r
 distribution %<>%
-  mutate (current_year = 
+  mutate (end_year = 
             case_when(
               str_detect(year, "-") == TRUE ~ "1732",    # when `year` = range --> pick last year (1730 in 1730-1732)
-              str_detect(year, "-") == FALSE ~ "now"))
+              str_detect(year, "-") == FALSE ~ raw_end_year))
 ```
 
-Create `eventDate` by binding `start_year` and `current_year`:
+Create `eventDate` by binding `start_year` and `end_year`:
 
 
 ```r
 distribution %<>% 
-  mutate (eventDate = paste (start_year, current_year, sep ="/")) 
+  mutate (eventDate = paste (start_year, end_year, sep ="/")) 
 ```
 
 Compare formatted dates with `raw_first_occurrence_in_flanders`:
@@ -486,85 +494,85 @@ distribution %>%
 
 |raw_first_occurrence_in_flanders |eventDate |
 |:--------------------------------|:---------|
-|1952                             |1952/now  |
-|before 1700                      |1700/now  |
-|1997                             |1997/now  |
-|1986                             |1986/now  |
-|1895                             |1895/now  |
-|1950                             |1950/now  |
-|2010                             |2010/now  |
-|1931                             |1931/now  |
-|2002                             |2002/now  |
-|1993                             |1993/now  |
-|1998                             |1998/now  |
-|1990                             |1990/now  |
-|1992                             |1992/now  |
-|1992                             |1992/now  |
-|1992                             |1992/now  |
-|1969                             |1969/now  |
-|1911                             |1911/now  |
-|2001                             |2001/now  |
-|1997                             |1997/now  |
-|1834                             |1834/now  |
-|2009                             |2009/now  |
-|2004                             |2004/now  |
-|1925                             |1925/now  |
-|2009                             |2009/now  |
-|1987                             |1987/now  |
-|1933                             |1933/now  |
-|1937                             |1937/now  |
-|1950                             |1950/now  |
-|1937                             |1937/now  |
-|1991                             |1991/now  |
-|2006                             |2006/now  |
-|2003                             |2003/now  |
-|1999                             |1999/now  |
-|2000                             |2000/now  |
-|1996                             |1996/now  |
-|2000                             |2000/now  |
-|2014                             |2014/now  |
-|2009                             |2009/now  |
-|2005                             |2005/now  |
-|1924                             |1924/now  |
-|2008                             |2008/now  |
-|1995                             |1995/now  |
-|1997                             |1997/now  |
-|1998                             |1998/now  |
-|1996                             |1996/now  |
-|1998                             |1998/now  |
-|1933                             |1933/now  |
-|1993                             |1993/now  |
-|2002                             |2002/now  |
-|< 1700                           |1700/now  |
-|1835                             |1835/now  |
-|1927                             |1927/now  |
-|1977                             |1977/now  |
-|1986                             |1986/now  |
-|1999                             |1999/now  |
-|1899                             |1899/now  |
-|1869                             |1869/now  |
-|1927                             |1927/now  |
-|2009                             |2009/now  |
-|1998                             |1998/now  |
-|1945                             |1945/now  |
-|2008                             |2008/now  |
-|2008                             |2008/now  |
-|<1600                            |1600/now  |
-|1996                             |1996/now  |
-|2004                             |2004/now  |
-|1991                             |1991/now  |
-|1999                             |1999/now  |
-|2007                             |2007/now  |
-|2005                             |2005/now  |
-|2003                             |2003/now  |
-|2006                             |2006/now  |
+|1952                             |1952/2016 |
+|before 1700                      |1700/2016 |
+|1997                             |1997/2016 |
+|1986                             |1986/2016 |
+|1895                             |1895/2016 |
+|1950                             |1950/2016 |
+|2010                             |2010/2016 |
+|1931                             |1931/2016 |
+|2002                             |2002/2016 |
+|1993                             |1993/2016 |
+|1998                             |1998/2016 |
+|1990                             |1990/2016 |
+|1992                             |1992/2016 |
+|1992                             |1992/2016 |
+|1992                             |1992/2016 |
+|1969                             |1969/2016 |
+|1911                             |1911/2016 |
+|2001                             |2001/2016 |
+|1997                             |1997/2016 |
+|1834                             |1834/2016 |
+|2009                             |2009/2016 |
+|2004                             |2004/2016 |
+|1925                             |1925/2016 |
+|2009                             |2009/2016 |
+|1987                             |1987/2016 |
+|1933                             |1933/2016 |
+|1937                             |1937/2016 |
+|1950                             |1950/2016 |
+|1937                             |1937/2016 |
+|1991                             |1991/2016 |
+|2006                             |2006/2016 |
+|2003                             |2003/2016 |
+|1999                             |1999/2016 |
+|2000                             |2000/2016 |
+|1996                             |1996/2016 |
+|2000                             |2000/2016 |
+|2014                             |2014/2016 |
+|2009                             |2009/2016 |
+|2005                             |2005/2016 |
+|1924                             |1924/2016 |
+|2008                             |2008/2016 |
+|1995                             |1995/2016 |
+|1997                             |1997/2016 |
+|1998                             |1998/2016 |
+|1996                             |1996/2016 |
+|1998                             |1998/2016 |
+|1933                             |1933/2016 |
+|1993                             |1993/2016 |
+|2002                             |2002/2016 |
+|< 1700                           |1700/2016 |
+|1835                             |1835/2016 |
+|1927                             |1927/2016 |
+|1977                             |1977/2016 |
+|1986                             |1986/2016 |
+|1999                             |1999/2016 |
+|1899                             |1899/2016 |
+|1869                             |1869/2016 |
+|1927                             |1927/2016 |
+|2009                             |2009/2016 |
+|1998                             |1998/2016 |
+|1945                             |1945/2016 |
+|2008                             |2008/2016 |
+|2008                             |2008/2016 |
+|<1600                            |1600/2016 |
+|1996                             |1996/2016 |
+|2004                             |2004/2016 |
+|1991                             |1991/2016 |
+|1999                             |1999/2016 |
+|2007                             |2007/2016 |
+|2005                             |2005/2016 |
+|2003                             |2003/2016 |
+|2006                             |2006/2016 |
 |1730-1732                        |1730/1732 |
 
-remove intermediary steps `year`, `start_year`, `current_year`:
+remove intermediary steps `year`, `start_year`, `end_year`:
 
 
 ```r
-distribution %<>% select (-c(year, start_year, current_year))
+distribution %<>% select (-c(year, start_year, end_year))
 ```
 
 #### startDayOfYear
@@ -642,7 +650,7 @@ distribution %>%
 |Dewicke 2002                |Dewicke A  |       1|
 |Dumoulin 2004               |Dumoulin E |       1|
 |Faasse and Van Moorsel 2003 |Faasse M,  |       2|
-|Gerard 1986                 |Gérard P ( |       2|
+|Gerard 1986                 |GÃ©rard P ( |       2|
 |Keppens and Mienis 2004     |Keppens M, |       1|
 |Kerckhof and Catrijsse 2001 |Kerckhof F |       5|
 |Kerckhof and Dumoulin 1987  |Kerckhof F |       1|
@@ -700,7 +708,7 @@ distribution %>%
 |alien-macroinvertebrates:taxon:cebedf4407f487b424807ccd5478bfe6 |ISO_3166-2:BE-VLG |Flemish Region |BE          |present          |introduced         |1952/now  |Kerckhof F |
 |alien-macroinvertebrates:taxon:db1c88330fce94a3483451f1e0fbc6af |ISO_3166-2:BE-VLG |Flemish Region |BE          |present          |introduced         |1700/now  |Kerckhof F |
 |alien-macroinvertebrates:taxon:d9c2fd07436f56f3824955c88261e76e |ISO_3166-2:BE-VLG |Flemish Region |BE          |present          |introduced         |1997/now  |Kerckhof F |
-|alien-macroinvertebrates:taxon:464f0edd615ac93ab279f425dc1060a3 |ISO_3166-2:BE-VLG |Flemish Region |BE          |present          |introduced         |1986/now  |Gérard P ( |
+|alien-macroinvertebrates:taxon:464f0edd615ac93ab279f425dc1060a3 |ISO_3166-2:BE-VLG |Flemish Region |BE          |present          |introduced         |1986/now  |GÃ©rard P ( |
 |alien-macroinvertebrates:taxon:54cca150e1e0b7c0b3f5b152ae64d62b |ISO_3166-2:BE-VLG |Flemish Region |BE          |present          |introduced         |1895/now  |Wouters K  |
 |alien-macroinvertebrates:taxon:f9953a68ec0b35fb531b3d1917df59c7 |ISO_3166-2:BE-VLG |Flemish Region |BE          |present          |introduced         |1950/now  |Leloup E,  |
 
@@ -887,14 +895,14 @@ kable(head(native_range))
 
 
 
-|raw_phylum |raw_order |raw_family      |raw_species              |raw_origin             |raw_first_occurrence_in_flanders |raw_pathway_of_introduction |raw_pathway_mapping                                                                                                                        |raw_salinity_zone |raw_reference               |raw_pathway_mapping_remarks                                       |raw_taxonID                                                     |description            |type         |
-|:----------|:---------|:---------------|:------------------------|:----------------------|:--------------------------------|:---------------------------|:------------------------------------------------------------------------------------------------------------------------------------------|:-----------------|:---------------------------|:-----------------------------------------------------------------|:---------------------------------------------------------------|:----------------------|:------------|
-|Crustacea  |Sessilia  |Balanidae       |Amphibalanus amphitrite  |South-Europe           |1952                             |shipping                    |Ship/boat hull fouling                                                                                                                     |M                 |Kerckhof and Catrijsse 2001 |NA                                                                |alien-macroinvertebrates:taxon:cebedf4407f487b424807ccd5478bfe6 |Southern Europe        |native range |
-|Crustacea  |Sessilia  |Balanidae       |Amphibalanus improvisus  |West-Atlantic          |before 1700                      |shipping                    |Ship/boat hull fouling &#124; Ship/boat ballast water &#124; Contaminant on animals (except parasites, species transported by host/vector) |M                 |Kerckhof and Catrijsse 2001 |considered transport with oyster lots as 'Contaminant on animals' |alien-macroinvertebrates:taxon:db1c88330fce94a3483451f1e0fbc6af |Western Atlantic       |native range |
-|Crustacea  |Sessilia  |Balanidae       |Amphibalanus reticulatus |Tropical and warm seas |1997                             |shipping                    |Ship/boat hull fouling                                                                                                                     |M                 |Kerckhof and Catrijsse 2001 |NA                                                                |alien-macroinvertebrates:taxon:d9c2fd07436f56f3824955c88261e76e |Tropical and warm seas |native range |
-|Crustacea  |Decapoda  |Astacidae       |Astacus leptodactylus    |East-Europe            |1986                             |aquaculture                 |Aquaculture                                                                                                                                |F                 |Gerard 1986                 |NA                                                                |alien-macroinvertebrates:taxon:464f0edd615ac93ab279f425dc1060a3 |Eastern Europe         |native range |
-|Crustacea  |Decapoda  |Atyidae         |Atyaephyra desmaresti    |South-Europe           |1895                             |aquarium trade              |Pet/aquarium/terrarium species (including live food for such species )                                                                     |F                 |Wouters 2002                |NA                                                                |alien-macroinvertebrates:taxon:54cca150e1e0b7c0b3f5b152ae64d62b |Southern Europe        |native range |
-|Crustacea  |Sessilia  |Austrobalanidae |Austrominius modestus    |Australia, Asia        |1950                             |shipping                    |Ship/boat hull fouling                                                                                                                     |M                 |Leloup and Lefevre 1952     |NA                                                                |alien-macroinvertebrates:taxon:f9953a68ec0b35fb531b3d1917df59c7 |Australia              |native range |
+|raw_phylum |raw_order |raw_family      |raw_species              |raw_origin             |raw_first_occurrence_in_flanders |raw_pathway_of_introduction |raw_pathway_mapping                                                                                                                        |raw_salinity_zone |raw_reference               |raw_pathway_mapping_remarks                                       |raw_end_year |raw_taxonID                                                     |description            |type         |
+|:----------|:---------|:---------------|:------------------------|:----------------------|:--------------------------------|:---------------------------|:------------------------------------------------------------------------------------------------------------------------------------------|:-----------------|:---------------------------|:-----------------------------------------------------------------|:------------|:---------------------------------------------------------------|:----------------------|:------------|
+|Crustacea  |Sessilia  |Balanidae       |Amphibalanus amphitrite  |South-Europe           |1952                             |shipping                    |Ship/boat hull fouling                                                                                                                     |M                 |Kerckhof and Catrijsse 2001 |NA                                                                |2016         |alien-macroinvertebrates:taxon:cebedf4407f487b424807ccd5478bfe6 |Southern Europe        |native range |
+|Crustacea  |Sessilia  |Balanidae       |Amphibalanus improvisus  |West-Atlantic          |before 1700                      |shipping                    |Ship/boat hull fouling &#124; Ship/boat ballast water &#124; Contaminant on animals (except parasites, species transported by host/vector) |M                 |Kerckhof and Catrijsse 2001 |considered transport with oyster lots as 'Contaminant on animals' |2016         |alien-macroinvertebrates:taxon:db1c88330fce94a3483451f1e0fbc6af |Western Atlantic       |native range |
+|Crustacea  |Sessilia  |Balanidae       |Amphibalanus reticulatus |Tropical and warm seas |1997                             |shipping                    |Ship/boat hull fouling                                                                                                                     |M                 |Kerckhof and Catrijsse 2001 |NA                                                                |2016         |alien-macroinvertebrates:taxon:d9c2fd07436f56f3824955c88261e76e |Tropical and warm seas |native range |
+|Crustacea  |Decapoda  |Astacidae       |Astacus leptodactylus    |East-Europe            |1986                             |aquaculture                 |Aquaculture &#124; Pet/aquarium/terrarium species (including live food for such species )                                                  |F                 |Gerard 1986                 |NA                                                                |2016         |alien-macroinvertebrates:taxon:464f0edd615ac93ab279f425dc1060a3 |Eastern Europe         |native range |
+|Crustacea  |Decapoda  |Atyidae         |Atyaephyra desmaresti    |South-Europe           |1895                             |aquarium trade              |Pet/aquarium/terrarium species (including live food for such species )                                                                     |F                 |Wouters 2002                |NA                                                                |2016         |alien-macroinvertebrates:taxon:54cca150e1e0b7c0b3f5b152ae64d62b |Southern Europe        |native range |
+|Crustacea  |Sessilia  |Austrobalanidae |Austrominius modestus    |Australia, Asia        |1950                             |shipping                    |Ship/boat hull fouling                                                                                                                     |M                 |Leloup and Lefevre 1952     |NA                                                                |2016         |alien-macroinvertebrates:taxon:f9953a68ec0b35fb531b3d1917df59c7 |Australia              |native range |
 
 #### Pathway (pathway of introduction)
 
@@ -970,7 +978,7 @@ pathway %>%
 |Ship/boat ballast water                                                       |
 |Ship/boat hull fouling                                                        |
 
-For `pathway` information, we use the suggested vocabulary for introduction pathways used in the TrIAS project, summarized [here]((https://github.com/trias-project/vocab/tree/master/vocabulary/pathway).
+For `pathway` information, we use the suggested vocabulary for introduction pathways used in the TrIAS project, summarized [here](https://github.com/trias-project/vocab/tree/master/vocabulary/pathway).
 This standardized vocabulary is based on the [CBD 2014 standard](https://www.cbd.int/doc/meetings/sbstta/sbstta-18/official/sbstta-18-09-add1-en.pdf)
 recode values:
 
@@ -1017,9 +1025,9 @@ pathway %>%
 |Interconnected waterways/basins/seas                                          |cbd_2014_pathway:corridor_water         |      18|
 |Mariculture                                                                   |cbd_2014_pathway:escape_aquaculture     |       1|
 |Other means of transport                                                      |cbd_2014_pathway:stowaway_other         |      11|
-|Pet/aquarium/terrarium species (including live food for such species )        |cbd_2014_pathway:escape_pet             |       4|
+|Pet/aquarium/terrarium species (including live food for such species )        |cbd_2014_pathway:escape_pet             |       5|
 |Ship/boat ballast water                                                       |cbd_2014_pathway:stowaway_ballast_water |      31|
-|Ship/boat hull fouling                                                        |cbd_2014_pathway:stowaway_hull_fouling  |      26|
+|Ship/boat hull fouling                                                        |cbd_2014_pathway:stowaway_hull_fouling  |      20|
 
 Drop `key`, `value` and `cbd_stand` column and rename `mapped_value`:
 
@@ -1052,14 +1060,14 @@ kable(head(pathway))
 
 
 
-|raw_phylum |raw_order |raw_family      |raw_species              |raw_origin             |raw_first_occurrence_in_flanders |raw_pathway_of_introduction |raw_pathway_mapping                                                                                                                        |raw_salinity_zone |raw_reference               |raw_pathway_mapping_remarks                                       |raw_taxonID                                                     |description                            |type    |
-|:----------|:---------|:---------------|:------------------------|:----------------------|:--------------------------------|:---------------------------|:------------------------------------------------------------------------------------------------------------------------------------------|:-----------------|:---------------------------|:-----------------------------------------------------------------|:---------------------------------------------------------------|:--------------------------------------|:-------|
-|Crustacea  |Sessilia  |Balanidae       |Amphibalanus amphitrite  |South-Europe           |1952                             |shipping                    |Ship/boat hull fouling                                                                                                                     |M                 |Kerckhof and Catrijsse 2001 |NA                                                                |alien-macroinvertebrates:taxon:cebedf4407f487b424807ccd5478bfe6 |cbd_2014_pathway:stowaway_hull_fouling |pathway |
-|Crustacea  |Sessilia  |Balanidae       |Amphibalanus improvisus  |West-Atlantic          |before 1700                      |shipping                    |Ship/boat hull fouling &#124; Ship/boat ballast water &#124; Contaminant on animals (except parasites, species transported by host/vector) |M                 |Kerckhof and Catrijsse 2001 |considered transport with oyster lots as 'Contaminant on animals' |alien-macroinvertebrates:taxon:db1c88330fce94a3483451f1e0fbc6af |cbd_2014_pathway:stowaway_hull_fouling |pathway |
-|Crustacea  |Sessilia  |Balanidae       |Amphibalanus reticulatus |Tropical and warm seas |1997                             |shipping                    |Ship/boat hull fouling                                                                                                                     |M                 |Kerckhof and Catrijsse 2001 |NA                                                                |alien-macroinvertebrates:taxon:d9c2fd07436f56f3824955c88261e76e |cbd_2014_pathway:stowaway_hull_fouling |pathway |
-|Crustacea  |Decapoda  |Astacidae       |Astacus leptodactylus    |East-Europe            |1986                             |aquaculture                 |Aquaculture                                                                                                                                |F                 |Gerard 1986                 |NA                                                                |alien-macroinvertebrates:taxon:464f0edd615ac93ab279f425dc1060a3 |cbd_2014_pathway:escape_aquaculture    |pathway |
-|Crustacea  |Decapoda  |Atyidae         |Atyaephyra desmaresti    |South-Europe           |1895                             |aquarium trade              |Pet/aquarium/terrarium species (including live food for such species )                                                                     |F                 |Wouters 2002                |NA                                                                |alien-macroinvertebrates:taxon:54cca150e1e0b7c0b3f5b152ae64d62b |cbd_2014_pathway:escape_pet            |pathway |
-|Crustacea  |Sessilia  |Austrobalanidae |Austrominius modestus    |Australia, Asia        |1950                             |shipping                    |Ship/boat hull fouling                                                                                                                     |M                 |Leloup and Lefevre 1952     |NA                                                                |alien-macroinvertebrates:taxon:f9953a68ec0b35fb531b3d1917df59c7 |cbd_2014_pathway:stowaway_hull_fouling |pathway |
+|raw_phylum |raw_order |raw_family      |raw_species              |raw_origin             |raw_first_occurrence_in_flanders |raw_pathway_of_introduction |raw_pathway_mapping                                                                                                                        |raw_salinity_zone |raw_reference               |raw_pathway_mapping_remarks                                       |raw_end_year |raw_taxonID                                                     |description                            |type    |
+|:----------|:---------|:---------------|:------------------------|:----------------------|:--------------------------------|:---------------------------|:------------------------------------------------------------------------------------------------------------------------------------------|:-----------------|:---------------------------|:-----------------------------------------------------------------|:------------|:---------------------------------------------------------------|:--------------------------------------|:-------|
+|Crustacea  |Sessilia  |Balanidae       |Amphibalanus amphitrite  |South-Europe           |1952                             |shipping                    |Ship/boat hull fouling                                                                                                                     |M                 |Kerckhof and Catrijsse 2001 |NA                                                                |2016         |alien-macroinvertebrates:taxon:cebedf4407f487b424807ccd5478bfe6 |cbd_2014_pathway:stowaway_hull_fouling |pathway |
+|Crustacea  |Sessilia  |Balanidae       |Amphibalanus improvisus  |West-Atlantic          |before 1700                      |shipping                    |Ship/boat hull fouling &#124; Ship/boat ballast water &#124; Contaminant on animals (except parasites, species transported by host/vector) |M                 |Kerckhof and Catrijsse 2001 |considered transport with oyster lots as 'Contaminant on animals' |2016         |alien-macroinvertebrates:taxon:db1c88330fce94a3483451f1e0fbc6af |cbd_2014_pathway:stowaway_hull_fouling |pathway |
+|Crustacea  |Sessilia  |Balanidae       |Amphibalanus reticulatus |Tropical and warm seas |1997                             |shipping                    |Ship/boat hull fouling                                                                                                                     |M                 |Kerckhof and Catrijsse 2001 |NA                                                                |2016         |alien-macroinvertebrates:taxon:d9c2fd07436f56f3824955c88261e76e |cbd_2014_pathway:stowaway_hull_fouling |pathway |
+|Crustacea  |Decapoda  |Astacidae       |Astacus leptodactylus    |East-Europe            |1986                             |aquaculture                 |Aquaculture &#124; Pet/aquarium/terrarium species (including live food for such species )                                                  |F                 |Gerard 1986                 |NA                                                                |2016         |alien-macroinvertebrates:taxon:464f0edd615ac93ab279f425dc1060a3 |cbd_2014_pathway:escape_aquaculture    |pathway |
+|Crustacea  |Decapoda  |Atyidae         |Atyaephyra desmaresti    |South-Europe           |1895                             |aquarium trade              |Pet/aquarium/terrarium species (including live food for such species )                                                                     |F                 |Wouters 2002                |NA                                                                |2016         |alien-macroinvertebrates:taxon:54cca150e1e0b7c0b3f5b152ae64d62b |cbd_2014_pathway:escape_pet            |pathway |
+|Crustacea  |Sessilia  |Austrobalanidae |Austrominius modestus    |Australia, Asia        |1950                             |shipping                    |Ship/boat hull fouling                                                                                                                     |M                 |Leloup and Lefevre 1952     |NA                                                                |2016         |alien-macroinvertebrates:taxon:f9953a68ec0b35fb531b3d1917df59c7 |cbd_2014_pathway:stowaway_hull_fouling |pathway |
 
 #### Habitat
 
@@ -1191,14 +1199,14 @@ kable(head(habitat))
 
 
 
-|raw_phylum |raw_order |raw_family      |raw_species              |raw_origin             |raw_first_occurrence_in_flanders |raw_pathway_of_introduction |raw_pathway_mapping                                                                                                                        |raw_salinity_zone |raw_reference               |raw_pathway_mapping_remarks                                       |raw_taxonID                                                     |description |type    |
-|:----------|:---------|:---------------|:------------------------|:----------------------|:--------------------------------|:---------------------------|:------------------------------------------------------------------------------------------------------------------------------------------|:-----------------|:---------------------------|:-----------------------------------------------------------------|:---------------------------------------------------------------|:-----------|:-------|
-|Crustacea  |Sessilia  |Balanidae       |Amphibalanus amphitrite  |South-Europe           |1952                             |shipping                    |Ship/boat hull fouling                                                                                                                     |M                 |Kerckhof and Catrijsse 2001 |NA                                                                |alien-macroinvertebrates:taxon:cebedf4407f487b424807ccd5478bfe6 |marine      |habitat |
-|Crustacea  |Sessilia  |Balanidae       |Amphibalanus improvisus  |West-Atlantic          |before 1700                      |shipping                    |Ship/boat hull fouling &#124; Ship/boat ballast water &#124; Contaminant on animals (except parasites, species transported by host/vector) |M                 |Kerckhof and Catrijsse 2001 |considered transport with oyster lots as 'Contaminant on animals' |alien-macroinvertebrates:taxon:db1c88330fce94a3483451f1e0fbc6af |marine      |habitat |
-|Crustacea  |Sessilia  |Balanidae       |Amphibalanus reticulatus |Tropical and warm seas |1997                             |shipping                    |Ship/boat hull fouling                                                                                                                     |M                 |Kerckhof and Catrijsse 2001 |NA                                                                |alien-macroinvertebrates:taxon:d9c2fd07436f56f3824955c88261e76e |marine      |habitat |
-|Crustacea  |Decapoda  |Astacidae       |Astacus leptodactylus    |East-Europe            |1986                             |aquaculture                 |Aquaculture                                                                                                                                |F                 |Gerard 1986                 |NA                                                                |alien-macroinvertebrates:taxon:464f0edd615ac93ab279f425dc1060a3 |freshwater  |habitat |
-|Crustacea  |Decapoda  |Atyidae         |Atyaephyra desmaresti    |South-Europe           |1895                             |aquarium trade              |Pet/aquarium/terrarium species (including live food for such species )                                                                     |F                 |Wouters 2002                |NA                                                                |alien-macroinvertebrates:taxon:54cca150e1e0b7c0b3f5b152ae64d62b |freshwater  |habitat |
-|Crustacea  |Sessilia  |Austrobalanidae |Austrominius modestus    |Australia, Asia        |1950                             |shipping                    |Ship/boat hull fouling                                                                                                                     |M                 |Leloup and Lefevre 1952     |NA                                                                |alien-macroinvertebrates:taxon:f9953a68ec0b35fb531b3d1917df59c7 |marine      |habitat |
+|raw_phylum |raw_order |raw_family      |raw_species              |raw_origin             |raw_first_occurrence_in_flanders |raw_pathway_of_introduction |raw_pathway_mapping                                                                                                                        |raw_salinity_zone |raw_reference               |raw_pathway_mapping_remarks                                       |raw_end_year |raw_taxonID                                                     |description |type    |
+|:----------|:---------|:---------------|:------------------------|:----------------------|:--------------------------------|:---------------------------|:------------------------------------------------------------------------------------------------------------------------------------------|:-----------------|:---------------------------|:-----------------------------------------------------------------|:------------|:---------------------------------------------------------------|:-----------|:-------|
+|Crustacea  |Sessilia  |Balanidae       |Amphibalanus amphitrite  |South-Europe           |1952                             |shipping                    |Ship/boat hull fouling                                                                                                                     |M                 |Kerckhof and Catrijsse 2001 |NA                                                                |2016         |alien-macroinvertebrates:taxon:cebedf4407f487b424807ccd5478bfe6 |marine      |habitat |
+|Crustacea  |Sessilia  |Balanidae       |Amphibalanus improvisus  |West-Atlantic          |before 1700                      |shipping                    |Ship/boat hull fouling &#124; Ship/boat ballast water &#124; Contaminant on animals (except parasites, species transported by host/vector) |M                 |Kerckhof and Catrijsse 2001 |considered transport with oyster lots as 'Contaminant on animals' |2016         |alien-macroinvertebrates:taxon:db1c88330fce94a3483451f1e0fbc6af |marine      |habitat |
+|Crustacea  |Sessilia  |Balanidae       |Amphibalanus reticulatus |Tropical and warm seas |1997                             |shipping                    |Ship/boat hull fouling                                                                                                                     |M                 |Kerckhof and Catrijsse 2001 |NA                                                                |2016         |alien-macroinvertebrates:taxon:d9c2fd07436f56f3824955c88261e76e |marine      |habitat |
+|Crustacea  |Decapoda  |Astacidae       |Astacus leptodactylus    |East-Europe            |1986                             |aquaculture                 |Aquaculture &#124; Pet/aquarium/terrarium species (including live food for such species )                                                  |F                 |Gerard 1986                 |NA                                                                |2016         |alien-macroinvertebrates:taxon:464f0edd615ac93ab279f425dc1060a3 |freshwater  |habitat |
+|Crustacea  |Decapoda  |Atyidae         |Atyaephyra desmaresti    |South-Europe           |1895                             |aquarium trade              |Pet/aquarium/terrarium species (including live food for such species )                                                                     |F                 |Wouters 2002                |NA                                                                |2016         |alien-macroinvertebrates:taxon:54cca150e1e0b7c0b3f5b152ae64d62b |freshwater  |habitat |
+|Crustacea  |Sessilia  |Austrobalanidae |Austrominius modestus    |Australia, Asia        |1950                             |shipping                    |Ship/boat hull fouling                                                                                                                     |M                 |Leloup and Lefevre 1952     |NA                                                                |2016         |alien-macroinvertebrates:taxon:f9953a68ec0b35fb531b3d1917df59c7 |marine      |habitat |
 
 #### Union native range, pathway and habitat:
 
@@ -1301,10 +1309,10 @@ description_ext %>%
 |Collection RBINS            |Collection |       9|
 |Cook et al. 2007            |Cook EJ, J |       4|
 |Damas 1938                  |Damas H (1 |       4|
-|Dewicke 2002                |Dewicke A  |       6|
-|Dumoulin 2004               |Dumoulin E |       4|
-|Faasse and Van Moorsel 2003 |Faasse M,  |       8|
-|Gerard 1986                 |Gérard P ( |       6|
+|Dewicke 2002                |Dewicke A  |       5|
+|Dumoulin 2004               |Dumoulin E |       3|
+|Faasse and Van Moorsel 2003 |Faasse M,  |       7|
+|Gerard 1986                 |GÃ©rard P ( |       7|
 |Keppens and Mienis 2004     |Keppens M, |       4|
 |Kerckhof and Catrijsse 2001 |Kerckhof F |      18|
 |Kerckhof and Dumoulin 1987  |Kerckhof F |       4|
@@ -1314,17 +1322,17 @@ description_ext %>%
 |Lock et al. 2007            |Lock K, Va |       3|
 |Loppens 1902                |Loppens K  |       3|
 |Messiaen et al. 2010        |Messiaen M |      11|
-|Nuyttens et al. 2006        |Nuyttens F |       4|
+|Nuyttens et al. 2006        |Nuyttens F |       3|
 |Nyst 1835 &#124; Adam 1947  |Nyst HJP ( |       5|
 |Sablon et al. 2010a         |Sablon R,  |       3|
 |Sablon et al. 2010b         |Sablon R,  |       3|
 |Sellius 1733                |Sellius G  |       3|
 |Seys et al. 1999            |Seys J, Vi |       3|
-|Soors et al. 2010           |Soors J, F |       4|
+|Soors et al. 2010           |Soors J, F |       3|
 |Soors et al. 2013           |Soors J, v |      28|
 |Swinnen et al. 1998         |Swinnen F, |       6|
 |Van Damme and Maes 1993     |Van Damme  |       5|
-|Van Damme et al. 1992       |Van Damme  |       5|
+|Van Damme et al. 1992       |Van Damme  |       4|
 |Van Goethem and Sablon 1986 |Van Goethe |       3|
 |van Haaren and Soors 2009   |van Haaren |       4|
 |Vandepitte et al. 2012      |Vandepitte |       3|
@@ -1390,8 +1398,8 @@ description_ext %>%
 |alien-macroinvertebrates:taxon:0396fe0cb30083ee34d8692802dbfc3a |cbd_2014_pathway:stowaway_hull_fouling  |pathway      |van Haaren |en       |
 |alien-macroinvertebrates:taxon:0396fe0cb30083ee34d8692802dbfc3a |cbd_2014_pathway:escape_aquaculture     |pathway      |van Haaren |en       |
 |alien-macroinvertebrates:taxon:0396fe0cb30083ee34d8692802dbfc3a |brackish                                |habitat      |van Haaren |en       |
-|alien-macroinvertebrates:taxon:05e1226fad2eec66ff6c70764ecf047a |Northern America                        |native range |Gérard P ( |en       |
-|alien-macroinvertebrates:taxon:05e1226fad2eec66ff6c70764ecf047a |cbd_2014_pathway:escape_aquaculture     |pathway      |Gérard P ( |en       |
+|alien-macroinvertebrates:taxon:05e1226fad2eec66ff6c70764ecf047a |Northern America                        |native range |GÃ©rard P ( |en       |
+|alien-macroinvertebrates:taxon:05e1226fad2eec66ff6c70764ecf047a |cbd_2014_pathway:escape_aquaculture     |pathway      |GÃ©rard P ( |en       |
 
 Save to CSV:
 
