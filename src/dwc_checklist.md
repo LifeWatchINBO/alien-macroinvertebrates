@@ -373,6 +373,12 @@ distribution %<>% mutate(occurrenceStatus = "present")
 
 #### threatStatus
 #### establishmentMeans
+
+
+```r
+distribution %<>% mutate(establishmentMeans = "introduced")
+```
+
 #### appendixCITES
 #### eventDate
 
@@ -644,7 +650,7 @@ distribution %>%
 |Dewicke 2002                |Dewicke A  |       1|
 |Dumoulin 2004               |Dumoulin E |       1|
 |Faasse and Van Moorsel 2003 |Faasse M,  |       2|
-|Gerard 1986                 |Gérard P ( |       2|
+|Gerard 1986                 |GÃ©rard P ( |       2|
 |Keppens and Mienis 2004     |Keppens M, |       1|
 |Kerckhof and Catrijsse 2001 |Kerckhof F |       5|
 |Kerckhof and Dumoulin 1987  |Kerckhof F |       1|
@@ -697,14 +703,14 @@ distribution %>%
 
 
 
-|taxonID                                                         |locationID        |locality       |countryCode |occurrenceStatus |eventDate |source     |
-|:---------------------------------------------------------------|:-----------------|:--------------|:-----------|:----------------|:---------|:----------|
-|alien-macroinvertebrates:taxon:cebedf4407f487b424807ccd5478bfe6 |ISO_3166-2:BE-VLG |Flemish Region |BE          |present          |1952/2016 |Kerckhof F |
-|alien-macroinvertebrates:taxon:db1c88330fce94a3483451f1e0fbc6af |ISO_3166-2:BE-VLG |Flemish Region |BE          |present          |1700/2016 |Kerckhof F |
-|alien-macroinvertebrates:taxon:d9c2fd07436f56f3824955c88261e76e |ISO_3166-2:BE-VLG |Flemish Region |BE          |present          |1997/2016 |Kerckhof F |
-|alien-macroinvertebrates:taxon:464f0edd615ac93ab279f425dc1060a3 |ISO_3166-2:BE-VLG |Flemish Region |BE          |present          |1986/2016 |Gérard P ( |
-|alien-macroinvertebrates:taxon:54cca150e1e0b7c0b3f5b152ae64d62b |ISO_3166-2:BE-VLG |Flemish Region |BE          |present          |1895/2016 |Wouters K  |
-|alien-macroinvertebrates:taxon:f9953a68ec0b35fb531b3d1917df59c7 |ISO_3166-2:BE-VLG |Flemish Region |BE          |present          |1950/2016 |Leloup E,  |
+|taxonID                                                         |locationID        |locality       |countryCode |occurrenceStatus |establishmentMeans |eventDate |source     |
+|:---------------------------------------------------------------|:-----------------|:--------------|:-----------|:----------------|:------------------|:---------|:----------|
+|alien-macroinvertebrates:taxon:cebedf4407f487b424807ccd5478bfe6 |ISO_3166-2:BE-VLG |Flemish Region |BE          |present          |introduced         |1952/now  |Kerckhof F |
+|alien-macroinvertebrates:taxon:db1c88330fce94a3483451f1e0fbc6af |ISO_3166-2:BE-VLG |Flemish Region |BE          |present          |introduced         |1700/now  |Kerckhof F |
+|alien-macroinvertebrates:taxon:d9c2fd07436f56f3824955c88261e76e |ISO_3166-2:BE-VLG |Flemish Region |BE          |present          |introduced         |1997/now  |Kerckhof F |
+|alien-macroinvertebrates:taxon:464f0edd615ac93ab279f425dc1060a3 |ISO_3166-2:BE-VLG |Flemish Region |BE          |present          |introduced         |1986/now  |GÃ©rard P ( |
+|alien-macroinvertebrates:taxon:54cca150e1e0b7c0b3f5b152ae64d62b |ISO_3166-2:BE-VLG |Flemish Region |BE          |present          |introduced         |1895/now  |Wouters K  |
+|alien-macroinvertebrates:taxon:f9953a68ec0b35fb531b3d1917df59c7 |ISO_3166-2:BE-VLG |Flemish Region |BE          |present          |introduced         |1950/now  |Leloup E,  |
 
 Save to CSV:
 
@@ -1306,7 +1312,7 @@ description_ext %>%
 |Dewicke 2002                |Dewicke A  |       5|
 |Dumoulin 2004               |Dumoulin E |       3|
 |Faasse and Van Moorsel 2003 |Faasse M,  |       7|
-|Gerard 1986                 |Gérard P ( |       7|
+|Gerard 1986                 |GÃ©rard P ( |       7|
 |Keppens and Mienis 2004     |Keppens M, |       4|
 |Kerckhof and Catrijsse 2001 |Kerckhof F |      18|
 |Kerckhof and Dumoulin 1987  |Kerckhof F |       4|
@@ -1392,8 +1398,8 @@ description_ext %>%
 |alien-macroinvertebrates:taxon:0396fe0cb30083ee34d8692802dbfc3a |cbd_2014_pathway:stowaway_hull_fouling  |pathway      |van Haaren |en       |
 |alien-macroinvertebrates:taxon:0396fe0cb30083ee34d8692802dbfc3a |cbd_2014_pathway:escape_aquaculture     |pathway      |van Haaren |en       |
 |alien-macroinvertebrates:taxon:0396fe0cb30083ee34d8692802dbfc3a |brackish                                |habitat      |van Haaren |en       |
-|alien-macroinvertebrates:taxon:05e1226fad2eec66ff6c70764ecf047a |Northern America                        |native range |Gérard P ( |en       |
-|alien-macroinvertebrates:taxon:05e1226fad2eec66ff6c70764ecf047a |cbd_2014_pathway:escape_aquaculture     |pathway      |Gérard P ( |en       |
+|alien-macroinvertebrates:taxon:05e1226fad2eec66ff6c70764ecf047a |Northern America                        |native range |GÃ©rard P ( |en       |
+|alien-macroinvertebrates:taxon:05e1226fad2eec66ff6c70764ecf047a |cbd_2014_pathway:escape_aquaculture     |pathway      |GÃ©rard P ( |en       |
 
 Save to CSV:
 
