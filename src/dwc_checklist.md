@@ -2,7 +2,7 @@
 
 Lien Reyserhove, Dimitri Brosens, Peter Desmet
 
-2018-01-11
+2018-01-12
 
 This document describes how we map the checklist data to Darwin Core.
 
@@ -20,7 +20,7 @@ Sys.setlocale("LC_CTYPE", "en_US.UTF-8")
 ```
 
 ```
-## [1] ""
+## [1] "en_US.UTF-8"
 ```
 
 Load libraries:
@@ -396,8 +396,6 @@ distribution %>%
 
 |raw_first_occurrence_in_flanders |
 |:--------------------------------|
-|< 1700                           |
-|<1600                            |
 |1730-1732                        |
 |1834                             |
 |1835                             |
@@ -439,6 +437,8 @@ distribution %>%
 |2009                             |
 |2010                             |
 |2014                             |
+|< 1700                           |
+|<1600                            |
 |before 1700                      |
 
 `eventDate` will be of format `start_year`/`end_year` (yyyy/yyyy).
@@ -672,7 +672,6 @@ distribution %>%
 |Van Damme and Maes 1993     |Van Damme  |       1|
 |Van Damme et al. 1992       |Van Damme  |       1|
 |Van Goethem and Sablon 1986 |Van Goethe |       1|
-|van Haaren and Soors 2009   |van Haaren |       1|
 |Vandepitte et al. 2012      |Vandepitte |       1|
 |Vercauteren et al. 2005     |Vercautere |       2|
 |Vercauteren et al. 2006     |Vercautere |       2|
@@ -680,6 +679,7 @@ distribution %>%
 |Verween et al. 2006         |Verween A, |       1|
 |Wouters 2002                |Wouters K  |       6|
 |Ysebaert et al. 1997        |Ysebaert T |       1|
+|van Haaren and Soors 2009   |van Haaren |       1|
 
 #### occurrenceRemarks
 ### Post-processing
@@ -705,12 +705,12 @@ distribution %>%
 
 |taxonID                                                         |locationID        |locality       |countryCode |occurrenceStatus |establishmentMeans |eventDate |source     |
 |:---------------------------------------------------------------|:-----------------|:--------------|:-----------|:----------------|:------------------|:---------|:----------|
-|alien-macroinvertebrates:taxon:cebedf4407f487b424807ccd5478bfe6 |ISO_3166-2:BE-VLG |Flemish Region |BE          |present          |introduced         |1952/now  |Kerckhof F |
-|alien-macroinvertebrates:taxon:db1c88330fce94a3483451f1e0fbc6af |ISO_3166-2:BE-VLG |Flemish Region |BE          |present          |introduced         |1700/now  |Kerckhof F |
-|alien-macroinvertebrates:taxon:d9c2fd07436f56f3824955c88261e76e |ISO_3166-2:BE-VLG |Flemish Region |BE          |present          |introduced         |1997/now  |Kerckhof F |
-|alien-macroinvertebrates:taxon:464f0edd615ac93ab279f425dc1060a3 |ISO_3166-2:BE-VLG |Flemish Region |BE          |present          |introduced         |1986/now  |Gérard P ( |
-|alien-macroinvertebrates:taxon:54cca150e1e0b7c0b3f5b152ae64d62b |ISO_3166-2:BE-VLG |Flemish Region |BE          |present          |introduced         |1895/now  |Wouters K  |
-|alien-macroinvertebrates:taxon:f9953a68ec0b35fb531b3d1917df59c7 |ISO_3166-2:BE-VLG |Flemish Region |BE          |present          |introduced         |1950/now  |Leloup E,  |
+|alien-macroinvertebrates:taxon:cebedf4407f487b424807ccd5478bfe6 |ISO_3166-2:BE-VLG |Flemish Region |BE          |present          |introduced         |1952/2016 |Kerckhof F |
+|alien-macroinvertebrates:taxon:db1c88330fce94a3483451f1e0fbc6af |ISO_3166-2:BE-VLG |Flemish Region |BE          |present          |introduced         |1700/2016 |Kerckhof F |
+|alien-macroinvertebrates:taxon:d9c2fd07436f56f3824955c88261e76e |ISO_3166-2:BE-VLG |Flemish Region |BE          |present          |introduced         |1997/2016 |Kerckhof F |
+|alien-macroinvertebrates:taxon:464f0edd615ac93ab279f425dc1060a3 |ISO_3166-2:BE-VLG |Flemish Region |BE          |present          |introduced         |1986/2016 |Gérard P ( |
+|alien-macroinvertebrates:taxon:54cca150e1e0b7c0b3f5b152ae64d62b |ISO_3166-2:BE-VLG |Flemish Region |BE          |present          |introduced         |1895/2016 |Wouters K  |
+|alien-macroinvertebrates:taxon:f9953a68ec0b35fb531b3d1917df59c7 |ISO_3166-2:BE-VLG |Flemish Region |BE          |present          |introduced         |1950/2016 |Leloup E,  |
 
 Save to CSV:
 
@@ -1334,7 +1334,6 @@ description_ext %>%
 |Van Damme and Maes 1993     |Van Damme  |       5|
 |Van Damme et al. 1992       |Van Damme  |       4|
 |Van Goethem and Sablon 1986 |Van Goethe |       3|
-|van Haaren and Soors 2009   |van Haaren |       4|
 |Vandepitte et al. 2012      |Vandepitte |       3|
 |Vercauteren et al. 2005     |Vercautere |       6|
 |Vercauteren et al. 2006     |Vercautere |       7|
@@ -1342,6 +1341,7 @@ description_ext %>%
 |Verween et al. 2006         |Verween A, |       4|
 |Wouters 2002                |Wouters K  |      21|
 |Ysebaert et al. 1997        |Ysebaert T |       3|
+|van Haaren and Soors 2009   |van Haaren |       4|
 
 #### language
 
