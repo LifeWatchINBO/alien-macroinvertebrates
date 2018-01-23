@@ -50,10 +50,6 @@ raw_data %<>%
   remove_empty_rows() %>%     # Remove empty rows
   clean_names()               # Have sensible (lowercase) column names
 
-#' Distributions will have a start date and end date. The start date is the year of first observation (`first occurrence in Flanders`), but for the end date we have to assume when the presence of the species was last verified. 
-#' We'll use the publication year of Boets et al. 2016:
-raw_data %<>% mutate(end_year = "2016")
-
 #' We need to integrate the DwC term `taxonID` in each of the generated files (Taxon Core and Extensions).
 #' For this reason, it is easier to generate `taxonID` in the raw file. 
 #' First, we vectorize the digest function (The digest() function isn't vectorized. 
@@ -131,8 +127,7 @@ taxon %<>% mutate (phylum = recode (raw_phylum, "Crustacea" = "Arthropoda"))
 #' #### class
 #' #### order
 taxon %<>% 
-  mutate(order = recode(raw_order, 
-                        "Veneroidea" = "Venerida")) %<>%
+  mutate(order = recode(raw_order, "Veneroidea" = "Venerida")) %<>%
   mutate (order = str_trim(order))
 
 #' #### family
@@ -146,7 +141,7 @@ taxon %<>% mutate(family = raw_family)
 taxon %<>% mutate(taxonRank = case_when(
   raw_species == "Dreissena rostriformis bugensis" ~ "subspecies",
   raw_species != "Dreissena rostriformis bugensis" ~ "species")
-  )
+)
 
 #' #### verbatimTaxonRank
 #' #### scientificNameAuthorship
@@ -201,6 +196,8 @@ distribution %<>% mutate(establishmentMeans = "introduced")
 
 #' #### appendixCITES
 #' #### eventDate
+#' 
+#' Distributions will have a start and end year, expressed in `eventDate` as ISO 8601 `yyyy/yyyy` (`start_year`/`end_year`). The `start_year` will contain the information from the first observation (`raw_first_occurrence_in_flanders`), which is expressed as `yyyy`, `< yyyy`, `<yyyy`, `before yyyy` or the first year of `yyyy-yyyy`. For the `end_year`, we will use the last year of `yyyy-yyyy` in `raw_first_occurrence_in_flanders` if available. If such an end year is not available, we have to assume when the presence of the species was last verified. We will use the publication year of Boets et al. 2016.
 #'
 #' Inspect content of `raw_first_occurrence_in_flanders`:
 distribution %>%
@@ -208,25 +205,20 @@ distribution %>%
   arrange(raw_first_occurrence_in_flanders) %>%
   kable()
 
-#' `eventDate` will be of format `start_year`/`end_year` (yyyy/yyyy).
-#' `start_year` (yyyy) will contain the information from the following formats in `raw_first_occurrence_in_flanders`: "yyyy", "< yyyy", "<yyyy" and "before yyyy" OR the first year of the interval "yyyy-yyyy":
-#' `end_year` (yyyy) is `2016` OR will contain the last year of the interval "yyyy-yyyy" in `raw_first_occurrence_in_flanders`:
 #' Before further processing, `raw_first_occurrence_in_flanders` needs to be cleaned, i.e. remove "<","< " and "before ":
 distribution %<>% mutate(year = str_replace_all(raw_first_occurrence_in_flanders, "(< |before |<)", ""))
 
 #' Create `start_year`:
-distribution %<>%
-  mutate(start_year = 
-           case_when(
-             str_detect(year, "-") == "TRUE" ~ "1730",   # when `year` = range --> pick first year (1730 in 1730-1732)
-             str_detect(year, "-") == "FALSE" ~ year))   
+distribution %<>% mutate(start_year = case_when(
+  str_detect(year, "-") == "TRUE" ~ strsplit(string,"-")[[1]][1], # when `year` = range --> pick first year (1730 in 1730-1732)
+  str_detect(year, "-") == "FALSE" ~ year)
+)   
 
 #' Create `end_year`:
-distribution %<>%
-  mutate (end_year = 
-            case_when(
-              str_detect(year, "-") == TRUE ~ "1732",    # when `year` = range --> pick last year (1730 in 1730-1732)
-              str_detect(year, "-") == FALSE ~ raw_end_year))
+distribution %<>% mutate (end_year = case_when(
+  str_detect(year, "-") == TRUE ~ strsplit(string,"-")[[1]][2], # when `year` = range --> pick last year (1732 in 1730-1732)
+  str_detect(year, "-") == FALSE ~ "2016")
+)
 
 #' Create `eventDate` by binding `start_year` and `end_year`:
 distribution %<>% 
