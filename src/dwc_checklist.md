@@ -2,7 +2,7 @@
 
 Lien Reyserhove, Dimitri Brosens, Peter Desmet
 
-2018-01-23
+2018-01-24
 
 This document describes how we map the checklist data to Darwin Core.
 
@@ -20,7 +20,7 @@ Sys.setlocale("LC_CTYPE", "en_US.UTF-8")
 ```
 
 ```
-## [1] "en_US.UTF-8"
+## [1] ""
 ```
 
 Load libraries:
@@ -373,9 +373,8 @@ distribution %<>% mutate(establishmentMeans = "introduced")
 #### appendixCITES
 #### eventDate
 
-Distributions will have a start and end year, expressed in `eventDate` as ISO 8601 `yyyy/yyyy` (`start_year`/`end_year`). The `start_year` will contain the information from the first observation (`raw_first_occurrence_in_flanders`), which is expressed as `yyyy`, `< yyyy`, `<yyyy`, `before yyyy` or the first year of `yyyy-yyyy`. For the `end_year`, we will use the last year of `yyyy-yyyy` in `raw_first_occurrence_in_flanders` if available. If such an end year is not available, we have to assume when the presence of the species was last verified. We will use the publication year of Boets et al. 2016.
-
-Inspect content of `raw_first_occurrence_in_flanders`:
+Distributions will have a start and end year, expressed in `eventDate` as ISO 8601 `yyyy/yyyy` (`start_year`/`end_year`).
+The dates in `raw_first_occurrence_in_flanders` are currently expressed in different formats: `yyyy`, `< yyyy`, `<yyyy`, `before yyyy` and `yyyy-yyyy`:
 
 
 ```r
@@ -389,6 +388,8 @@ distribution %>%
 
 |raw_first_occurrence_in_flanders |
 |:--------------------------------|
+|< 1700                           |
+|<1600                            |
 |1730-1732                        |
 |1834                             |
 |1835                             |
@@ -430,43 +431,37 @@ distribution %>%
 |2009                             |
 |2010                             |
 |2014                             |
-|< 1700                           |
-|<1600                            |
 |before 1700                      |
 
-Before further processing, `raw_first_occurrence_in_flanders` needs to be cleaned, i.e. remove "<","< " and "before ":
+When a **single year** is provided (i.e.`yyyy`, `< yyyy`, `<yyyy`, `before yyyy`), we consider this to be the `start_year`. No `end_year` is provided.
+We have to assume when the presence of the species was last verified. We will use the publication year of Boets et al. 2016.
+In this case, the eventDate will be `start_year/2016`
+When a **year range** (yyyy-yyyy) is provided, we have information on both the `start_year` and `end_year`
+In this case, the eventDate will be `start_year/end_year`
+Thus, to generate `eventDate`, we will need to clean, separate and remerge the date information contained in `raw_first_occurrence_in_flanders`:
+First,`raw_first_occurrence_in_flanders` needs to be cleaned:
 
 
 ```r
 distribution %<>% mutate(year = str_replace_all(raw_first_occurrence_in_flanders, "(< |before |<)", ""))
 ```
 
-Create `start_year`:
+Then, the information contained in `year` will be separated into `start_year` and `end_year`, using `-` as a separator.
+For all dates in the format `yyyy`, `end_year` will be empty as there is no `end_date` provided in this case. We will replace these empty values by `2016`
 
 
 ```r
-distribution %<>% mutate(start_year = case_when(
-  str_detect(year, "-") == "TRUE" ~ strsplit(string,"-")[[1]][1], # when `year` = range --> pick first year (1730 in 1730-1732)
-  str_detect(year, "-") == "FALSE" ~ year)
-)   
+distribution %<>% separate(year, into = c('start_year', 'end_year'), sep='-') %<>% # Separate `year`
+                  mutate(end_year = case_when(
+                    is.na(end_year) ~ "2016",
+                    TRUE ~ end_year))
 ```
 
-Create `end_year`:
+Merge `start_year` and `end_year` to generate `eventDate` (`yyyy`/`yyyy`):
 
 
 ```r
-distribution %<>% mutate (end_year = case_when(
-  str_detect(year, "-") == TRUE ~ strsplit(string,"-")[[1]][2], # when `year` = range --> pick last year (1732 in 1730-1732)
-  str_detect(year, "-") == FALSE ~ "2016")
-)
-```
-
-Create `eventDate` by binding `start_year` and `end_year`:
-
-
-```r
-distribution %<>% 
-  mutate (eventDate = paste (start_year, end_year, sep ="/")) 
+distribution %<>% unite(eventDate, c(start_year,end_year), sep = "/")
 ```
 
 Compare formatted dates with `raw_first_occurrence_in_flanders`:
@@ -556,13 +551,6 @@ distribution %>%
 |2006                             |2006/2016 |
 |1730-1732                        |1730/1732 |
 
-remove intermediary steps `year`, `start_year`, `end_year`:
-
-
-```r
-distribution %<>% select (-c(year, start_year, end_year))
-```
-
 #### startDayOfYear
 #### endDayOfYear
 #### source
@@ -638,7 +626,7 @@ distribution %>%
 |Dewicke 2002                |Dewicke A  |       1|
 |Dumoulin 2004               |Dumoulin E |       1|
 |Faasse and Van Moorsel 2003 |Faasse M,  |       2|
-|Gerard 1986                 |GÃ©rard P ( |       2|
+|Gerard 1986                 |Gérard P ( |       2|
 |Keppens and Mienis 2004     |Keppens M, |       1|
 |Kerckhof and Catrijsse 2001 |Kerckhof F |       5|
 |Kerckhof and Dumoulin 1987  |Kerckhof F |       1|
@@ -660,6 +648,7 @@ distribution %>%
 |Van Damme and Maes 1993     |Van Damme  |       1|
 |Van Damme et al. 1992       |Van Damme  |       1|
 |Van Goethem and Sablon 1986 |Van Goethe |       1|
+|van Haaren and Soors 2009   |van Haaren |       1|
 |Vandepitte et al. 2012      |Vandepitte |       1|
 |Vercauteren et al. 2005     |Vercautere |       2|
 |Vercauteren et al. 2006     |Vercautere |       2|
@@ -667,7 +656,6 @@ distribution %>%
 |Verween et al. 2006         |Verween A, |       1|
 |Wouters 2002                |Wouters K  |       6|
 |Ysebaert et al. 1997        |Ysebaert T |       1|
-|van Haaren and Soors 2009   |van Haaren |       1|
 
 #### occurrenceRemarks
 ### Post-processing
@@ -696,7 +684,7 @@ distribution %>%
 |alien-macroinvertebrates:taxon:cebedf4407f487b424807ccd5478bfe6 |ISO_3166-2:BE-VLG |Flemish Region |BE          |present          |introduced         |1952/2016 |Kerckhof F |
 |alien-macroinvertebrates:taxon:db1c88330fce94a3483451f1e0fbc6af |ISO_3166-2:BE-VLG |Flemish Region |BE          |present          |introduced         |1700/2016 |Kerckhof F |
 |alien-macroinvertebrates:taxon:d9c2fd07436f56f3824955c88261e76e |ISO_3166-2:BE-VLG |Flemish Region |BE          |present          |introduced         |1997/2016 |Kerckhof F |
-|alien-macroinvertebrates:taxon:464f0edd615ac93ab279f425dc1060a3 |ISO_3166-2:BE-VLG |Flemish Region |BE          |present          |introduced         |1986/2016 |GÃ©rard P ( |
+|alien-macroinvertebrates:taxon:464f0edd615ac93ab279f425dc1060a3 |ISO_3166-2:BE-VLG |Flemish Region |BE          |present          |introduced         |1986/2016 |Gérard P ( |
 |alien-macroinvertebrates:taxon:54cca150e1e0b7c0b3f5b152ae64d62b |ISO_3166-2:BE-VLG |Flemish Region |BE          |present          |introduced         |1895/2016 |Wouters K  |
 |alien-macroinvertebrates:taxon:f9953a68ec0b35fb531b3d1917df59c7 |ISO_3166-2:BE-VLG |Flemish Region |BE          |present          |introduced         |1950/2016 |Leloup E,  |
 
@@ -1300,7 +1288,7 @@ description_ext %>%
 |Dewicke 2002                |Dewicke A  |       5|
 |Dumoulin 2004               |Dumoulin E |       3|
 |Faasse and Van Moorsel 2003 |Faasse M,  |       7|
-|Gerard 1986                 |GÃ©rard P ( |       7|
+|Gerard 1986                 |Gérard P ( |       7|
 |Keppens and Mienis 2004     |Keppens M, |       4|
 |Kerckhof and Catrijsse 2001 |Kerckhof F |      18|
 |Kerckhof and Dumoulin 1987  |Kerckhof F |       4|
@@ -1322,6 +1310,7 @@ description_ext %>%
 |Van Damme and Maes 1993     |Van Damme  |       5|
 |Van Damme et al. 1992       |Van Damme  |       4|
 |Van Goethem and Sablon 1986 |Van Goethe |       3|
+|van Haaren and Soors 2009   |van Haaren |       4|
 |Vandepitte et al. 2012      |Vandepitte |       3|
 |Vercauteren et al. 2005     |Vercautere |       6|
 |Vercauteren et al. 2006     |Vercautere |       7|
@@ -1329,7 +1318,6 @@ description_ext %>%
 |Verween et al. 2006         |Verween A, |       4|
 |Wouters 2002                |Wouters K  |      21|
 |Ysebaert et al. 1997        |Ysebaert T |       3|
-|van Haaren and Soors 2009   |van Haaren |       4|
 
 #### language
 
@@ -1386,8 +1374,8 @@ description_ext %>%
 |alien-macroinvertebrates:taxon:0396fe0cb30083ee34d8692802dbfc3a |cbd_2014_pathway:stowaway_hull_fouling  |pathway      |van Haaren |en       |
 |alien-macroinvertebrates:taxon:0396fe0cb30083ee34d8692802dbfc3a |cbd_2014_pathway:escape_aquaculture     |pathway      |van Haaren |en       |
 |alien-macroinvertebrates:taxon:0396fe0cb30083ee34d8692802dbfc3a |brackish                                |habitat      |van Haaren |en       |
-|alien-macroinvertebrates:taxon:05e1226fad2eec66ff6c70764ecf047a |Northern America                        |native range |GÃ©rard P ( |en       |
-|alien-macroinvertebrates:taxon:05e1226fad2eec66ff6c70764ecf047a |cbd_2014_pathway:escape_aquaculture     |pathway      |GÃ©rard P ( |en       |
+|alien-macroinvertebrates:taxon:05e1226fad2eec66ff6c70764ecf047a |Northern America                        |native range |Gérard P ( |en       |
+|alien-macroinvertebrates:taxon:05e1226fad2eec66ff6c70764ecf047a |cbd_2014_pathway:escape_aquaculture     |pathway      |Gérard P ( |en       |
 
 Save to CSV:
 
