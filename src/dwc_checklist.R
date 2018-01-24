@@ -209,7 +209,7 @@ distribution %>%
 #' In this case, the eventDate will be `start_year/2016`
 #' When a **year range** (yyyy-yyyy) is provided, we have information on both the `start_year` and `end_year`
 #' In this case, the eventDate will be `start_year/end_year`
-#' Thus, to generate `eventDate`, we will need to clean, separate and remerge the date information contained in `raw_first_occurrence_in_flanders`:
+#' Thus, to generate `eventDate`, we will need to clean, separate (in case of `yyyy-yyyy`) and remerge the date information contained in `raw_first_occurrence_in_flanders`:
 
 #' First,`raw_first_occurrence_in_flanders` needs to be cleaned:
 distribution %<>% mutate(year = str_replace_all(raw_first_occurrence_in_flanders, "(< |before |<)", ""))
