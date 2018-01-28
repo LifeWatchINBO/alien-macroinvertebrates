@@ -2,7 +2,7 @@
 
 Lien Reyserhove, Dimitri Brosens, Peter Desmet
 
-2018-01-12
+2018-01-28
 
 This document describes how we map the checklist data to Darwin Core.
 
@@ -189,7 +189,7 @@ taxon  %<>% mutate(datasetID = "")
 
 
 ```r
-taxon %<>% mutate(datasetName = "Checklist of alien macroinvertebrates in Flanders, Belgium")
+taxon %<>% mutate(datasetName = "Inventory of alien macroinvertebrates in Flanders, Belgium")
 ```
 
 #### references
@@ -309,12 +309,12 @@ kable(head(taxon))
 
 |language |license                                           |rightsHolder                     |accessRights                             |datasetID |datasetName                                                |taxonID                                                         |scientificName           |kingdom  |phylum     |order    |family          |taxonRank |nomenclaturalCode |
 |:--------|:-------------------------------------------------|:--------------------------------|:----------------------------------------|:---------|:----------------------------------------------------------|:---------------------------------------------------------------|:------------------------|:--------|:----------|:--------|:---------------|:---------|:-----------------|
-|en       |http://creativecommons.org/publicdomain/zero/1.0/ |Ghent University Aquatic Ecology |http://www.inbo.be/en/norms-for-data-use |          |Checklist of alien macroinvertebrates in Flanders, Belgium |alien-macroinvertebrates:taxon:cebedf4407f487b424807ccd5478bfe6 |Amphibalanus amphitrite  |Animalia |Arthropoda |Sessilia |Balanidae       |species   |ICZN              |
-|en       |http://creativecommons.org/publicdomain/zero/1.0/ |Ghent University Aquatic Ecology |http://www.inbo.be/en/norms-for-data-use |          |Checklist of alien macroinvertebrates in Flanders, Belgium |alien-macroinvertebrates:taxon:db1c88330fce94a3483451f1e0fbc6af |Amphibalanus improvisus  |Animalia |Arthropoda |Sessilia |Balanidae       |species   |ICZN              |
-|en       |http://creativecommons.org/publicdomain/zero/1.0/ |Ghent University Aquatic Ecology |http://www.inbo.be/en/norms-for-data-use |          |Checklist of alien macroinvertebrates in Flanders, Belgium |alien-macroinvertebrates:taxon:d9c2fd07436f56f3824955c88261e76e |Amphibalanus reticulatus |Animalia |Arthropoda |Sessilia |Balanidae       |species   |ICZN              |
-|en       |http://creativecommons.org/publicdomain/zero/1.0/ |Ghent University Aquatic Ecology |http://www.inbo.be/en/norms-for-data-use |          |Checklist of alien macroinvertebrates in Flanders, Belgium |alien-macroinvertebrates:taxon:464f0edd615ac93ab279f425dc1060a3 |Astacus leptodactylus    |Animalia |Arthropoda |Decapoda |Astacidae       |species   |ICZN              |
-|en       |http://creativecommons.org/publicdomain/zero/1.0/ |Ghent University Aquatic Ecology |http://www.inbo.be/en/norms-for-data-use |          |Checklist of alien macroinvertebrates in Flanders, Belgium |alien-macroinvertebrates:taxon:54cca150e1e0b7c0b3f5b152ae64d62b |Atyaephyra desmaresti    |Animalia |Arthropoda |Decapoda |Atyidae         |species   |ICZN              |
-|en       |http://creativecommons.org/publicdomain/zero/1.0/ |Ghent University Aquatic Ecology |http://www.inbo.be/en/norms-for-data-use |          |Checklist of alien macroinvertebrates in Flanders, Belgium |alien-macroinvertebrates:taxon:f9953a68ec0b35fb531b3d1917df59c7 |Austrominius modestus    |Animalia |Arthropoda |Sessilia |Austrobalanidae |species   |ICZN              |
+|en       |http://creativecommons.org/publicdomain/zero/1.0/ |Ghent University Aquatic Ecology |http://www.inbo.be/en/norms-for-data-use |          |Inventory of alien macroinvertebrates in Flanders, Belgium |alien-macroinvertebrates:taxon:cebedf4407f487b424807ccd5478bfe6 |Amphibalanus amphitrite  |Animalia |Arthropoda |Sessilia |Balanidae       |species   |ICZN              |
+|en       |http://creativecommons.org/publicdomain/zero/1.0/ |Ghent University Aquatic Ecology |http://www.inbo.be/en/norms-for-data-use |          |Inventory of alien macroinvertebrates in Flanders, Belgium |alien-macroinvertebrates:taxon:db1c88330fce94a3483451f1e0fbc6af |Amphibalanus improvisus  |Animalia |Arthropoda |Sessilia |Balanidae       |species   |ICZN              |
+|en       |http://creativecommons.org/publicdomain/zero/1.0/ |Ghent University Aquatic Ecology |http://www.inbo.be/en/norms-for-data-use |          |Inventory of alien macroinvertebrates in Flanders, Belgium |alien-macroinvertebrates:taxon:d9c2fd07436f56f3824955c88261e76e |Amphibalanus reticulatus |Animalia |Arthropoda |Sessilia |Balanidae       |species   |ICZN              |
+|en       |http://creativecommons.org/publicdomain/zero/1.0/ |Ghent University Aquatic Ecology |http://www.inbo.be/en/norms-for-data-use |          |Inventory of alien macroinvertebrates in Flanders, Belgium |alien-macroinvertebrates:taxon:464f0edd615ac93ab279f425dc1060a3 |Astacus leptodactylus    |Animalia |Arthropoda |Decapoda |Astacidae       |species   |ICZN              |
+|en       |http://creativecommons.org/publicdomain/zero/1.0/ |Ghent University Aquatic Ecology |http://www.inbo.be/en/norms-for-data-use |          |Inventory of alien macroinvertebrates in Flanders, Belgium |alien-macroinvertebrates:taxon:54cca150e1e0b7c0b3f5b152ae64d62b |Atyaephyra desmaresti    |Animalia |Arthropoda |Decapoda |Atyidae         |species   |ICZN              |
+|en       |http://creativecommons.org/publicdomain/zero/1.0/ |Ghent University Aquatic Ecology |http://www.inbo.be/en/norms-for-data-use |          |Inventory of alien macroinvertebrates in Flanders, Belgium |alien-macroinvertebrates:taxon:f9953a68ec0b35fb531b3d1917df59c7 |Austrominius modestus    |Animalia |Arthropoda |Sessilia |Austrobalanidae |species   |ICZN              |
 
 Save to CSV:
 

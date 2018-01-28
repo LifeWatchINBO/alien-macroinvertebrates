@@ -99,7 +99,7 @@ taxon %<>% mutate(accessRights = "http://www.inbo.be/en/norms-for-data-use")
 taxon  %<>% mutate(datasetID = "")
  
 #' #### datasetName
-taxon %<>% mutate(datasetName = "Checklist of alien macroinvertebrates in Flanders, Belgium")
+taxon %<>% mutate(datasetName = "Inventory of alien macroinvertebrates in Flanders, Belgium")
 
 #' #### references
 #' #### taxonID
