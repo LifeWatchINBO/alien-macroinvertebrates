@@ -21,7 +21,7 @@ datasetID:
   allowed: 
 
 datasetName:
-  allowed: Checklist of alien macroinvertebrates in Flanders, Belgium
+  allowed: Inventory of alien macroinvertebrates in Flanders, Belgium
 
 taxonID:
   regex: 'alien-macroinvertebrates-checklist:taxon:\d'

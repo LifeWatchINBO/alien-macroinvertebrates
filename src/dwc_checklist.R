@@ -87,15 +87,13 @@ taxon %<>% mutate(license = "http://creativecommons.org/publicdomain/zero/1.0/")
 taxon %<>% mutate(rightsHolder = "Ghent University Aquatic Ecology")
     
 #' #### accessRights
-taxon %<>% mutate(accessRights = "http://www.inbo.be/en/norms-for-data-use")
-
 #' #### bibliographicCitation
 #' #### informationWithheld
 #' #### datasetID
 taxon  %<>% mutate(datasetID = "")
  
 #' #### datasetName
-taxon %<>% mutate(datasetName = "Checklist of alien macroinvertebrates in Flanders, Belgium")
+taxon %<>% mutate(datasetName = "Inventory of alien macroinvertebrates in Flanders, Belgium")
 
 #' #### references
 #' #### taxonID
