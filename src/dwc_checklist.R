@@ -289,7 +289,7 @@ write.csv(distribution, file = dwc_distribution_file, na = "", row.names = FALSE
 
 #' ## Create description extension
 #' 
-#' In the description extension we want to include **native range** (`raw_origin`), **pathway** (`raw_pathway_of_introduction`) and **habitat** (`raw_salinity_zone`) information. We'll create a separate data frame for each and then combine these with union.
+#' In the description extension we want to include **native range** (`raw_origin`), **pathway** (`raw_pathway_of_introduction`), **habitat** (`raw_salinity_zone`) and **invasion stage** information. We'll create a separate data frame for each and then combine these with union.
 #' 
 #' ### Pre-processing
 #' 
@@ -515,8 +515,20 @@ habitat %<>% mutate(type = "habitat")
 #' Preview data:
 kable(head(habitat))
 
-#' #### Union native range, pathway and habitat:
-description_ext <- bind_rows(native_range, pathway, habitat)
+#' #### Invasion stage
+invasion_stage <- raw_data
+
+#' There's no information on `invasion stage` in `raw_data`.
+#' We decided to use the unified framework for biological invasions of [Blackburn et al. 2011](http://doc.rero.ch/record/24725/files/bach_puf.pdf) for `invasion stage`.
+#' Here, we consider all species to be `established` as they come from live samples in running waters.
+#' We decided not to use the terms `naturalized`(because often, there's no sensible criterium to distinguish between casual/naturalised of naturalised/established) and `invasive` (this is a label that should only be put on a species after risk assessment).
+invasion_stage %<>% mutate(description = "established")
+
+#' Create a `type` field to indicate the type of description:
+invasion_stage %<>% mutate(type = "invasion stage")
+
+#' #### Union native range, pathway, habitat and invasion stage:
+description_ext <- bind_rows(native_range, pathway, habitat, invasion_stage)
 
 #' ### Term mapping
 #' 
