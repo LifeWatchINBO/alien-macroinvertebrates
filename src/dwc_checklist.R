@@ -91,8 +91,6 @@ taxon %<>% mutate(license = "http://creativecommons.org/publicdomain/zero/1.0/")
 taxon %<>% mutate(rightsHolder = "Ghent University Aquatic Ecology")
     
 #' #### accessRights
-taxon %<>% mutate(accessRights = "http://www.inbo.be/en/norms-for-data-use")
-
 #' #### bibliographicCitation
 #' #### informationWithheld
 #' #### datasetID
