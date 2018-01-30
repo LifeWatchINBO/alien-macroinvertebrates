@@ -222,7 +222,7 @@ distribution %<>% separate(year, into = c('start_year', 'end_year'), sep='-') %<
                     TRUE ~ end_year))
 
 #' Merge `start_year` and `end_year` to generate `eventDate` (`yyyy`/`yyyy`):
-distribution %<>% unite(eventDate, c(start_year,end_year), sep = "/")
+distribution %<>% mutate(eventDate = paste(start_year, end_year, sep="/"))
 
 #' Compare formatted dates with `raw_first_occurrence_in_flanders`:
 distribution %>% 
@@ -267,7 +267,7 @@ distribution %>%
 #' ### Post-processing
 #' 
 #' Remove the original columns:
-distribution %<>% select(-one_of(raw_colnames))
+distribution %<>% select(-one_of(raw_colnames), -start_year, -end_year)
 
 #' Preview data:
 distribution %>% 
