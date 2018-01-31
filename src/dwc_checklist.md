@@ -2,7 +2,7 @@
 
 Lien Reyserhove, Dimitri Brosens, Peter Desmet
 
-2018-01-28
+2018-01-31
 
 This document describes how we map the checklist data to Darwin Core.
 
@@ -162,19 +162,13 @@ taxon %<>% mutate(rightsHolder = "Ghent University Aquatic Ecology")
 ```
 
 #### accessRights
-
-
-```r
-taxon %<>% mutate(accessRights = "http://www.inbo.be/en/norms-for-data-use")
-```
-
 #### bibliographicCitation
 #### informationWithheld
 #### datasetID
 
 
 ```r
-taxon  %<>% mutate(datasetID = "")
+taxon  %<>% mutate(datasetID = "https://doi.org/10.15468/yxcq07")
 ```
 
 #### datasetName
@@ -298,14 +292,14 @@ kable(head(taxon))
 
 
 
-|language |license                                           |rightsHolder                     |accessRights                             |datasetID |datasetName                                                |taxonID                                                         |scientificName           |kingdom  |phylum     |order    |family          |taxonRank |nomenclaturalCode |
-|:--------|:-------------------------------------------------|:--------------------------------|:----------------------------------------|:---------|:----------------------------------------------------------|:---------------------------------------------------------------|:------------------------|:--------|:----------|:--------|:---------------|:---------|:-----------------|
-|en       |http://creativecommons.org/publicdomain/zero/1.0/ |Ghent University Aquatic Ecology |http://www.inbo.be/en/norms-for-data-use |          |Inventory of alien macroinvertebrates in Flanders, Belgium |alien-macroinvertebrates:taxon:cebedf4407f487b424807ccd5478bfe6 |Amphibalanus amphitrite  |Animalia |Arthropoda |Sessilia |Balanidae       |species   |ICZN              |
-|en       |http://creativecommons.org/publicdomain/zero/1.0/ |Ghent University Aquatic Ecology |http://www.inbo.be/en/norms-for-data-use |          |Inventory of alien macroinvertebrates in Flanders, Belgium |alien-macroinvertebrates:taxon:db1c88330fce94a3483451f1e0fbc6af |Amphibalanus improvisus  |Animalia |Arthropoda |Sessilia |Balanidae       |species   |ICZN              |
-|en       |http://creativecommons.org/publicdomain/zero/1.0/ |Ghent University Aquatic Ecology |http://www.inbo.be/en/norms-for-data-use |          |Inventory of alien macroinvertebrates in Flanders, Belgium |alien-macroinvertebrates:taxon:d9c2fd07436f56f3824955c88261e76e |Amphibalanus reticulatus |Animalia |Arthropoda |Sessilia |Balanidae       |species   |ICZN              |
-|en       |http://creativecommons.org/publicdomain/zero/1.0/ |Ghent University Aquatic Ecology |http://www.inbo.be/en/norms-for-data-use |          |Inventory of alien macroinvertebrates in Flanders, Belgium |alien-macroinvertebrates:taxon:464f0edd615ac93ab279f425dc1060a3 |Astacus leptodactylus    |Animalia |Arthropoda |Decapoda |Astacidae       |species   |ICZN              |
-|en       |http://creativecommons.org/publicdomain/zero/1.0/ |Ghent University Aquatic Ecology |http://www.inbo.be/en/norms-for-data-use |          |Inventory of alien macroinvertebrates in Flanders, Belgium |alien-macroinvertebrates:taxon:54cca150e1e0b7c0b3f5b152ae64d62b |Atyaephyra desmaresti    |Animalia |Arthropoda |Decapoda |Atyidae         |species   |ICZN              |
-|en       |http://creativecommons.org/publicdomain/zero/1.0/ |Ghent University Aquatic Ecology |http://www.inbo.be/en/norms-for-data-use |          |Inventory of alien macroinvertebrates in Flanders, Belgium |alien-macroinvertebrates:taxon:f9953a68ec0b35fb531b3d1917df59c7 |Austrominius modestus    |Animalia |Arthropoda |Sessilia |Austrobalanidae |species   |ICZN              |
+|language |license                                           |rightsHolder                     |datasetID                       |datasetName                                                |taxonID                                                         |scientificName           |kingdom  |phylum     |order    |family          |taxonRank |nomenclaturalCode |
+|:--------|:-------------------------------------------------|:--------------------------------|:-------------------------------|:----------------------------------------------------------|:---------------------------------------------------------------|:------------------------|:--------|:----------|:--------|:---------------|:---------|:-----------------|
+|en       |http://creativecommons.org/publicdomain/zero/1.0/ |Ghent University Aquatic Ecology |https://doi.org/10.15468/yxcq07 |Inventory of alien macroinvertebrates in Flanders, Belgium |alien-macroinvertebrates:taxon:cebedf4407f487b424807ccd5478bfe6 |Amphibalanus amphitrite  |Animalia |Arthropoda |Sessilia |Balanidae       |species   |ICZN              |
+|en       |http://creativecommons.org/publicdomain/zero/1.0/ |Ghent University Aquatic Ecology |https://doi.org/10.15468/yxcq07 |Inventory of alien macroinvertebrates in Flanders, Belgium |alien-macroinvertebrates:taxon:db1c88330fce94a3483451f1e0fbc6af |Amphibalanus improvisus  |Animalia |Arthropoda |Sessilia |Balanidae       |species   |ICZN              |
+|en       |http://creativecommons.org/publicdomain/zero/1.0/ |Ghent University Aquatic Ecology |https://doi.org/10.15468/yxcq07 |Inventory of alien macroinvertebrates in Flanders, Belgium |alien-macroinvertebrates:taxon:d9c2fd07436f56f3824955c88261e76e |Amphibalanus reticulatus |Animalia |Arthropoda |Sessilia |Balanidae       |species   |ICZN              |
+|en       |http://creativecommons.org/publicdomain/zero/1.0/ |Ghent University Aquatic Ecology |https://doi.org/10.15468/yxcq07 |Inventory of alien macroinvertebrates in Flanders, Belgium |alien-macroinvertebrates:taxon:464f0edd615ac93ab279f425dc1060a3 |Astacus leptodactylus    |Animalia |Arthropoda |Decapoda |Astacidae       |species   |ICZN              |
+|en       |http://creativecommons.org/publicdomain/zero/1.0/ |Ghent University Aquatic Ecology |https://doi.org/10.15468/yxcq07 |Inventory of alien macroinvertebrates in Flanders, Belgium |alien-macroinvertebrates:taxon:54cca150e1e0b7c0b3f5b152ae64d62b |Atyaephyra desmaresti    |Animalia |Arthropoda |Decapoda |Atyidae         |species   |ICZN              |
+|en       |http://creativecommons.org/publicdomain/zero/1.0/ |Ghent University Aquatic Ecology |https://doi.org/10.15468/yxcq07 |Inventory of alien macroinvertebrates in Flanders, Belgium |alien-macroinvertebrates:taxon:f9953a68ec0b35fb531b3d1917df59c7 |Austrominius modestus    |Animalia |Arthropoda |Sessilia |Austrobalanidae |species   |ICZN              |
 
 Save to CSV:
 
@@ -438,7 +432,7 @@ We have to assume when the presence of the species was last verified. We will us
 In this case, the eventDate will be `start_year/2016`
 When a **year range** (yyyy-yyyy) is provided, we have information on both the `start_year` and `end_year`
 In this case, the eventDate will be `start_year/end_year`
-Thus, to generate `eventDate`, we will need to clean, separate and remerge the date information contained in `raw_first_occurrence_in_flanders`:
+Thus, to generate `eventDate`, we will need to clean, separate (in case of `yyyy-yyyy`) and remerge the date information contained in `raw_first_occurrence_in_flanders`:
 First,`raw_first_occurrence_in_flanders` needs to be cleaned:
 
 
@@ -461,7 +455,7 @@ Merge `start_year` and `end_year` to generate `eventDate` (`yyyy`/`yyyy`):
 
 
 ```r
-distribution %<>% unite(eventDate, c(start_year,end_year), sep = "/")
+distribution %<>% mutate(eventDate = paste(start_year, end_year, sep="/"))
 ```
 
 Compare formatted dates with `raw_first_occurrence_in_flanders`:
@@ -626,7 +620,7 @@ distribution %>%
 |Dewicke 2002                |Dewicke A  |       1|
 |Dumoulin 2004               |Dumoulin E |       1|
 |Faasse and Van Moorsel 2003 |Faasse M,  |       2|
-|Gerard 1986                 |Gï¿½rard P ( |       2|
+|Gerard 1986                 |Gérard P ( |       2|
 |Keppens and Mienis 2004     |Keppens M, |       1|
 |Kerckhof and Catrijsse 2001 |Kerckhof F |       5|
 |Kerckhof and Dumoulin 1987  |Kerckhof F |       1|
@@ -664,7 +658,7 @@ Remove the original columns:
 
 
 ```r
-distribution %<>% select(-one_of(raw_colnames))
+distribution %<>% select(-one_of(raw_colnames), -start_year, -end_year)
 ```
 
 Preview data:
@@ -684,7 +678,7 @@ distribution %>%
 |alien-macroinvertebrates:taxon:cebedf4407f487b424807ccd5478bfe6 |ISO_3166-2:BE-VLG |Flemish Region |BE          |present          |introduced         |1952/2016 |Kerckhof F |
 |alien-macroinvertebrates:taxon:db1c88330fce94a3483451f1e0fbc6af |ISO_3166-2:BE-VLG |Flemish Region |BE          |present          |introduced         |1700/2016 |Kerckhof F |
 |alien-macroinvertebrates:taxon:d9c2fd07436f56f3824955c88261e76e |ISO_3166-2:BE-VLG |Flemish Region |BE          |present          |introduced         |1997/2016 |Kerckhof F |
-|alien-macroinvertebrates:taxon:464f0edd615ac93ab279f425dc1060a3 |ISO_3166-2:BE-VLG |Flemish Region |BE          |present          |introduced         |1986/2016 |Gï¿½rard P ( |
+|alien-macroinvertebrates:taxon:464f0edd615ac93ab279f425dc1060a3 |ISO_3166-2:BE-VLG |Flemish Region |BE          |present          |introduced         |1986/2016 |Gérard P ( |
 |alien-macroinvertebrates:taxon:54cca150e1e0b7c0b3f5b152ae64d62b |ISO_3166-2:BE-VLG |Flemish Region |BE          |present          |introduced         |1895/2016 |Wouters K  |
 |alien-macroinvertebrates:taxon:f9953a68ec0b35fb531b3d1917df59c7 |ISO_3166-2:BE-VLG |Flemish Region |BE          |present          |introduced         |1950/2016 |Leloup E,  |
 
@@ -697,7 +691,7 @@ write.csv(distribution, file = dwc_distribution_file, na = "", row.names = FALSE
 
 ## Create description extension
 
-In the description extension we want to include **native range** (`raw_origin`), **pathway** (`raw_pathway_of_introduction`) and **habitat** (`raw_salinity_zone`) information. We'll create a separate data frame for each and then combine these with union.
+In the description extension we want to include **native range** (`raw_origin`), **pathway** (`raw_pathway_of_introduction`), **habitat** (`raw_salinity_zone`) and **invasion stage** information. We'll create a separate data frame for each and then combine these with union.
 
 ### Pre-processing
 
@@ -1184,11 +1178,35 @@ kable(head(habitat))
 |Crustacea  |Decapoda  |Atyidae         |Atyaephyra desmaresti    |South-Europe           |1895                             |aquarium trade              |Pet/aquarium/terrarium species (including live food for such species )                                                                     |F                 |Wouters 2002                |NA                                                                |alien-macroinvertebrates:taxon:54cca150e1e0b7c0b3f5b152ae64d62b |freshwater  |habitat |
 |Crustacea  |Sessilia  |Austrobalanidae |Austrominius modestus    |Australia, Asia        |1950                             |shipping                    |Ship/boat hull fouling                                                                                                                     |M                 |Leloup and Lefevre 1952     |NA                                                                |alien-macroinvertebrates:taxon:f9953a68ec0b35fb531b3d1917df59c7 |marine      |habitat |
 
-#### Union native range, pathway and habitat:
+#### Invasion stage
 
 
 ```r
-description_ext <- bind_rows(native_range, pathway, habitat)
+invasion_stage <- raw_data
+```
+
+There's no information on `invasion stage` in `raw_data`.
+We decided to use the unified framework for biological invasions of [Blackburn et al. 2011](http://doc.rero.ch/record/24725/files/bach_puf.pdf) for `invasion stage`.
+Here, we consider all species to be `established` as they come from live samples in running waters.
+We decided not to use the terms `naturalized`(because often, there's no sensible criterium to distinguish between casual/naturalised of naturalised/established) and `invasive` (this is a label that should only be put on a species after risk assessment).
+
+
+```r
+invasion_stage %<>% mutate(description = "established")
+```
+
+Create a `type` field to indicate the type of description:
+
+
+```r
+invasion_stage %<>% mutate(type = "invasion stage")
+```
+
+#### Union native range, pathway, habitat and invasion stage:
+
+
+```r
+description_ext <- bind_rows(native_range, pathway, habitat, invasion_stage)
 ```
 
 ### Term mapping
@@ -1273,51 +1291,51 @@ description_ext %>%
 
 |citation                    |source     | records|
 |:---------------------------|:----------|-------:|
-|Adam 1947                   |Adam W (19 |      15|
-|Adam and Leloup 1934        |Adam W, Le |       4|
-|Backeljau 1986              |Backeljau  |       3|
-|Boets et al. 2009           |Boets P, L |       4|
-|Boets et al. 2010b          |Boets P, L |       3|
-|Boets et al. 2011b          |Boets P, L |       4|
-|Boets et al. 2012c          |Boets P, L |       3|
-|Boets et al. 2016           |Boets P, B |       4|
-|Boets et al. unpub data     |Boets et a |       6|
-|Collection RBINS            |Collection |       9|
-|Cook et al. 2007            |Cook EJ, J |       4|
-|Damas 1938                  |Damas H (1 |       4|
-|Dewicke 2002                |Dewicke A  |       5|
-|Dumoulin 2004               |Dumoulin E |       3|
-|Faasse and Van Moorsel 2003 |Faasse M,  |       7|
-|Gerard 1986                 |Gï¿½rard P ( |       7|
-|Keppens and Mienis 2004     |Keppens M, |       4|
-|Kerckhof and Catrijsse 2001 |Kerckhof F |      18|
-|Kerckhof and Dumoulin 1987  |Kerckhof F |       4|
-|Kerckhof et al. 2007        |Kerckhof F |       5|
-|Leloup 1971                 |Leloup E ( |       4|
-|Leloup and Lefevre 1952     |Leloup E,  |       9|
-|Lock et al. 2007            |Lock K, Va |       3|
-|Loppens 1902                |Loppens K  |       3|
-|Messiaen et al. 2010        |Messiaen M |      11|
-|Nuyttens et al. 2006        |Nuyttens F |       3|
-|Nyst 1835 &#124; Adam 1947  |Nyst HJP ( |       5|
-|Sablon et al. 2010a         |Sablon R,  |       3|
-|Sablon et al. 2010b         |Sablon R,  |       3|
-|Sellius 1733                |Sellius G  |       3|
-|Seys et al. 1999            |Seys J, Vi |       3|
-|Soors et al. 2010           |Soors J, F |       3|
-|Soors et al. 2013           |Soors J, v |      28|
-|Swinnen et al. 1998         |Swinnen F, |       6|
-|Van Damme and Maes 1993     |Van Damme  |       5|
-|Van Damme et al. 1992       |Van Damme  |       4|
-|Van Goethem and Sablon 1986 |Van Goethe |       3|
-|van Haaren and Soors 2009   |van Haaren |       4|
-|Vandepitte et al. 2012      |Vandepitte |       3|
-|Vercauteren et al. 2005     |Vercautere |       6|
-|Vercauteren et al. 2006     |Vercautere |       7|
-|Verslycke et al. 2000       |Verslycke  |       5|
-|Verween et al. 2006         |Verween A, |       4|
-|Wouters 2002                |Wouters K  |      21|
-|Ysebaert et al. 1997        |Ysebaert T |       3|
+|Adam 1947                   |Adam W (19 |      19|
+|Adam and Leloup 1934        |Adam W, Le |       5|
+|Backeljau 1986              |Backeljau  |       4|
+|Boets et al. 2009           |Boets P, L |       5|
+|Boets et al. 2010b          |Boets P, L |       4|
+|Boets et al. 2011b          |Boets P, L |       5|
+|Boets et al. 2012c          |Boets P, L |       4|
+|Boets et al. 2016           |Boets P, B |       5|
+|Boets et al. unpub data     |Boets et a |       7|
+|Collection RBINS            |Collection |      11|
+|Cook et al. 2007            |Cook EJ, J |       5|
+|Damas 1938                  |Damas H (1 |       5|
+|Dewicke 2002                |Dewicke A  |       6|
+|Dumoulin 2004               |Dumoulin E |       4|
+|Faasse and Van Moorsel 2003 |Faasse M,  |       9|
+|Gerard 1986                 |Gérard P ( |       9|
+|Keppens and Mienis 2004     |Keppens M, |       5|
+|Kerckhof and Catrijsse 2001 |Kerckhof F |      23|
+|Kerckhof and Dumoulin 1987  |Kerckhof F |       5|
+|Kerckhof et al. 2007        |Kerckhof F |       6|
+|Leloup 1971                 |Leloup E ( |       5|
+|Leloup and Lefevre 1952     |Leloup E,  |      11|
+|Lock et al. 2007            |Lock K, Va |       4|
+|Loppens 1902                |Loppens K  |       4|
+|Messiaen et al. 2010        |Messiaen M |      14|
+|Nuyttens et al. 2006        |Nuyttens F |       4|
+|Nyst 1835 &#124; Adam 1947  |Nyst HJP ( |       6|
+|Sablon et al. 2010a         |Sablon R,  |       4|
+|Sablon et al. 2010b         |Sablon R,  |       4|
+|Sellius 1733                |Sellius G  |       4|
+|Seys et al. 1999            |Seys J, Vi |       4|
+|Soors et al. 2010           |Soors J, F |       4|
+|Soors et al. 2013           |Soors J, v |      36|
+|Swinnen et al. 1998         |Swinnen F, |       8|
+|Van Damme and Maes 1993     |Van Damme  |       6|
+|Van Damme et al. 1992       |Van Damme  |       5|
+|Van Goethem and Sablon 1986 |Van Goethe |       4|
+|van Haaren and Soors 2009   |van Haaren |       5|
+|Vandepitte et al. 2012      |Vandepitte |       4|
+|Vercauteren et al. 2005     |Vercautere |       8|
+|Vercauteren et al. 2006     |Vercautere |       9|
+|Verslycke et al. 2000       |Verslycke  |       6|
+|Verween et al. 2006         |Verween A, |       5|
+|Wouters 2002                |Wouters K  |      27|
+|Ysebaert et al. 1997        |Ysebaert T |       4|
 
 #### language
 
@@ -1368,14 +1386,14 @@ description_ext %>%
 
 
 
-|taxonID                                                         |description                             |type         |source     |language |
-|:---------------------------------------------------------------|:---------------------------------------|:------------|:----------|:--------|
-|alien-macroinvertebrates:taxon:0396fe0cb30083ee34d8692802dbfc3a |cbd_2014_pathway:stowaway_ballast_water |pathway      |van Haaren |en       |
-|alien-macroinvertebrates:taxon:0396fe0cb30083ee34d8692802dbfc3a |cbd_2014_pathway:stowaway_hull_fouling  |pathway      |van Haaren |en       |
-|alien-macroinvertebrates:taxon:0396fe0cb30083ee34d8692802dbfc3a |cbd_2014_pathway:escape_aquaculture     |pathway      |van Haaren |en       |
-|alien-macroinvertebrates:taxon:0396fe0cb30083ee34d8692802dbfc3a |brackish                                |habitat      |van Haaren |en       |
-|alien-macroinvertebrates:taxon:05e1226fad2eec66ff6c70764ecf047a |Northern America                        |native range |Gï¿½rard P ( |en       |
-|alien-macroinvertebrates:taxon:05e1226fad2eec66ff6c70764ecf047a |cbd_2014_pathway:escape_aquaculture     |pathway      |Gï¿½rard P ( |en       |
+|taxonID                                                         |description                             |type           |source     |language |
+|:---------------------------------------------------------------|:---------------------------------------|:--------------|:----------|:--------|
+|alien-macroinvertebrates:taxon:0396fe0cb30083ee34d8692802dbfc3a |cbd_2014_pathway:stowaway_ballast_water |pathway        |van Haaren |en       |
+|alien-macroinvertebrates:taxon:0396fe0cb30083ee34d8692802dbfc3a |cbd_2014_pathway:stowaway_hull_fouling  |pathway        |van Haaren |en       |
+|alien-macroinvertebrates:taxon:0396fe0cb30083ee34d8692802dbfc3a |cbd_2014_pathway:escape_aquaculture     |pathway        |van Haaren |en       |
+|alien-macroinvertebrates:taxon:0396fe0cb30083ee34d8692802dbfc3a |brackish                                |habitat        |van Haaren |en       |
+|alien-macroinvertebrates:taxon:0396fe0cb30083ee34d8692802dbfc3a |established                             |invasion stage |van Haaren |en       |
+|alien-macroinvertebrates:taxon:05e1226fad2eec66ff6c70764ecf047a |Northern America                        |native range   |Gérard P ( |en       |
 
 Save to CSV:
 
