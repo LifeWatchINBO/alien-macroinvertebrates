@@ -2,7 +2,7 @@
 
 ## Rationale
 
-This repository contains 1) the source data for the _Alien macroinvertebrates in Flanders (Belgium)_ dataset by Boets et al., 2) the functionality to standardize these data to both a [Darwin Core](https://www.gbif.org/dataset-classes) **occurrence** and **checklist dataset** that can be harvested by [GBIF](http://www.gbif.org), and 3) the code for a [one-page website](http://trias-project.github.io/alien-macroinvertebrates) to explore the occurrence data. It was developed for the [TrIAS project](http://trias-project.be).
+This repository contains the functionality to standardize the data of Boets et al. (2016) (http://www.aquaticinvasions.net/2016/AI_2016_Boets_etal.pdf) to both a [Darwin Core **occurrence**](https://www.gbif.org/dataset-classes) and [Darwin Core **checklist**](https://www.gbif.org/dataset-classes) dataset that can be harvested by [GBIF](http://www.gbif.org). The repository also contains the code for a [one-page **website**](http://trias-project.github.io/alien-macroinvertebrates) to explore the occurrence data. It was developed for the [TrIAS project](http://trias-project.be).
 
 ## Results
 
@@ -10,18 +10,18 @@ This repository contains 1) the source data for the _Alien macroinvertebrates in
 
 * Description of the [Darwin Core mapping](src/dwc_occurrence.md) (= a rendition of the [mapping script](src/dwc_occurrence.R))
 * Generated [Darwin Core files](data/processed/dwc_occurrence/)
-* Published [dataset on the IPT](http://data.inbo.be/ipt/resource?r=alien-macroinvertebrate-occurrences)
-* Published [dataset on GBIF](https://www.gbif.org/dataset/3c428404-893c-44da-bb4a-6c19d8fb676a)
+* Published [dataset on the IPT](https://ipt.inbo.be/resource?r=alien-macroinvertebrate-occurrences)
+* Published [dataset on GBIF](https://doi.org/10.15468/xjtfoo)
 * Article for this dataset:
 
-> Boets P, Brosens D, Lock K, Adriaens T, Aelterman B, Mertens J & Goethals P. 2016. Alien macroinvertebrates in Flanders (Belgium). Aquatic Invasions 11 (2): 131–144. https://doi.org/10.3391/ai.2016.11.2.03
+> Boets P, Brosens D, Lock K, Adriaens T, Aelterman B, Mertens J & Goethals PLM (2016) Alien macroinvertebrates in Flanders (Belgium). Aquatic Invasions 11: 131-144. <https://doi.org/10.3391/ai.2016.11.2.03> <http://www.aquaticinvasions.net/2016/AI_2016_Boets_etal.pdf>
 
 ### Checklist dataset
 
 * Description of the [Darwin Core mapping](src/dwc_checklist.md) (= a rendition of the [mapping script](src/dwc_checklist.R))
-* Generated [Darwin Core files](data/processed/checklist/)
-* Published dataset on the IPT
-* Published dataset on GBIF
+* Generated [Darwin Core files](data/processed/dwc_checklist/)
+* Published [dataset on the IPT](https://ipt.inbo.be/resource?r=alien-macroinvertebrates-checklist)
+* Published [dataset on GBIF](https://doi.org/10.15468/yxcq07)
 
 ## Repo structure
 
@@ -52,7 +52,7 @@ The repository structure is based on [Cookiecutter Data Science](http://drivenda
 
 ## Installation
 
-...
+See the installation section of [alien-plants-belgium](https://github.com/trias-project/alien-plants-belgium/blob/master/README.md#installation).
 
 ## Contributors
 
