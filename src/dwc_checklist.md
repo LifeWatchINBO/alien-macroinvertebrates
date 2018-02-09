@@ -2,7 +2,7 @@
 
 Lien Reyserhove, Dimitri Brosens, Peter Desmet
 
-2018-02-01
+2018-02-09
 
 This document describes how we map the checklist data to Darwin Core.
 
@@ -56,6 +56,7 @@ processed files:
 ```r
 dwc_taxon_file = "../data/processed/dwc_checklist/taxon.csv"
 dwc_distribution_file = "../data/processed/dwc_checklist/distribution.csv"
+dwc_profile_file = "../data/processed/dwc_checklist/speciesprofile.csv"
 dwc_description_file = "../data/processed/dwc_checklist/description.csv"
 ```
 
@@ -689,9 +690,147 @@ Save to CSV:
 write.csv(distribution, file = dwc_distribution_file, na = "", row.names = FALSE, fileEncoding = "UTF-8")
 ```
 
+## Create speciesProfile extension
+
+We use this extension to map the **salinity zone** information contained in `raw_salinity_zone` in the raw data file.
+`raw_salinity_zone` describes whether a species is found in brackish (B), freshwater (F), marine (M) or combined (B/M or F/B) salinity zone. 
+### Pre-processing
+
+
+```r
+species_profile <- raw_data
+```
+
+### Term mapping
+
+Map the source data to [Species Profile](http://rs.gbif.org/extension/gbif/1.0/speciesprofile.xml):
+#### taxonID
+
+
+```r
+species_profile %<>% mutate(taxonID = raw_taxonID)
+```
+
+The following DwC terms from the Species Profile extension are used to map the `raw_salinity_zone` information: `isMarine` and `isFreshwater`.
+For completeness, we integrate `isTerrestrial` as this is an essential piece of information for the development of indicators for invasive species.
+This is how `raw_salinity_zone` maps to the three DwC terms:
+
+
+```r
+kable(as.data.frame(
+  matrix(data = c(
+    "F", "FALSE", "TRUE", "FALSE",
+    "M", "TRUE", "FALSE", "FALSE",
+    "B/M", "TRUE", "FALSE", "FALSE",
+    "F/B", "FALSE", "TRUE", "FALSE",
+    "B", "TRUE", "TRUE", "FALSE"),
+    nrow = 5, ncol = 4, byrow = T,
+    dimnames = list (c(1:5), c("salinity zone", "isMarine", "isFreshwater", "isTerrestrial"))
+  )))
+```
+
+
+
+|salinity zone |isMarine |isFreshwater |isTerrestrial |
+|:-------------|:--------|:------------|:-------------|
+|F             |FALSE    |TRUE         |FALSE         |
+|M             |TRUE     |FALSE        |FALSE         |
+|B/M           |TRUE     |FALSE        |FALSE         |
+|F/B           |FALSE    |TRUE         |FALSE         |
+|B             |TRUE     |TRUE         |FALSE         |
+
+#### isMarine
+
+
+```r
+species_profile %<>% 
+  mutate(isMarine = case_when(
+    raw_salinity_zone == "M" | raw_salinity_zone == "B/M" | raw_salinity_zone == "B" ~ "TRUE",
+    TRUE ~"FALSE"))
+```
+
+#### isFreshwater
+
+
+```r
+species_profile %<>% 
+  mutate(isFreshwater = case_when(
+    raw_salinity_zone == "F" | raw_salinity_zone == "F/B" | raw_salinity_zone == "B" ~ "TRUE",
+    TRUE ~"FALSE"))
+```
+
+#### isTerrestrial
+
+
+```r
+species_profile %<>% mutate(isTerrestrial = "FALSE")
+```
+
+Show mapped values:
+
+
+```r
+species_profile %>%
+  select(raw_salinity_zone, isMarine, isFreshwater, isTerrestrial) %>%
+  group_by(raw_salinity_zone, isMarine, isFreshwater, isTerrestrial) %>%
+  summarize(records = n()) %>%
+  kable()
+```
+
+
+
+|raw_salinity_zone |isMarine |isFreshwater |isTerrestrial | records|
+|:-----------------|:--------|:------------|:-------------|-------:|
+|B                 |TRUE     |TRUE         |FALSE         |       4|
+|B/M               |TRUE     |FALSE        |FALSE         |       4|
+|F                 |FALSE    |TRUE         |FALSE         |      32|
+|F/B               |FALSE    |TRUE         |FALSE         |      16|
+|M                 |TRUE     |FALSE        |FALSE         |      17|
+
+### Post-processing
+
+Remove the original columns:
+
+
+```r
+species_profile %<>% select(-one_of(raw_colnames))
+```
+
+Sort on `taxonID`:
+
+
+```r
+species_profile %<>% arrange(taxonID)
+```
+
+Preview data:
+
+
+```r
+kable(head(species_profile))
+```
+
+
+
+|taxonID                                                                   |isMarine |isFreshwater |isTerrestrial |
+|:-------------------------------------------------------------------------|:--------|:------------|:-------------|
+|alien-macroinvertebrates-checklist:taxon:0396fe0cb30083ee34d8692802dbfc3a |TRUE     |TRUE         |FALSE         |
+|alien-macroinvertebrates-checklist:taxon:05e1226fad2eec66ff6c70764ecf047a |FALSE    |TRUE         |FALSE         |
+|alien-macroinvertebrates-checklist:taxon:06b1921ec41577a8c4516c91837ea594 |TRUE     |FALSE        |FALSE         |
+|alien-macroinvertebrates-checklist:taxon:0737719f7e273373da08c01c8dc6162f |FALSE    |TRUE         |FALSE         |
+|alien-macroinvertebrates-checklist:taxon:13883300ac884d3398e25f29b89a6513 |TRUE     |FALSE        |FALSE         |
+|alien-macroinvertebrates-checklist:taxon:151b9f1f8474dc7154761d78ba5f67e9 |TRUE     |FALSE        |FALSE         |
+
+Save to CSV:
+
+
+```r
+write.csv(species_profile, file = dwc_profile_file, na = "", row.names = FALSE, fileEncoding = "UTF-8")
+```
+
 ## Create description extension
 
-In the description extension we want to include **native range** (`raw_origin`), **pathway** (`raw_pathway_of_introduction`), **habitat** (`raw_salinity_zone`) and **invasion stage** information. We'll create a separate data frame for each and then combine these with union.
+In the description extension we want to include **native range** (`raw_origin`), **pathway** (`raw_pathway_of_introduction`) and **invasion stage** information. We'll create a separate data frame for each and then combine these with union.
 
 ### Pre-processing
 
@@ -877,7 +1016,7 @@ kable(head(native_range))
 #### Pathway (pathway of introduction)
 
 `raw_pathway_of_introduction` contains the raw information on the pathway of introduction (e.g. `aquaculture`).
-`raw_pathway_mapping` contains the interpretation of this pathway information bij @timadriaens. We will use this information to further process our mapping to DwC Archive.
+`raw_pathway_mapping` contains the interpretation of this pathway information by @timadriaens. We will use this information to further process our mapping to DwC Archive.
 (Remarks on this interpretation are given in `raw_pathway_mapping_remarks`)
  We'll separate, clean, map and combine these values.
 
@@ -1039,145 +1178,6 @@ kable(head(pathway))
 |Crustacea  |Decapoda  |Atyidae         |Atyaephyra desmaresti    |South-Europe           |1895                             |aquarium trade              |Pet/aquarium/terrarium species (including live food for such species )                                                                     |F                 |Wouters 2002                |NA                                                                |alien-macroinvertebrates-checklist:taxon:54cca150e1e0b7c0b3f5b152ae64d62b |cbd_2014_pathway:escape_pet            |pathway |
 |Crustacea  |Sessilia  |Austrobalanidae |Austrominius modestus    |Australia, Asia        |1950                             |shipping                    |Ship/boat hull fouling                                                                                                                     |M                 |Leloup and Lefevre 1952     |NA                                                                |alien-macroinvertebrates-checklist:taxon:f9953a68ec0b35fb531b3d1917df59c7 |cbd_2014_pathway:stowaway_hull_fouling |pathway |
 
-#### Habitat
-
-`raw_salinity_zone` contains information on the habitat of the species ("B" = brackish, "M" = marine, "freshwater"). We'll separate, clean, map and combine these values.
-
-Create new data frame:
-
-
-```r
-habitat <- raw_data
-```
-
-Inspect native_range:
-
-
-```r
-habitat %>%
-  distinct(raw_salinity_zone) %>%
-  arrange(raw_salinity_zone) %>%
-  kable()
-```
-
-
-
-|raw_salinity_zone |
-|:-----------------|
-|B                 |
-|B/M               |
-|F                 |
-|F/B               |
-|M                 |
-
-Similar as for `native_range` and `pathway`, we create a new variable `description` in `habitat` from `raw_salinity_zone`:
-
-
-```r
-habitat %<>% mutate(description = raw_salinity_zone)
-```
-
-Separate `description` on column in 2 columns.
-
-
-```r
-# In case there are more than 2 values, these will be merged in habitat_2. 
-# The dataset currently contains no more than 2 values per record.
-habitat %<>% 
-  separate(description, 
-           into = c("habitat_1", "habitat_2"),
-           sep = "/",
-           remove = TRUE,
-           convert = FALSE,
-           extra = "merge",
-           fill = "right"
-  )
-```
-
-Gather habitats in a key and value column:
-
-
-```r
-habitat %<>% gather(
-  key, value,
-  habitat_1, habitat_2,
-  na.rm = TRUE, # Also removes records for which there is no habitat_1
-  convert = FALSE
-)
-```
-
-`value now contains` the abbreviations `B`, `M` and `F` --> we substitute these by `brackish`, `marine` and `freshwater` respectively.
-
-
-```r
-habitat %<>% 
-  mutate(mapped_value = recode(
-    value,
-    "B" = "brackish",
-    "M" = "marine",
-    "F" = "freshwater"))
-```
-
-Show mapped values:
-
-
-```r
-habitat %>%
-  select(value, mapped_value) %>%
-  group_by(value, mapped_value) %>%
-  summarize(records = n()) %>%
-  arrange(value) %>%
-  kable()
-```
-
-
-
-|value |mapped_value | records|
-|:-----|:------------|-------:|
-|B     |brackish     |      24|
-|F     |freshwater   |      48|
-|M     |marine       |      21|
-
-Drop `key` and `value` column and rename `mapped value`:
-
-
-```r
-habitat %<>% select(-key, -value)
-habitat %<>% rename(description = mapped_value)
-```
-
-Keep only non-empty descriptions:
-
-
-```r
-habitat %<>% filter(!is.na(description) & description != "")
-```
-
-Create a `type` field to indicate the type of description:
-
-
-```r
-habitat %<>% mutate(type = "habitat")
-```
-
-Preview data:
-
-
-```r
-kable(head(habitat))
-```
-
-
-
-|raw_phylum |raw_order |raw_family      |raw_species              |raw_origin             |raw_first_occurrence_in_flanders |raw_pathway_of_introduction |raw_pathway_mapping                                                                                                                        |raw_salinity_zone |raw_reference               |raw_pathway_mapping_remarks                                       |raw_taxonID                                                               |description |type    |
-|:----------|:---------|:---------------|:------------------------|:----------------------|:--------------------------------|:---------------------------|:------------------------------------------------------------------------------------------------------------------------------------------|:-----------------|:---------------------------|:-----------------------------------------------------------------|:-------------------------------------------------------------------------|:-----------|:-------|
-|Crustacea  |Sessilia  |Balanidae       |Amphibalanus amphitrite  |South-Europe           |1952                             |shipping                    |Ship/boat hull fouling                                                                                                                     |M                 |Kerckhof and Catrijsse 2001 |NA                                                                |alien-macroinvertebrates-checklist:taxon:cebedf4407f487b424807ccd5478bfe6 |marine      |habitat |
-|Crustacea  |Sessilia  |Balanidae       |Amphibalanus improvisus  |West-Atlantic          |before 1700                      |shipping                    |Ship/boat hull fouling &#124; Ship/boat ballast water &#124; Contaminant on animals (except parasites, species transported by host/vector) |M                 |Kerckhof and Catrijsse 2001 |considered transport with oyster lots as 'Contaminant on animals' |alien-macroinvertebrates-checklist:taxon:db1c88330fce94a3483451f1e0fbc6af |marine      |habitat |
-|Crustacea  |Sessilia  |Balanidae       |Amphibalanus reticulatus |Tropical and warm seas |1997                             |shipping                    |Ship/boat hull fouling                                                                                                                     |M                 |Kerckhof and Catrijsse 2001 |NA                                                                |alien-macroinvertebrates-checklist:taxon:d9c2fd07436f56f3824955c88261e76e |marine      |habitat |
-|Crustacea  |Decapoda  |Astacidae       |Astacus leptodactylus    |East-Europe            |1986                             |aquaculture                 |Aquaculture &#124; Pet/aquarium/terrarium species (including live food for such species )                                                  |F                 |Gerard 1986                 |NA                                                                |alien-macroinvertebrates-checklist:taxon:464f0edd615ac93ab279f425dc1060a3 |freshwater  |habitat |
-|Crustacea  |Decapoda  |Atyidae         |Atyaephyra desmaresti    |South-Europe           |1895                             |aquarium trade              |Pet/aquarium/terrarium species (including live food for such species )                                                                     |F                 |Wouters 2002                |NA                                                                |alien-macroinvertebrates-checklist:taxon:54cca150e1e0b7c0b3f5b152ae64d62b |freshwater  |habitat |
-|Crustacea  |Sessilia  |Austrobalanidae |Austrominius modestus    |Australia, Asia        |1950                             |shipping                    |Ship/boat hull fouling                                                                                                                     |M                 |Leloup and Lefevre 1952     |NA                                                                |alien-macroinvertebrates-checklist:taxon:f9953a68ec0b35fb531b3d1917df59c7 |marine      |habitat |
-
 #### Invasion stage
 
 
@@ -1202,11 +1202,11 @@ Create a `type` field to indicate the type of description:
 invasion_stage %<>% mutate(type = "invasion stage")
 ```
 
-#### Union native range, pathway, habitat and invasion stage:
+#### Union native range, pathway and invasion stage:
 
 
 ```r
-description_ext <- bind_rows(native_range, pathway, habitat, invasion_stage)
+description_ext <- bind_rows(native_range, pathway, invasion_stage)
 ```
 
 ### Term mapping
@@ -1291,51 +1291,51 @@ description_ext %>%
 
 |citation                    |source     | records|
 |:---------------------------|:----------|-------:|
-|Adam 1947                   |Adam W (19 |      19|
-|Adam and Leloup 1934        |Adam W, Le |       5|
-|Backeljau 1986              |Backeljau  |       4|
-|Boets et al. 2009           |Boets P, L |       5|
-|Boets et al. 2010b          |Boets P, L |       4|
-|Boets et al. 2011b          |Boets P, L |       5|
-|Boets et al. 2012c          |Boets P, L |       4|
-|Boets et al. 2016           |Boets P, B |       5|
-|Boets et al. unpub data     |Boets et a |       7|
-|Collection RBINS            |Collection |      11|
-|Cook et al. 2007            |Cook EJ, J |       5|
-|Damas 1938                  |Damas H (1 |       5|
-|Dewicke 2002                |Dewicke A  |       6|
-|Dumoulin 2004               |Dumoulin E |       4|
-|Faasse and Van Moorsel 2003 |Faasse M,  |       9|
-|Gerard 1986                 |Gérard P ( |       9|
-|Keppens and Mienis 2004     |Keppens M, |       5|
-|Kerckhof and Catrijsse 2001 |Kerckhof F |      23|
-|Kerckhof and Dumoulin 1987  |Kerckhof F |       5|
-|Kerckhof et al. 2007        |Kerckhof F |       6|
-|Leloup 1971                 |Leloup E ( |       5|
-|Leloup and Lefevre 1952     |Leloup E,  |      11|
-|Lock et al. 2007            |Lock K, Va |       4|
-|Loppens 1902                |Loppens K  |       4|
-|Messiaen et al. 2010        |Messiaen M |      14|
-|Nuyttens et al. 2006        |Nuyttens F |       4|
-|Nyst 1835 &#124; Adam 1947  |Nyst HJP ( |       6|
-|Sablon et al. 2010a         |Sablon R,  |       4|
-|Sablon et al. 2010b         |Sablon R,  |       4|
-|Sellius 1733                |Sellius G  |       4|
-|Seys et al. 1999            |Seys J, Vi |       4|
-|Soors et al. 2010           |Soors J, F |       4|
-|Soors et al. 2013           |Soors J, v |      36|
-|Swinnen et al. 1998         |Swinnen F, |       8|
-|Van Damme and Maes 1993     |Van Damme  |       6|
-|Van Damme et al. 1992       |Van Damme  |       5|
-|Van Goethem and Sablon 1986 |Van Goethe |       4|
-|van Haaren and Soors 2009   |van Haaren |       5|
-|Vandepitte et al. 2012      |Vandepitte |       4|
-|Vercauteren et al. 2005     |Vercautere |       8|
-|Vercauteren et al. 2006     |Vercautere |       9|
-|Verslycke et al. 2000       |Verslycke  |       6|
-|Verween et al. 2006         |Verween A, |       5|
-|Wouters 2002                |Wouters K  |      27|
-|Ysebaert et al. 1997        |Ysebaert T |       4|
+|Adam 1947                   |Adam W (19 |      14|
+|Adam and Leloup 1934        |Adam W, Le |       4|
+|Backeljau 1986              |Backeljau  |       3|
+|Boets et al. 2009           |Boets P, L |       4|
+|Boets et al. 2010b          |Boets P, L |       3|
+|Boets et al. 2011b          |Boets P, L |       3|
+|Boets et al. 2012c          |Boets P, L |       3|
+|Boets et al. 2016           |Boets P, B |       3|
+|Boets et al. unpub data     |Boets et a |       5|
+|Collection RBINS            |Collection |       8|
+|Cook et al. 2007            |Cook EJ, J |       4|
+|Damas 1938                  |Damas H (1 |       3|
+|Dewicke 2002                |Dewicke A  |       4|
+|Dumoulin 2004               |Dumoulin E |       3|
+|Faasse and Van Moorsel 2003 |Faasse M,  |       6|
+|Gerard 1986                 |Gérard P ( |       7|
+|Keppens and Mienis 2004     |Keppens M, |       4|
+|Kerckhof and Catrijsse 2001 |Kerckhof F |      18|
+|Kerckhof and Dumoulin 1987  |Kerckhof F |       4|
+|Kerckhof et al. 2007        |Kerckhof F |       5|
+|Leloup 1971                 |Leloup E ( |       3|
+|Leloup and Lefevre 1952     |Leloup E,  |       8|
+|Lock et al. 2007            |Lock K, Va |       3|
+|Loppens 1902                |Loppens K  |       3|
+|Messiaen et al. 2010        |Messiaen M |       9|
+|Nuyttens et al. 2006        |Nuyttens F |       3|
+|Nyst 1835 &#124; Adam 1947  |Nyst HJP ( |       4|
+|Sablon et al. 2010a         |Sablon R,  |       3|
+|Sablon et al. 2010b         |Sablon R,  |       3|
+|Sellius 1733                |Sellius G  |       3|
+|Seys et al. 1999            |Seys J, Vi |       3|
+|Soors et al. 2010           |Soors J, F |       3|
+|Soors et al. 2013           |Soors J, v |      28|
+|Swinnen et al. 1998         |Swinnen F, |       6|
+|Van Damme and Maes 1993     |Van Damme  |       4|
+|Van Damme et al. 1992       |Van Damme  |       3|
+|Van Goethem and Sablon 1986 |Van Goethe |       3|
+|van Haaren and Soors 2009   |van Haaren |       4|
+|Vandepitte et al. 2012      |Vandepitte |       3|
+|Vercauteren et al. 2005     |Vercautere |       6|
+|Vercauteren et al. 2006     |Vercautere |       6|
+|Verslycke et al. 2000       |Verslycke  |       4|
+|Verween et al. 2006         |Verween A, |       3|
+|Wouters 2002                |Wouters K  |      19|
+|Ysebaert et al. 1997        |Ysebaert T |       3|
 
 #### language
 
@@ -1391,9 +1391,9 @@ description_ext %>%
 |alien-macroinvertebrates-checklist:taxon:0396fe0cb30083ee34d8692802dbfc3a |cbd_2014_pathway:stowaway_ballast_water |pathway        |van Haaren |en       |
 |alien-macroinvertebrates-checklist:taxon:0396fe0cb30083ee34d8692802dbfc3a |cbd_2014_pathway:stowaway_hull_fouling  |pathway        |van Haaren |en       |
 |alien-macroinvertebrates-checklist:taxon:0396fe0cb30083ee34d8692802dbfc3a |cbd_2014_pathway:escape_aquaculture     |pathway        |van Haaren |en       |
-|alien-macroinvertebrates-checklist:taxon:0396fe0cb30083ee34d8692802dbfc3a |brackish                                |habitat        |van Haaren |en       |
 |alien-macroinvertebrates-checklist:taxon:0396fe0cb30083ee34d8692802dbfc3a |established                             |invasion stage |van Haaren |en       |
 |alien-macroinvertebrates-checklist:taxon:05e1226fad2eec66ff6c70764ecf047a |Northern America                        |native range   |Gérard P ( |en       |
+|alien-macroinvertebrates-checklist:taxon:05e1226fad2eec66ff6c70764ecf047a |cbd_2014_pathway:escape_aquaculture     |pathway        |Gérard P ( |en       |
 
 Save to CSV:
 
