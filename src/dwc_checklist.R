@@ -328,7 +328,7 @@ species_profile %<>% mutate(isTerrestrial = "FALSE")
 #' Show mapped values:
 species_profile %>%
   select(raw_salinity_zone, isMarine, isFreshwater, isTerrestrial) %>%
-  group_by(raw_salinity_zone, isMarine, isFreshwater, isTerrestrial) %>%
+  group_by_all() %>%
   summarize(records = n()) %>%
   kable()
 
