@@ -281,21 +281,14 @@ write.csv(distribution, file = dwc_distribution_file, na = "", row.names = FALSE
 #' 
 #' We use this extension to map the **salinity zone** information contained in `raw_salinity_zone` in the raw data file.
 #' `raw_salinity_zone` describes whether a species is found in brackish (B), freshwater (F), marine (M) or combined (B/M or F/B) salinity zone. 
-
-#' ### Pre-processing
-species_profile <- raw_data
-
-#' ### Term mapping
-#' 
-#' Map the source data to [Species Profile](http://rs.gbif.org/extension/gbif/1.0/speciesprofile.xml):
-
-#' #### taxonID
-species_profile %<>% mutate(taxonID = raw_taxonID)
+raw_data %>%
+  distinct(raw_salinity_zone) %>%
+  arrange(raw_salinity_zone) %>%
+  kable()
 
 #' The following DwC terms from the Species Profile extension are used to map the `raw_salinity_zone` information: `isMarine` and `isFreshwater`.
 #' For completeness, we integrate `isTerrestrial` as this is an essential piece of information for the development of indicators for invasive species.
 #' This is how `raw_salinity_zone` maps to the three DwC terms:
-
 kable(as.data.frame(
   matrix(data = c(
     "F", "FALSE", "TRUE", "FALSE",
@@ -306,6 +299,16 @@ kable(as.data.frame(
     nrow = 5, ncol = 4, byrow = T,
     dimnames = list (c(1:5), c("salinity zone", "isMarine", "isFreshwater", "isTerrestrial"))
   )))
+
+#' ### Pre-processing
+species_profile <- raw_data
+
+#' ### Term mapping
+#' 
+#' Map the source data to [Species Profile](http://rs.gbif.org/extension/gbif/1.0/speciesprofile.xml):
+
+#' #### taxonID
+species_profile %<>% mutate(taxonID = raw_taxonID)
 
 #' #### isMarine
 species_profile %<>% 
