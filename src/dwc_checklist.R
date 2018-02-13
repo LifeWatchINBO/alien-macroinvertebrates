@@ -37,6 +37,7 @@ sources_file = "../data/raw/sources.tsv"
 #' processed files: 
 dwc_taxon_file = "../data/processed/dwc_checklist/taxon.csv"
 dwc_distribution_file = "../data/processed/dwc_checklist/distribution.csv"
+dwc_profile_file = "../data/processed/dwc_checklist/speciesprofile.csv"
 dwc_description_file = "../data/processed/dwc_checklist/description.csv"
 
 #' ## Read data
@@ -276,9 +277,78 @@ distribution %>%
 #' Save to CSV:
 write.csv(distribution, file = dwc_distribution_file, na = "", row.names = FALSE, fileEncoding = "UTF-8")
 
+#' ## Create species profile extension
+#' 
+#' We use this extension to map the **salinity zone** information contained in `raw_salinity_zone` in the raw data file.
+#' `raw_salinity_zone` describes whether a species is found in brackish (`B`), freshwater (`F`), marine (`M`) or combined (`B/M` or `F/B`) salinity zone.
+raw_data %>%
+  distinct(raw_salinity_zone) %>%
+  arrange(raw_salinity_zone) %>%
+  kable()
+
+#' The following DwC terms from the Species Profile extension are used to map the `raw_salinity_zone` information: `isMarine` and `isFreshwater`.
+#' For completeness, we integrate `isTerrestrial` as this is an essential piece of information for the development of indicators for invasive species.
+#' This is how `raw_salinity_zone` maps to the three DwC terms:
+kable(as.data.frame(
+  matrix(data = c(
+    "F", "FALSE", "TRUE", "FALSE",
+    "M", "TRUE", "FALSE", "FALSE",
+    "B/M", "TRUE", "FALSE", "FALSE",
+    "F/B", "FALSE", "TRUE", "FALSE",
+    "B", "TRUE", "TRUE", "FALSE"),
+    nrow = 5, ncol = 4, byrow = T,
+    dimnames = list (c(1:5), c("salinity zone", "isMarine", "isFreshwater", "isTerrestrial"))
+  )))
+
+#' ### Pre-processing
+species_profile <- raw_data
+
+#' ### Term mapping
+#' 
+#' Map the source data to [Species Profile](http://rs.gbif.org/extension/gbif/1.0/speciesprofile.xml):
+
+#' #### taxonID
+species_profile %<>% mutate(taxonID = raw_taxonID)
+
+#' #### isMarine
+species_profile %<>% 
+  mutate(isMarine = case_when(
+    raw_salinity_zone == "M" | raw_salinity_zone == "B/M" | raw_salinity_zone == "B" ~ "TRUE",
+    TRUE ~"FALSE"))
+
+#' #### isFreshwater
+species_profile %<>% 
+  mutate(isFreshwater = case_when(
+    raw_salinity_zone == "F" | raw_salinity_zone == "F/B" | raw_salinity_zone == "B" ~ "TRUE",
+    TRUE ~"FALSE"))
+
+#' #### isTerrestrial
+species_profile %<>% mutate(isTerrestrial = "FALSE")
+
+#' Show mapped values:
+species_profile %>%
+  select(raw_salinity_zone, isMarine, isFreshwater, isTerrestrial) %>%
+  group_by_all() %>%
+  summarize(records = n()) %>%
+  kable()
+
+#' ### Post-processing
+#' 
+#' Remove the original columns:
+species_profile %<>% select(-one_of(raw_colnames))
+
+#' Sort on `taxonID`:
+species_profile %<>% arrange(taxonID)
+
+#' Preview data:
+kable(head(species_profile))
+
+#' Save to CSV:
+write.csv(species_profile, file = dwc_profile_file, na = "", row.names = FALSE, fileEncoding = "UTF-8")
+
 #' ## Create description extension
 #' 
-#' In the description extension we want to include **native range** (`raw_origin`), **pathway** (`raw_pathway_of_introduction`), **habitat** (`raw_salinity_zone`) and **invasion stage** information. We'll create a separate data frame for each and then combine these with union.
+#' In the description extension we want to include **native range** (`raw_origin`), **pathway** (`raw_pathway_of_introduction`) and **invasion stage** information. We'll create a separate data frame for each and then combine these with union.
 #' 
 #' ### Pre-processing
 #' 
@@ -361,7 +431,7 @@ kable(head(native_range))
 #' #### Pathway (pathway of introduction)
 #' 
 #' `raw_pathway_of_introduction` contains the raw information on the pathway of introduction (e.g. `aquaculture`).
-#' `raw_pathway_mapping` contains the interpretation of this pathway information bij @timadriaens. We will use this information to further process our mapping to DwC Archive.
+#' `raw_pathway_mapping` contains the interpretation of this pathway information by @timadriaens. We will use this information to further process our mapping to DwC Archive.
 #' (Remarks on this interpretation are given in `raw_pathway_mapping_remarks`)
 #'  We'll separate, clean, map and combine these values.
 #' 
@@ -438,72 +508,6 @@ pathway %<>% mutate(type = "pathway")
 #' Preview data:
 kable(head(pathway))
 
-#' #### Habitat
-#' 
-#' `raw_salinity_zone` contains information on the habitat of the species ("B" = brackish, "M" = marine, "freshwater"). We'll separate, clean, map and combine these values.
-#' 
-#' Create new data frame:
-habitat <- raw_data
-
-#' Inspect native_range:
-habitat %>%
-  distinct(raw_salinity_zone) %>%
-  arrange(raw_salinity_zone) %>%
-  kable()
-
-#' Similar as for `native_range` and `pathway`, we create a new variable `description` in `habitat` from `raw_salinity_zone`:
-habitat %<>% mutate(description = raw_salinity_zone)
-
-#' Separate `description` on column in 2 columns.
-# In case there are more than 2 values, these will be merged in habitat_2. 
-# The dataset currently contains no more than 2 values per record.
-habitat %<>% 
-  separate(description, 
-           into = c("habitat_1", "habitat_2"),
-           sep = "/",
-           remove = TRUE,
-           convert = FALSE,
-           extra = "merge",
-           fill = "right"
-  )
-
-#' Gather habitats in a key and value column:
-habitat %<>% gather(
-  key, value,
-  habitat_1, habitat_2,
-  na.rm = TRUE, # Also removes records for which there is no habitat_1
-  convert = FALSE
-)
-
-#' `value now contains` the abbreviations `B`, `M` and `F` --> we substitute these by `brackish`, `marine` and `freshwater` respectively.
-habitat %<>% 
-  mutate(mapped_value = recode(
-    value,
-    "B" = "brackish",
-    "M" = "marine",
-    "F" = "freshwater"))
-
-#' Show mapped values:
-habitat %>%
-  select(value, mapped_value) %>%
-  group_by(value, mapped_value) %>%
-  summarize(records = n()) %>%
-  arrange(value) %>%
-  kable()
-
-#' Drop `key` and `value` column and rename `mapped value`:
-habitat %<>% select(-key, -value)
-habitat %<>% rename(description = mapped_value)
-
-#' Keep only non-empty descriptions:
-habitat %<>% filter(!is.na(description) & description != "")
-
-#' Create a `type` field to indicate the type of description:
-habitat %<>% mutate(type = "habitat")
-
-#' Preview data:
-kable(head(habitat))
-
 #' #### Invasion stage
 invasion_stage <- raw_data
 
@@ -516,8 +520,8 @@ invasion_stage %<>% mutate(description = "established")
 #' Create a `type` field to indicate the type of description:
 invasion_stage %<>% mutate(type = "invasion stage")
 
-#' #### Union native range, pathway, habitat and invasion stage:
-description_ext <- bind_rows(native_range, pathway, habitat, invasion_stage)
+#' #### Union native range, pathway and invasion stage:
+description_ext <- bind_rows(native_range, pathway, invasion_stage)
 
 #' ### Term mapping
 #' 
@@ -594,3 +598,4 @@ description_ext %>%
 
 #' Save to CSV:
 write.csv(description_ext, file = dwc_description_file, na = "", row.names = FALSE, fileEncoding = "UTF-8")
+
