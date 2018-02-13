@@ -2,7 +2,7 @@
 
 Lien Reyserhove, Dimitri Brosens, Peter Desmet
 
-2018-02-09
+2018-02-13
 
 This document describes how we map the checklist data to Darwin Core.
 
@@ -20,7 +20,7 @@ Sys.setlocale("LC_CTYPE", "en_US.UTF-8")
 ```
 
 ```
-## [1] ""
+## [1] "en_US.UTF-8"
 ```
 
 Load libraries:
@@ -383,8 +383,6 @@ distribution %>%
 
 |raw_first_occurrence_in_flanders |
 |:--------------------------------|
-|< 1700                           |
-|<1600                            |
 |1730-1732                        |
 |1834                             |
 |1835                             |
@@ -426,6 +424,8 @@ distribution %>%
 |2009                             |
 |2010                             |
 |2014                             |
+|< 1700                           |
+|<1600                            |
 |before 1700                      |
 
 When a **single year** is provided (i.e.`yyyy`, `< yyyy`, `<yyyy`, `before yyyy`), we consider this to be the `start_year`. No `end_year` is provided.
@@ -621,7 +621,7 @@ distribution %>%
 |Dewicke 2002                |Dewicke A  |       1|
 |Dumoulin 2004               |Dumoulin E |       1|
 |Faasse and Van Moorsel 2003 |Faasse M,  |       2|
-|Gerard 1986                 |Gérard P ( |       2|
+|Gerard 1986                 |GÃ©rard P ( |       2|
 |Keppens and Mienis 2004     |Keppens M, |       1|
 |Kerckhof and Catrijsse 2001 |Kerckhof F |       5|
 |Kerckhof and Dumoulin 1987  |Kerckhof F |       1|
@@ -643,7 +643,6 @@ distribution %>%
 |Van Damme and Maes 1993     |Van Damme  |       1|
 |Van Damme et al. 1992       |Van Damme  |       1|
 |Van Goethem and Sablon 1986 |Van Goethe |       1|
-|van Haaren and Soors 2009   |van Haaren |       1|
 |Vandepitte et al. 2012      |Vandepitte |       1|
 |Vercauteren et al. 2005     |Vercautere |       2|
 |Vercauteren et al. 2006     |Vercautere |       2|
@@ -651,6 +650,7 @@ distribution %>%
 |Verween et al. 2006         |Verween A, |       1|
 |Wouters 2002                |Wouters K  |       6|
 |Ysebaert et al. 1997        |Ysebaert T |       1|
+|van Haaren and Soors 2009   |van Haaren |       1|
 
 #### occurrenceRemarks
 ### Post-processing
@@ -679,7 +679,7 @@ distribution %>%
 |alien-macroinvertebrates-checklist:taxon:cebedf4407f487b424807ccd5478bfe6 |ISO_3166-2:BE-VLG |Flemish Region |BE          |present          |introduced         |1952/2016 |Kerckhof F |
 |alien-macroinvertebrates-checklist:taxon:db1c88330fce94a3483451f1e0fbc6af |ISO_3166-2:BE-VLG |Flemish Region |BE          |present          |introduced         |1700/2016 |Kerckhof F |
 |alien-macroinvertebrates-checklist:taxon:d9c2fd07436f56f3824955c88261e76e |ISO_3166-2:BE-VLG |Flemish Region |BE          |present          |introduced         |1997/2016 |Kerckhof F |
-|alien-macroinvertebrates-checklist:taxon:464f0edd615ac93ab279f425dc1060a3 |ISO_3166-2:BE-VLG |Flemish Region |BE          |present          |introduced         |1986/2016 |Gérard P ( |
+|alien-macroinvertebrates-checklist:taxon:464f0edd615ac93ab279f425dc1060a3 |ISO_3166-2:BE-VLG |Flemish Region |BE          |present          |introduced         |1986/2016 |GÃ©rard P ( |
 |alien-macroinvertebrates-checklist:taxon:54cca150e1e0b7c0b3f5b152ae64d62b |ISO_3166-2:BE-VLG |Flemish Region |BE          |present          |introduced         |1895/2016 |Wouters K  |
 |alien-macroinvertebrates-checklist:taxon:f9953a68ec0b35fb531b3d1917df59c7 |ISO_3166-2:BE-VLG |Flemish Region |BE          |present          |introduced         |1950/2016 |Leloup E,  |
 
@@ -690,26 +690,28 @@ Save to CSV:
 write.csv(distribution, file = dwc_distribution_file, na = "", row.names = FALSE, fileEncoding = "UTF-8")
 ```
 
-## Create speciesProfile extension
+## Create species profile extension
 
 We use this extension to map the **salinity zone** information contained in `raw_salinity_zone` in the raw data file.
-`raw_salinity_zone` describes whether a species is found in brackish (B), freshwater (F), marine (M) or combined (B/M or F/B) salinity zone. 
-### Pre-processing
+`raw_salinity_zone` describes whether a species is found in brackish (`B`), freshwater (`F`), marine (`M`) or combined (`B/M` or `F/B`) salinity zone.
 
 
 ```r
-species_profile <- raw_data
+raw_data %>%
+  distinct(raw_salinity_zone) %>%
+  arrange(raw_salinity_zone) %>%
+  kable()
 ```
 
-### Term mapping
-
-Map the source data to [Species Profile](http://rs.gbif.org/extension/gbif/1.0/speciesprofile.xml):
-#### taxonID
 
 
-```r
-species_profile %<>% mutate(taxonID = raw_taxonID)
-```
+|raw_salinity_zone |
+|:-----------------|
+|B                 |
+|B/M               |
+|F                 |
+|F/B               |
+|M                 |
 
 The following DwC terms from the Species Profile extension are used to map the `raw_salinity_zone` information: `isMarine` and `isFreshwater`.
 For completeness, we integrate `isTerrestrial` as this is an essential piece of information for the development of indicators for invasive species.
@@ -738,6 +740,23 @@ kable(as.data.frame(
 |B/M           |TRUE     |FALSE        |FALSE         |
 |F/B           |FALSE    |TRUE         |FALSE         |
 |B             |TRUE     |TRUE         |FALSE         |
+
+### Pre-processing
+
+
+```r
+species_profile <- raw_data
+```
+
+### Term mapping
+
+Map the source data to [Species Profile](http://rs.gbif.org/extension/gbif/1.0/speciesprofile.xml):
+#### taxonID
+
+
+```r
+species_profile %<>% mutate(taxonID = raw_taxonID)
+```
 
 #### isMarine
 
@@ -772,7 +791,7 @@ Show mapped values:
 ```r
 species_profile %>%
   select(raw_salinity_zone, isMarine, isFreshwater, isTerrestrial) %>%
-  group_by(raw_salinity_zone, isMarine, isFreshwater, isTerrestrial) %>%
+  group_by_all() %>%
   summarize(records = n()) %>%
   kable()
 ```
@@ -1306,7 +1325,7 @@ description_ext %>%
 |Dewicke 2002                |Dewicke A  |       4|
 |Dumoulin 2004               |Dumoulin E |       3|
 |Faasse and Van Moorsel 2003 |Faasse M,  |       6|
-|Gerard 1986                 |Gérard P ( |       7|
+|Gerard 1986                 |GÃ©rard P ( |       7|
 |Keppens and Mienis 2004     |Keppens M, |       4|
 |Kerckhof and Catrijsse 2001 |Kerckhof F |      18|
 |Kerckhof and Dumoulin 1987  |Kerckhof F |       4|
@@ -1328,7 +1347,6 @@ description_ext %>%
 |Van Damme and Maes 1993     |Van Damme  |       4|
 |Van Damme et al. 1992       |Van Damme  |       3|
 |Van Goethem and Sablon 1986 |Van Goethe |       3|
-|van Haaren and Soors 2009   |van Haaren |       4|
 |Vandepitte et al. 2012      |Vandepitte |       3|
 |Vercauteren et al. 2005     |Vercautere |       6|
 |Vercauteren et al. 2006     |Vercautere |       6|
@@ -1336,6 +1354,7 @@ description_ext %>%
 |Verween et al. 2006         |Verween A, |       3|
 |Wouters 2002                |Wouters K  |      19|
 |Ysebaert et al. 1997        |Ysebaert T |       3|
+|van Haaren and Soors 2009   |van Haaren |       4|
 
 #### language
 
@@ -1392,8 +1411,8 @@ description_ext %>%
 |alien-macroinvertebrates-checklist:taxon:0396fe0cb30083ee34d8692802dbfc3a |cbd_2014_pathway:stowaway_hull_fouling  |pathway        |van Haaren |en       |
 |alien-macroinvertebrates-checklist:taxon:0396fe0cb30083ee34d8692802dbfc3a |cbd_2014_pathway:escape_aquaculture     |pathway        |van Haaren |en       |
 |alien-macroinvertebrates-checklist:taxon:0396fe0cb30083ee34d8692802dbfc3a |established                             |invasion stage |van Haaren |en       |
-|alien-macroinvertebrates-checklist:taxon:05e1226fad2eec66ff6c70764ecf047a |Northern America                        |native range   |Gérard P ( |en       |
-|alien-macroinvertebrates-checklist:taxon:05e1226fad2eec66ff6c70764ecf047a |cbd_2014_pathway:escape_aquaculture     |pathway        |Gérard P ( |en       |
+|alien-macroinvertebrates-checklist:taxon:05e1226fad2eec66ff6c70764ecf047a |Northern America                        |native range   |GÃ©rard P ( |en       |
+|alien-macroinvertebrates-checklist:taxon:05e1226fad2eec66ff6c70764ecf047a |cbd_2014_pathway:escape_aquaculture     |pathway        |GÃ©rard P ( |en       |
 
 Save to CSV:
 

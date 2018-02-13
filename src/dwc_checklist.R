@@ -277,10 +277,10 @@ distribution %>%
 #' Save to CSV:
 write.csv(distribution, file = dwc_distribution_file, na = "", row.names = FALSE, fileEncoding = "UTF-8")
 
-#' ## Create speciesProfile extension
+#' ## Create species profile extension
 #' 
 #' We use this extension to map the **salinity zone** information contained in `raw_salinity_zone` in the raw data file.
-#' `raw_salinity_zone` describes whether a species is found in brackish (B), freshwater (F), marine (M) or combined (B/M or F/B) salinity zone. 
+#' `raw_salinity_zone` describes whether a species is found in brackish (`B`), freshwater (`F`), marine (`M`) or combined (`B/M` or `F/B`) salinity zone.
 raw_data %>%
   distinct(raw_salinity_zone) %>%
   arrange(raw_salinity_zone) %>%
