@@ -1,0 +1,20 @@
+name: "Alien macroinvertebrates in Flanders, Belgium"
+output_dir: "../docs"
+include: ["static/", "map.html"]
+navbar:
+  title: "alien-macroinvertebrates"
+  left:
+    - text: "Darwin Core mapping"
+      menu:
+        - text: "Checklist dataset"
+          href: dwc_checklist.html
+        - text: "Occurrence dataset"
+          href: dwc_occurrence.html
+  right:
+    - icon: fa-github fa-lg
+      href: https://github.com/trias-project/alien-macroinvertebrates
+output:
+  html_document:
+    theme: yeti
+    df_print: paged
+    css: "static/css/trias.css"

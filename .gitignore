@@ -35,8 +35,4 @@ vignettes/*.pdf
 # Mac OS X
 .DS_Store
 
-# Draft testfiles
-draft*
-.Rproj.user
-src/*.html
 
