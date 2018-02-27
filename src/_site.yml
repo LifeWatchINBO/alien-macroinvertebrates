@@ -10,6 +10,8 @@ navbar:
           href: dwc_checklist.html
         - text: "Occurrence dataset"
           href: dwc_occurrence.html
+    - text: "Explore occurrence data"
+      href: map.html
   right:
     - icon: fa-github fa-lg
       href: https://github.com/trias-project/alien-macroinvertebrates
