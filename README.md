@@ -38,7 +38,7 @@ The repository structure is based on [Cookiecutter Data Science](http://drivenda
 └── src
     ├── dwc_checklist.Rmd  : Darwin Core mapping script for checklist dataset
     ├── dwc_occurrence.Rmd : Darwin Core mapping script for occurrence dataset
-    └── src.Rproj       : RStudio project file
+    └── src.Rproj          : RStudio project file
 ```
 
 ## Installation
