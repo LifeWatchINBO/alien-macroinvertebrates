@@ -1,0 +1,1809 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+
+
+<title></title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/yeti.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet" />
+<script src="site_libs/pagedtable-1.1/js/pagedtable.js"></script>
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+<link rel="stylesheet" href="static/css/trias.css" type="text/css" />
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 45px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 50px;
+  margin-top: -50px;
+}
+
+.section h2 {
+  padding-top: 50px;
+  margin-top: -50px;
+}
+.section h3 {
+  padding-top: 50px;
+  margin-top: -50px;
+}
+.section h4 {
+  padding-top: 50px;
+  margin-top: -50px;
+}
+.section h5 {
+  padding-top: 50px;
+  margin-top: -50px;
+}
+.section h6 {
+  padding-top: 50px;
+  margin-top: -50px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+
+
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">alien-macroinvertebrates</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Darwin Core mapping
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="dwc_checklist.html">Checklist dataset</a>
+    </li>
+    <li>
+      <a href="dwc_occurrence.html">Occurrence dataset</a>
+    </li>
+  </ul>
+</li>
+<li>
+  <a href="map.html">Explore occurrence data</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/trias-project/alien-macroinvertebrates">
+    <span class="fa fa-github fa-lg"></span>
+     
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+
+</div>
+
+
+<div id="darwin-core-mapping-for-occurrence-dataset" class="section level1">
+<h1>Darwin Core mapping for occurrence dataset</h1>
+<p>Lien Reyserhove, Dimitri Brosens, Peter Desmet</p>
+<p>2017-11-22</p>
+<p>This document describes how we map the occurrence data to Darwin Core.</p>
+<div id="setup" class="section level2">
+<h2>Setup</h2>
+<p>Set locale (so we use UTF-8 character encoding):</p>
+<pre class="r"><code># This works on Mac OS X, might not work on other OS
+Sys.setlocale(&quot;LC_CTYPE&quot;, &quot;en_US.UTF-8&quot;)</code></pre>
+<pre><code>## [1] &quot;&quot;</code></pre>
+<p>Load libraries:</p>
+<pre class="r"><code>library(tidyverse) # For data transformations
+
+# None core tidyverse packages:
+library(magrittr)  # For %&lt;&gt;% pipes
+
+# Other packages
+library(janitor)   # For cleaning input data
+library(knitr)     # For nicer (kable) tables
+library(stringr)   # For string manipulation</code></pre>
+<p>Set file paths (all paths should be relative to this script):</p>
+<pre class="r"><code>raw_data_file = &quot;../data/raw/denormalized_observations.csv&quot;
+dwc_occurrence_file = &quot;../data/processed/dwc_occurrence/occurrence.csv&quot;</code></pre>
+</div>
+<div id="read-data" class="section level2">
+<h2>Read data</h2>
+<p>Read the source data:</p>
+<pre class="r"><code>raw_data &lt;- read.table(raw_data_file, header = TRUE, sep = &quot;\t&quot;, quote=&quot;&quot;, na.strings = &quot;NULL&quot;, fileEncoding = &quot;UTF-8-BOM&quot;, stringsAsFactors = F) </code></pre>
+<p>Clean data somewhat: remove empty rows if present</p>
+<pre class="r"><code>raw_data %&lt;&gt;%  remove_empty_rows() </code></pre>
+<p>Add prefix <code>raw_</code> to all column names, this to avoid name clashes with Darwin Core terms:</p>
+<pre class="r"><code>colnames(raw_data) &lt;- paste0(&quot;raw_&quot;, colnames(raw_data))</code></pre>
+<p>Save those column names as a vector (makes it easier to remove them all later):</p>
+<pre class="r"><code>raw_colnames &lt;- colnames(raw_data)</code></pre>
+<p>Preview data:</p>
+<pre class="r"><code>kable(head(raw_data))</code></pre>
+<table>
+<colgroup>
+<col width="5%" />
+<col width="6%" />
+<col width="9%" />
+<col width="8%" />
+<col width="7%" />
+<col width="6%" />
+<col width="5%" />
+<col width="5%" />
+<col width="6%" />
+<col width="6%" />
+<col width="6%" />
+<col width="3%" />
+<col width="3%" />
+<col width="4%" />
+<col width="6%" />
+<col width="7%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">raw_taxon_occurrence_key</th>
+<th align="left">raw_taxon_occurrence_comment</th>
+<th align="left">raw_nameserver_recommended_scientific_name</th>
+<th align="left">raw_nameserver_recommended_name_authority</th>
+<th align="left">raw_nameserver_recommended_name_rank</th>
+<th align="left">raw_sample_vague_date_start</th>
+<th align="left">raw_sample_vague_date_end</th>
+<th align="left">raw_sample_vague_date_type</th>
+<th align="left">raw_survey_event_comment</th>
+<th align="left">raw_location_name_item_name</th>
+<th align="left">raw_survey_event_location_name</th>
+<th align="left">raw_sample_lat</th>
+<th align="left">raw_sample_long</th>
+<th align="left">raw_sample_spatial_ref</th>
+<th align="left">raw_sample_spatial_ref_system</th>
+<th align="left">raw_sample_spatial_ref_qualifier</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">BFN0017900009QRO</td>
+<td align="left">PB:Ugent:AqE:2906</td>
+<td align="left">Procambarus clarkii</td>
+<td align="left">(Girard, 1852)</td>
+<td align="left">Spp</td>
+<td align="left">2011-03-16 00:00:00.000</td>
+<td align="left">2011-03-16 00:00:00.000</td>
+<td align="left">D</td>
+<td align="left">NA</td>
+<td align="left">Damme</td>
+<td align="left">NA</td>
+<td align="left">51,2917039321127</td>
+<td align="left">3,33787615648995</td>
+<td align="left">78089.0,220704.0</td>
+<td align="left">BD72</td>
+<td align="left">Imported</td>
+</tr>
+<tr class="even">
+<td align="left">BFN0017900009QRP</td>
+<td align="left">PB:Ugent:AqE:2905</td>
+<td align="left">Procambarus clarkii</td>
+<td align="left">(Girard, 1852)</td>
+<td align="left">Spp</td>
+<td align="left">2009-01-03 00:00:00.000</td>
+<td align="left">2010-01-02 00:00:00.000</td>
+<td align="left">Y</td>
+<td align="left">NA</td>
+<td align="left">Laakdal</td>
+<td align="left">NA</td>
+<td align="left">51,0868389225402</td>
+<td align="left">5,00310740316376</td>
+<td align="left">194446.0,197604.0</td>
+<td align="left">BD72</td>
+<td align="left">Imported</td>
+</tr>
+<tr class="odd">
+<td align="left">BFN0017900009QRQ</td>
+<td align="left">PB:Ugent:AqE:2904</td>
+<td align="left">Procambarus clarkii</td>
+<td align="left">(Girard, 1852)</td>
+<td align="left">Spp</td>
+<td align="left">2009-01-03 00:00:00.000</td>
+<td align="left">2010-01-02 00:00:00.000</td>
+<td align="left">Y</td>
+<td align="left">NA</td>
+<td align="left">Geel</td>
+<td align="left">NA</td>
+<td align="left">51,1005800032735</td>
+<td align="left">4,97993697973969</td>
+<td align="left">192810.0,199119.0</td>
+<td align="left">BD72</td>
+<td align="left">Imported</td>
+</tr>
+<tr class="even">
+<td align="left">BFN0017900009QRS</td>
+<td align="left">PB:Ugent:AqE:1815</td>
+<td align="left">Orconectes limosus</td>
+<td align="left">(Rafinesque, 1817)</td>
+<td align="left">Spp</td>
+<td align="left">2002-08-15 00:00:00.000</td>
+<td align="left">2002-08-15 00:00:00.000</td>
+<td align="left">D</td>
+<td align="left">2004_KreeftenBBICalc_Warmoes</td>
+<td align="left">Weert</td>
+<td align="left">NA</td>
+<td align="left">51,2165593647505</td>
+<td align="left">5,58310964700181</td>
+<td align="left">234845.0,212540.0</td>
+<td align="left">BD72</td>
+<td align="left">Imported</td>
+</tr>
+<tr class="odd">
+<td align="left">BFN0017900009QRT</td>
+<td align="left">PB:Ugent:AqE:1831</td>
+<td align="left">Orconectes limosus</td>
+<td align="left">(Rafinesque, 1817)</td>
+<td align="left">Spp</td>
+<td align="left">2003-06-06 00:00:00.000</td>
+<td align="left">2003-06-06 00:00:00.000</td>
+<td align="left">D</td>
+<td align="left">2004_KreeftenBBICalc_Warmoes</td>
+<td align="left">Dilsen-Stokkem</td>
+<td align="left">NA</td>
+<td align="left">51,0214476671045</td>
+<td align="left">5,75042616893119</td>
+<td align="left">246938.0,191042.0</td>
+<td align="left">BD72</td>
+<td align="left">Imported</td>
+</tr>
+<tr class="even">
+<td align="left">BFN0017900009QRW</td>
+<td align="left">PB:Ugent:AqE:1806</td>
+<td align="left">Orconectes limosus</td>
+<td align="left">(Rafinesque, 1817)</td>
+<td align="left">Spp</td>
+<td align="left">2002-05-30 00:00:00.000</td>
+<td align="left">2002-05-30 00:00:00.000</td>
+<td align="left">D</td>
+<td align="left">2004_KreeftenBBICalc_Warmoes</td>
+<td align="left">Ham</td>
+<td align="left">NA</td>
+<td align="left">51,0990079250055</td>
+<td align="left">5,13641646066324</td>
+<td align="left">203772.0,199046.0</td>
+<td align="left">BD72</td>
+<td align="left">Imported</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="create-occurrence-core" class="section level2">
+<h2>Create occurrence core</h2>
+<div id="pre-processing" class="section level3">
+<h3>Pre-processing</h3>
+<pre class="r"><code>occurrence &lt;- raw_data</code></pre>
+</div>
+<div id="term-mapping" class="section level3">
+<h3>Term mapping</h3>
+<p>Map the source data to <a href="http://rs.gbif.org/core/dwc_occurrence_2015-07-02.xml">Darwin Core Occurrence</a> (but in the classic Darwin Core order):</p>
+<div id="type" class="section level4">
+<h4>type</h4>
+<pre class="r"><code>occurrence %&lt;&gt;% mutate(type = &quot;Event&quot;)</code></pre>
+</div>
+<div id="modified" class="section level4">
+<h4>modified</h4>
+</div>
+<div id="language" class="section level4">
+<h4>language</h4>
+<pre class="r"><code>occurrence %&lt;&gt;% mutate(language = &quot;en&quot;)</code></pre>
+</div>
+<div id="license" class="section level4">
+<h4>license</h4>
+<pre class="r"><code>occurrence %&lt;&gt;% mutate(license = &quot;http://creativecommons.org/publicdomain/zero/1.0/&quot;)</code></pre>
+</div>
+<div id="rightsholder" class="section level4">
+<h4>rightsHolder</h4>
+<pre class="r"><code>occurrence %&lt;&gt;% mutate(rightsHolder = &quot;Ghent University Aquatic Ecology&quot;)</code></pre>
+</div>
+<div id="accessrights" class="section level4">
+<h4>accessRights</h4>
+<pre class="r"><code>occurrence %&lt;&gt;% mutate(accessRights = &quot;http://www.inbo.be/en/norms-for-data-use&quot;)</code></pre>
+</div>
+<div id="bibliographiccitation" class="section level4">
+<h4>bibliographicCitation</h4>
+</div>
+<div id="references" class="section level4">
+<h4>references</h4>
+</div>
+<div id="institutionid" class="section level4">
+<h4>institutionID</h4>
+</div>
+<div id="collectionid" class="section level4">
+<h4>collectionID</h4>
+</div>
+<div id="datasetid" class="section level4">
+<h4>datasetID</h4>
+<pre class="r"><code>occurrence %&lt;&gt;% mutate(datasetID = &quot;https://doi.org/10.15468/xjtfoo&quot;)</code></pre>
+</div>
+<div id="institutioncode" class="section level4">
+<h4>institutionCode</h4>
+<pre class="r"><code>occurrence %&lt;&gt;% mutate(institutionCode = &quot;INBO&quot;)</code></pre>
+</div>
+<div id="collectioncode" class="section level4">
+<h4>collectionCode</h4>
+</div>
+<div id="datasetname" class="section level4">
+<h4>datasetName</h4>
+<pre class="r"><code>occurrence %&lt;&gt;% mutate(datasetName = &quot;Alien macroinvertebrates in Flanders, Belgium&quot;)</code></pre>
+</div>
+<div id="ownerinstitutioncode" class="section level4">
+<h4>ownerInstitutionCode</h4>
+</div>
+<div id="basisofrecord" class="section level4">
+<h4>basisOfRecord</h4>
+<pre class="r"><code>occurrence %&lt;&gt;% mutate(basisOfRecord = &quot;HumanObservation&quot;)</code></pre>
+</div>
+<div id="informationwithheld" class="section level4">
+<h4>informationWithheld</h4>
+</div>
+<div id="datageneralizations" class="section level4">
+<h4>dataGeneralizations</h4>
+</div>
+<div id="dynamicproperties" class="section level4">
+<h4>dynamicProperties</h4>
+<hr />
+</div>
+<div id="occurrenceid" class="section level4">
+<h4>occurrenceID</h4>
+<p>Checking whether occurrenceID is a unique code (TRUE)</p>
+<pre class="r"><code>n_distinct(occurrence $ raw_taxon_occurrence_comment) == nrow(occurrence)</code></pre>
+<pre><code>## [1] TRUE</code></pre>
+<p>mapping:</p>
+<pre class="r"><code>occurrence %&lt;&gt;% mutate(occurrenceID = raw_taxon_occurrence_comment)</code></pre>
+</div>
+<div id="catalognumber" class="section level4">
+<h4>catalogNumber</h4>
+</div>
+<div id="recordnumber" class="section level4">
+<h4>recordNumber</h4>
+</div>
+<div id="recordedby" class="section level4">
+<h4>recordedBy</h4>
+<p>give all unique name/group/organization records in raw_survey_event_comment (base column for recordedBy and identifiedBy)</p>
+<pre class="r"><code>occurrence %&gt;% select (raw_survey_event_comment) %&gt;%
+  distinct(raw_survey_event_comment) %&gt;%
+  arrange (raw_survey_event_comment) %&gt;%
+  kable()</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left">raw_survey_event_comment</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">2004_KreeftenBBICalc_Warmoes</td>
+</tr>
+<tr class="even">
+<td align="left">2004_niet_BBICacl - Warmoes</td>
+</tr>
+<tr class="odd">
+<td align="left">Claudio Salvo</td>
+</tr>
+<tr class="even">
+<td align="left">D’udekem D’Acoz</td>
+</tr>
+<tr class="odd">
+<td align="left">databank VMM</td>
+</tr>
+<tr class="even">
+<td align="left">Dirk en Walda Hennebel</td>
+</tr>
+<tr class="odd">
+<td align="left">eigen data VMM</td>
+</tr>
+<tr class="even">
+<td align="left">extra stalen</td>
+</tr>
+<tr class="odd">
+<td align="left">Frank de Block-Burij</td>
+</tr>
+<tr class="even">
+<td align="left">Geert Vanloot</td>
+</tr>
+<tr class="odd">
+<td align="left">Gérard</td>
+</tr>
+<tr class="even">
+<td align="left">Gérard, 1986</td>
+</tr>
+<tr class="odd">
+<td align="left">Gunter Flipkens</td>
+</tr>
+<tr class="even">
+<td align="left">Hans de Blauwe</td>
+</tr>
+<tr class="odd">
+<td align="left">Herwig Mees</td>
+</tr>
+<tr class="even">
+<td align="left">IRSNB-Karel Wouters, 2002</td>
+</tr>
+<tr class="odd">
+<td align="left">Johan Auwerx</td>
+</tr>
+<tr class="even">
+<td align="left">Joost Mertens</td>
+</tr>
+<tr class="odd">
+<td align="left">Kobe Janssen</td>
+</tr>
+<tr class="even">
+<td align="left">koen</td>
+</tr>
+<tr class="odd">
+<td align="left">Koen Maes</td>
+</tr>
+<tr class="even">
+<td align="left">Leloup L.</td>
+</tr>
+<tr class="odd">
+<td align="left">LIN - Belpaire - Cammaerts</td>
+</tr>
+<tr class="even">
+<td align="left">LISEC - Neven &amp; Beckers</td>
+</tr>
+<tr class="odd">
+<td align="left">Lot Hebbelinck</td>
+</tr>
+<tr class="even">
+<td align="left">Luc Van Assche</td>
+</tr>
+<tr class="odd">
+<td align="left">Marjolein</td>
+</tr>
+<tr class="even">
+<td align="left">Paul van sanden</td>
+</tr>
+<tr class="odd">
+<td align="left">Pieter Cox</td>
+</tr>
+<tr class="even">
+<td align="left">Pieter Van Dorsselaer</td>
+</tr>
+<tr class="odd">
+<td align="left">Rik Clicque</td>
+</tr>
+<tr class="even">
+<td align="left">Roeland Croket</td>
+</tr>
+<tr class="odd">
+<td align="left">Thomas Gyselinck</td>
+</tr>
+<tr class="even">
+<td align="left">Tom Van den Neucker</td>
+</tr>
+<tr class="odd">
+<td align="left">Verslycke Tim</td>
+</tr>
+<tr class="even">
+<td align="left">VMM</td>
+</tr>
+<tr class="odd">
+<td align="left">VMM - Joost</td>
+</tr>
+<tr class="even">
+<td align="left">VMM - Joost, 2004_KreeftenBBICalc_Warmoes</td>
+</tr>
+<tr class="odd">
+<td align="left">VMM - Wim Gabriels</td>
+</tr>
+<tr class="even">
+<td align="left">VMM - Wim Gabriels, 2004_KreeftenBBICalc_Warmoes</td>
+</tr>
+<tr class="odd">
+<td align="left">VMM - Wim Gabriels, 2004_KreeftenBBICalc_Warmoes, VMM - Joost</td>
+</tr>
+<tr class="even">
+<td align="left">VMM, 2004_KreeftenBBICalc_Warmoes</td>
+</tr>
+<tr class="odd">
+<td align="left">waarnemingen</td>
+</tr>
+<tr class="even">
+<td align="left">waarnemingen - Dirk Hennebel</td>
+</tr>
+<tr class="odd">
+<td align="left">waarnemingen - Hans de Blauwe</td>
+</tr>
+<tr class="even">
+<td align="left">waarnemingen - Hans De Blauwe</td>
+</tr>
+<tr class="odd">
+<td align="left">Waarnemingen - Kevin Lambeets</td>
+</tr>
+<tr class="even">
+<td align="left">waarnemingen - Tom Van de Neucker</td>
+</tr>
+<tr class="odd">
+<td align="left">Warmoes Thierry</td>
+</tr>
+<tr class="even">
+<td align="left">Wouters</td>
+</tr>
+<tr class="odd">
+<td align="left">Wouters, 2002</td>
+</tr>
+<tr class="even">
+<td align="left">Xavier Vermeersch</td>
+</tr>
+<tr class="odd">
+<td align="left">zeehavens</td>
+</tr>
+<tr class="even">
+<td align="left">NA</td>
+</tr>
+</tbody>
+</table>
+<p>replace these records by a (list of) person(s), in the recommended best format for <a href="https://terms.tdwg.org/wiki/dwc:recordedBy">recordedBy</a></p>
+<pre class="r"><code>occurrence %&lt;&gt;% mutate (
+  recordedBy = recode (raw_survey_event_comment,
+                       &quot;2004_KreeftenBBICalc_Warmoes&quot; = &quot;Warmoes T&quot;, 
+                       &quot;VMM, 2004_KreeftenBBICalc_Warmoes&quot; = &quot; &quot;,
+                       &quot;2004_niet_BBICacl - Warmoes&quot; = &quot; &quot;,
+                       &quot;Claudio Salvo&quot; = &quot;Salvo C&quot;,
+                       &quot;D&#39;udekem D&#39;Acoz&quot; = &quot;d&#39;Udekem d&#39;Acoz&quot;,
+                       &quot;databank VMM&quot; = &quot;VMM&quot;,
+                       &quot;Dirk en Walda Hennebel&quot; = &quot;Hennebel D | Hennebel W&quot;,
+                       &quot;eigen data VMM&quot; = &quot;VMM&quot;,
+                       &quot;extra stalen&quot; = &quot;Boets P&quot;,
+                       &quot;Frank de Block-Burij&quot; = &quot;de Block-Burij F&quot;,
+                       &quot;Geert Vanloot&quot; = &quot;Vanloot G&quot;,
+                       &quot;GÃ©rard&quot; = &quot;GÃ©rard&quot;,
+                       &quot;GÃ©rard, 1986&quot; = &quot;GÃ©rard&quot;,
+                       &quot;Gunter Flipkens&quot; = &quot;Flipkens G&quot;,
+                       &quot;Hans de Blauwe&quot; = &quot;de Blauwe H&quot;,
+                       &quot;Herwig Mees&quot; = &quot;Mees H&quot;,
+                       &quot;IRSNB-Karel Wouters, 2002&quot; = &quot;Wouters K&quot;,
+                       &quot;Johan Auwerx&quot; = &quot;Auwerx J&quot;,
+                       &quot;Joost Mertens&quot; = &quot;Mertens J&quot;,
+                       &quot;Kobe Janssen&quot; = &quot;Janssen K&quot;,
+                       &quot;koen&quot; = &quot;Lock K&quot;,
+                       &quot;Koen Maes&quot; = &quot;Maes K&quot;,
+                       &quot;Leloup L.&quot; = &quot;Leloup L&quot;,
+                       &quot;LIN - Belpaire - Cammaerts&quot; = &quot;Belpaire | Cammaerts&quot;,
+                       &quot;LISEC - Neven &amp; Beckers&quot; = &quot;Neven | Beckers&quot;,
+                       &quot;Lot Hebbelinck&quot; = &quot;Hebbelinck L&quot;,
+                       &quot;Luc Van Assche&quot; = &quot;Van Assche L&quot;,
+                       &quot;Marjolein&quot; = &quot;Messiaen M&quot;,
+                       &quot;NULL&quot; = &quot;&quot;,
+                       &quot;Paul van sanden&quot; = &quot;Van Sanden P&quot;,
+                       &quot;Pieter Cox&quot; = &quot;Cox P&quot;,
+                       &quot;Pieter Van Dorsselaer&quot; = &quot;Van Dorsselaer P&quot;,
+                       &quot;Rik Clicque&quot; = &quot;Clicque R&quot;,
+                       &quot;Roeland Croket&quot; = &quot;Croket R&quot;,
+                       &quot;Thomas Gyselinck&quot; = &quot;Gyselinck T&quot;,
+                       &quot;Tom Van den Neucker&quot; = &quot;Van den Neucker T&quot;,
+                       &quot;Verslycke Tim&quot; = &quot;Verslycke T&quot;,
+                       &quot;VMM&quot; = &quot;VMM&quot;,
+                       &quot;VMM - Joost&quot; = &quot;Mertens J&quot;,
+                       &quot;VMM - Joost, 2004_KreeftenBBICalc_Warmoes&quot; = &quot;&quot;,
+                       &quot;VMM - Wim Gabriels&quot; = &quot;Gabriels W&quot;,
+                       &quot;VMM - Wim Gabriels, 2004_KreeftenBBICalc_Warmoes&quot; = &quot;Gabriels W&quot;,
+                       &quot;VMM - Wim Gabriels, 2004_KreeftenBBICalc_Warmoes, VMM - Joost&quot; = &quot;Gabriels W&quot;,
+                       &quot;waarnemingen&quot; = &quot;waarnemingen.be&quot;,
+                       &quot;waarnemingen - Dirk Hennebel&quot; = &quot;Hennebel D&quot;,
+                       &quot;waarnemingen - Hans de Blauwe&quot; = &quot;de Blauwe H&quot;,
+                       &quot;waarnemingen - Hans De Blauwe&quot; = &quot;de Blauwe H&quot;,
+                       &quot;Waarnemingen - Kevin Lambeets&quot; = &quot;Lambeets K&quot;,
+                       &quot;waarnemingen - Tom Van den Neucker&quot; = &quot;Van den Neucker T&quot;,
+                       &quot;Warmoes Thierry&quot; = &quot;Warmoes T&quot;,
+                       &quot;Wouters&quot; = &quot;Wouters K&quot;,
+                       &quot;Wouters, 2002&quot; = &quot;Wouters K&quot;,
+                       &quot;Xavier Vermeersch&quot; = &quot;Vermeersch X&quot;,
+                       &quot;zeehavens&quot; = &quot;Boets P&quot;,
+                       .default = &quot;&quot;,
+                       .missing = &quot;&quot;))</code></pre>
+</div>
+<div id="individualcount" class="section level4">
+<h4>individualCount</h4>
+</div>
+<div id="organismquantity" class="section level4">
+<h4>organismQuantity</h4>
+</div>
+<div id="organismquantitytype" class="section level4">
+<h4>organismQuantityType</h4>
+</div>
+<div id="sex" class="section level4">
+<h4>sex</h4>
+</div>
+<div id="lifestage" class="section level4">
+<h4>lifeStage</h4>
+</div>
+<div id="reproductivecondition" class="section level4">
+<h4>reproductiveCondition</h4>
+</div>
+<div id="behavior" class="section level4">
+<h4>behavior</h4>
+</div>
+<div id="establishmentmeans" class="section level4">
+<h4>establishmentMeans</h4>
+</div>
+<div id="occurrencestatus" class="section level4">
+<h4>occurrenceStatus</h4>
+</div>
+<div id="preparations" class="section level4">
+<h4>preparations</h4>
+</div>
+<div id="disposition" class="section level4">
+<h4>disposition</h4>
+</div>
+<div id="associatedmedia" class="section level4">
+<h4>associatedMedia</h4>
+</div>
+<div id="associatedreferences" class="section level4">
+<h4>associatedReferences</h4>
+</div>
+<div id="associatedsequences" class="section level4">
+<h4>associatedSequences</h4>
+</div>
+<div id="associatedtaxa" class="section level4">
+<h4>associatedTaxa</h4>
+</div>
+<div id="othercatalognumbers" class="section level4">
+<h4>otherCatalogNumbers</h4>
+<pre class="r"><code>occurrence %&lt;&gt;% mutate(otherCatalogNumbers = 
+                         paste0(&quot;INBO:NBN:&quot;,raw_taxon_occurrence_key))</code></pre>
+</div>
+<div id="occurrenceremarks" class="section level4">
+<h4>occurrenceRemarks</h4>
+<hr />
+</div>
+<div id="organismid" class="section level4">
+<h4>organismID</h4>
+</div>
+<div id="organismname" class="section level4">
+<h4>organismName</h4>
+</div>
+<div id="organismscope" class="section level4">
+<h4>organismScope</h4>
+</div>
+<div id="associatedoccurrences" class="section level4">
+<h4>associatedOccurrences</h4>
+</div>
+<div id="associatedorganisms" class="section level4">
+<h4>associatedOrganisms</h4>
+</div>
+<div id="previousidentifications" class="section level4">
+<h4>previousIdentifications</h4>
+</div>
+<div id="organismremarks" class="section level4">
+<h4>organismRemarks</h4>
+<hr />
+</div>
+<div id="materialsampleid" class="section level4">
+<h4>materialSampleID</h4>
+<hr />
+</div>
+<div id="eventid" class="section level4">
+<h4>eventID</h4>
+</div>
+<div id="parenteventid" class="section level4">
+<h4>parentEventID</h4>
+</div>
+<div id="fieldnumber" class="section level4">
+<h4>fieldNumber</h4>
+</div>
+<div id="eventdate" class="section level4">
+<h4>eventDate</h4>
+<p>Dates can be found both in <code>raw_sample_vague_date_start</code> and <code>raw_sample_vague_date_end</code> Both variables are imported in Rstudio as character vectors and need to be converted to an object of class “date”.</p>
+<pre class="r"><code>occurrence %&lt;&gt;% 
+  mutate(Date_start = as.Date (raw_sample_vague_date_start,&quot;%Y-%m-%d&quot;)) %&lt;&gt;% 
+  mutate(Date_end = as.Date (raw_sample_vague_date_end,&quot;%Y-%m-%d&quot;)) </code></pre>
+<p><code>Date_start</code> and <code>Date_end</code>are not always identical:</p>
+<pre class="r"><code>with (occurrence, identical(Date_start, Date_end))</code></pre>
+<pre><code>## [1] FALSE</code></pre>
+<p>Thus: dates will be expressed as: yyy-mm-dd when <code>Date_start</code> = <code>Date_end</code> yyy-mm-dd / yy-mm-dd when <code>Date_start</code> != <code>Date_end</code></p>
+<p>creating new column <code>Date_interval</code> when <code>Date_start</code> != <code>Date_end</code></p>
+<pre class="r"><code>occurrence %&lt;&gt;% mutate(Date_interval = paste (Date_start, Date_end, sep =&quot;/&quot;))  </code></pre>
+<p>As it is unsure if GBIF can handle <code>/</code>in <code>EventDate</code>: we always use <code>Date_start</code> for <code>eventDate</code> when <code>Date_start</code> != <code>Date_end</code>, we use <code>Date_interval</code> for <code>verbatimEventDate</code> OR when <code>Date_start</code> = <code>Date_end</code>, we define no value for <code>verbatimEventDate</code></p>
+<p>EventDate:</p>
+<pre class="r"><code>occurrence %&lt;&gt;% mutate(eventDate = Date_start)</code></pre>
+<p>verbatimEventDate:</p>
+<pre class="r"><code>occurrence %&lt;&gt;% mutate (verbatimEventDate =
+                          case_when (
+                            raw_sample_vague_date_start == raw_sample_vague_date_end ~ &quot;&quot;,
+                            raw_sample_vague_date_start != raw_sample_vague_date_end ~ Date_interval
+                          ))</code></pre>
+<p>Remove the <code>Date_start</code>, <code>Date_end</code> and <code>Date_interval</code> (only intermediate steps):</p>
+<pre class="r"><code>occurrence %&lt;&gt;% select (- c(Date_start, Date_end, Date_interval))</code></pre>
+</div>
+<div id="eventtime" class="section level4">
+<h4>eventTime</h4>
+</div>
+<div id="startdayofyear" class="section level4">
+<h4>startDayOfYear</h4>
+</div>
+<div id="enddayofyear" class="section level4">
+<h4>endDayOfYear</h4>
+</div>
+<div id="year" class="section level4">
+<h4>year</h4>
+</div>
+<div id="month" class="section level4">
+<h4>month</h4>
+</div>
+<div id="day" class="section level4">
+<h4>day</h4>
+</div>
+<div id="verbatimeventdate" class="section level4">
+<h4>verbatimEventDate</h4>
+</div>
+<div id="habitat" class="section level4">
+<h4>habitat</h4>
+</div>
+<div id="samplingprotocol" class="section level4">
+<h4>samplingProtocol</h4>
+</div>
+<div id="samplesizevalue" class="section level4">
+<h4>sampleSizeValue</h4>
+</div>
+<div id="samplesizeunit" class="section level4">
+<h4>sampleSizeUnit</h4>
+</div>
+<div id="samplingeffort" class="section level4">
+<h4>samplingEffort</h4>
+</div>
+<div id="fieldnotes" class="section level4">
+<h4>fieldNotes</h4>
+</div>
+<div id="eventremarks" class="section level4">
+<h4>eventRemarks</h4>
+<hr />
+</div>
+<div id="locationid" class="section level4">
+<h4>locationID</h4>
+</div>
+<div id="highergeographyid" class="section level4">
+<h4>higherGeographyID</h4>
+</div>
+<div id="highergeography" class="section level4">
+<h4>higherGeography</h4>
+</div>
+<div id="continent" class="section level4">
+<h4>continent</h4>
+<pre class="r"><code>occurrence %&lt;&gt;% mutate(continent = &quot;Europe&quot;)</code></pre>
+</div>
+<div id="waterbody" class="section level4">
+<h4>waterBody</h4>
+</div>
+<div id="islandgroup" class="section level4">
+<h4>islandGroup</h4>
+</div>
+<div id="island" class="section level4">
+<h4>island</h4>
+</div>
+<div id="country" class="section level4">
+<h4>country</h4>
+</div>
+<div id="countrycode" class="section level4">
+<h4>countryCode</h4>
+<pre class="r"><code>occurrence %&lt;&gt;% mutate(countryCode = &quot;BE&quot;)</code></pre>
+</div>
+<div id="stateprovince" class="section level4">
+<h4>stateProvince</h4>
+</div>
+<div id="county" class="section level4">
+<h4>county</h4>
+</div>
+<div id="municipality" class="section level4">
+<h4>municipality</h4>
+<pre class="r"><code>occurrence %&lt;&gt;% mutate(municipality = raw_location_name_item_name)</code></pre>
+</div>
+<div id="locality" class="section level4">
+<h4>locality</h4>
+</div>
+<div id="verbatimlocality" class="section level4">
+<h4>verbatimLocality</h4>
+<pre class="r"><code>occurrence %&lt;&gt;% mutate(verbatimLocality = raw_survey_event_location_name)</code></pre>
+</div>
+<div id="minimumelevationinmeters" class="section level4">
+<h4>minimumElevationInMeters</h4>
+</div>
+<div id="maximumelevationinmeters" class="section level4">
+<h4>maximumElevationInMeters</h4>
+</div>
+<div id="verbatimelevation" class="section level4">
+<h4>verbatimElevation</h4>
+</div>
+<div id="minimumdepthinmeters" class="section level4">
+<h4>minimumDepthInMeters</h4>
+</div>
+<div id="maximumdepthinmeters" class="section level4">
+<h4>maximumDepthInMeters</h4>
+</div>
+<div id="verbatimdepth" class="section level4">
+<h4>verbatimDepth</h4>
+</div>
+<div id="minimumdistanceabovesurfaceinmeters" class="section level4">
+<h4>minimumDistanceAboveSurfaceInMeters</h4>
+</div>
+<div id="maximumdistanceabovesurfaceinmeters" class="section level4">
+<h4>maximumDistanceAboveSurfaceInMeters</h4>
+</div>
+<div id="locationaccordingto" class="section level4">
+<h4>locationAccordingTo</h4>
+</div>
+<div id="locationremarks" class="section level4">
+<h4>locationRemarks</h4>
+</div>
+<div id="decimallatitude" class="section level4">
+<h4>decimalLatitude</h4>
+<pre class="r"><code>occurrence %&lt;&gt;% 
+  mutate (coordinate = str_replace (raw_sample_lat, &quot;,&quot;, &quot;.&quot;)) %&gt;%  # Change &quot;,&quot; to &quot;.&quot;
+  mutate (decimalLatitude = round (as.numeric(coordinate), 5)) %&gt;%  # round to 5 decimals
+  select (-coordinate)                                              # remove intermediary vector &quot;coordinate&quot;</code></pre>
+</div>
+<div id="decimallongitude" class="section level4">
+<h4>decimalLongitude</h4>
+<pre class="r"><code>occurrence %&lt;&gt;%
+  mutate (coordinate = str_replace (raw_sample_long, &quot;,&quot;, &quot;.&quot;)) %&lt;&gt;%  # Change &quot;,&quot; to &quot;.&quot;
+  mutate (decimalLongitude = round (as.numeric(coordinate), 5)) %&lt;&gt;%  # round to 5 decimals
+  select (-coordinate)                                                # remove intermediary vector &quot;coordinate&quot;</code></pre>
+</div>
+<div id="geodeticdatum" class="section level4">
+<h4>geodeticDatum</h4>
+<pre class="r"><code>occurrence %&lt;&gt;% mutate (geodeticDatum = &quot;WGS84&quot;)</code></pre>
+</div>
+<div id="coordinateuncertaintyinmeters" class="section level4">
+<h4>coordinateUncertaintyInMeters</h4>
+<pre class="r"><code>occurrence %&lt;&gt;% mutate(coordinateUncertaintyInMeters = &quot;30&quot;)</code></pre>
+</div>
+<div id="coordinateprecision" class="section level4">
+<h4>coordinatePrecision</h4>
+</div>
+<div id="pointradiusspatialfit" class="section level4">
+<h4>pointRadiusSpatialFit</h4>
+</div>
+<div id="verbatimcoordinates" class="section level4">
+<h4>verbatimCoordinates</h4>
+</div>
+<div id="verbatimlatitude-verbatimlongitude-verbatimcoordinatesystem-verbatimsrs" class="section level4">
+<h4>verbatimLatitude / verbatimLongitude / verbatimCoordinateSystem / verbatimSRS</h4>
+<p>These DwC terms were taken together as the <em>easiest</em> and <em>clearest</em> way to map them is to split <code>occurrence</code> in two separate dataframes: one dataframe with coordinatesystem = Belgium Lambert 72 and one with coordinatesystem = decimal degrees.</p>
+<p>First, to obtain <code>verbatimLongitude</code> and <code>verbatimLatitude</code> information, we need to split <code>raw_sample_spatial_ref</code> into two columns (separator = “,”): <code>longitude</code> and <code>latitude</code> (intermediate columns, will be removed later) and to replace “,” by “.” in coordinates expressed as decimal degrees:</p>
+<pre class="r"><code>occurrence %&lt;&gt;% 
+  separate( raw_sample_spatial_ref,
+            into = c(&quot;longitude&quot;, &quot;latitude&quot;),
+            sep = &quot;,&quot;,
+            remove = F) %&lt;&gt;%
+  mutate (longitude = str_replace(longitude, &quot;,&quot;, &quot;.&quot;)) %&lt;&gt;%
+  mutate (latitude = str_replace(latitude, &quot;,&quot;, &quot;.&quot;))</code></pre>
+<p>Create one dataframe for verbatimCoordinateSystem = Belgium Lambert 72 and one for verbatimCoordinateSystem = decimal degrees:</p>
+<pre class="r"><code>occurrence.BD72 &lt;- filter (occurrence, raw_sample_spatial_ref_system == &quot;BD72&quot;)
+occurrence.LTLN &lt;- filter (occurrence, raw_sample_spatial_ref_system == &quot;LTLN&quot;)</code></pre>
+<p>Dwc mapping for verbatimLongitude / verbatimLatitude / verbatimCoordinateSystem / verbatimSRS:</p>
+<pre class="r"><code>occurrence.BD72 %&lt;&gt;% 
+  mutate(verbatimLongitude = as.character (round (as.numeric (longitude, digits = 0 )))) %&lt;&gt;%  # round to 0 digits, convert from numeric to character for later union
+  mutate(verbatimLatitude  = as.character (round (as.numeric (latitude, digits = 0 )))) %&lt;&gt;%   # round to 0 digits, convert from numeric to character for later union
+  mutate(verbatimCoordinateSystem = &quot;Belgium Lambert 72&quot;) %&lt;&gt;%
+  mutate(verbatimSRS = &quot;Belgian Datum 1972&quot;)
+
+occurrence.LTLN %&lt;&gt;% 
+  mutate(verbatimLongitude = longitude) %&lt;&gt;%
+  mutate(verbatimLatitude  = latitude) %&lt;&gt;% 
+  mutate(verbatimCoordinateSystem = &quot;decimal degrees&quot;) %&lt;&gt;%
+  mutate(verbatimSRS = &quot;WGS84&quot;)</code></pre>
+<p>merge both subset to new occurrence data frame:</p>
+<pre class="r"><code>occurrence &lt;- union(occurrence.BD72, occurrence.LTLN)</code></pre>
+<p>remove intermediary columns <code>longitude</code> and <code>latitude</code>:</p>
+<pre class="r"><code>occurrence %&lt;&gt;% select(-c(longitude, latitude))</code></pre>
+</div>
+<div id="footprintwkt" class="section level4">
+<h4>footprintWKT</h4>
+</div>
+<div id="footprintsrs" class="section level4">
+<h4>footprintSRS</h4>
+</div>
+<div id="footprintspatialfit" class="section level4">
+<h4>footprintSpatialFit</h4>
+</div>
+<div id="georeferencedby" class="section level4">
+<h4>georeferencedBy</h4>
+</div>
+<div id="georeferenceddate" class="section level4">
+<h4>georeferencedDate</h4>
+</div>
+<div id="georeferenceprotocol" class="section level4">
+<h4>georeferenceProtocol</h4>
+</div>
+<div id="georeferencesources" class="section level4">
+<h4>georeferenceSources</h4>
+</div>
+<div id="georeferenceverificationstatus" class="section level4">
+<h4>georeferenceVerificationStatus</h4>
+</div>
+<div id="georeferenceremarks" class="section level4">
+<h4>georeferenceRemarks</h4>
+<hr />
+</div>
+<div id="geologicalcontextid" class="section level4">
+<h4>geologicalContextID</h4>
+</div>
+<div id="earliesteonorlowesteonothem" class="section level4">
+<h4>earliestEonOrLowestEonothem</h4>
+</div>
+<div id="latesteonorhighesteonothem" class="section level4">
+<h4>latestEonOrHighestEonothem</h4>
+</div>
+<div id="earliesteraorlowesterathem" class="section level4">
+<h4>earliestEraOrLowestErathem</h4>
+</div>
+<div id="latesteraorhighesterathem" class="section level4">
+<h4>latestEraOrHighestErathem</h4>
+</div>
+<div id="earliestperiodorlowestsystem" class="section level4">
+<h4>earliestPeriodOrLowestSystem</h4>
+</div>
+<div id="latestperiodorhighestsystem" class="section level4">
+<h4>latestPeriodOrHighestSystem</h4>
+</div>
+<div id="earliestepochorlowestseries" class="section level4">
+<h4>earliestEpochOrLowestSeries</h4>
+</div>
+<div id="latestepochorhighestseries" class="section level4">
+<h4>latestEpochOrHighestSeries</h4>
+</div>
+<div id="earliestageorloweststage" class="section level4">
+<h4>earliestAgeOrLowestStage</h4>
+</div>
+<div id="latestageorhigheststage" class="section level4">
+<h4>latestAgeOrHighestStage</h4>
+</div>
+<div id="lowestbiostratigraphiczone" class="section level4">
+<h4>lowestBiostratigraphicZone</h4>
+</div>
+<div id="highestbiostratigraphiczone" class="section level4">
+<h4>highestBiostratigraphicZone</h4>
+</div>
+<div id="lithostratigraphicterms" class="section level4">
+<h4>lithostratigraphicTerms</h4>
+</div>
+<div id="group" class="section level4">
+<h4>group</h4>
+</div>
+<div id="formation" class="section level4">
+<h4>formation</h4>
+</div>
+<div id="member" class="section level4">
+<h4>member</h4>
+</div>
+<div id="bed" class="section level4">
+<h4>bed</h4>
+<hr />
+</div>
+<div id="identificationid" class="section level4">
+<h4>identificationID</h4>
+</div>
+<div id="identificationqualifier" class="section level4">
+<h4>identificationQualifier</h4>
+</div>
+<div id="typestatus" class="section level4">
+<h4>typeStatus</h4>
+</div>
+<div id="identifiedby" class="section level4">
+<h4>identifiedBy</h4>
+<p>give all unique name/group/organization records in raw_survey_event_comment (base for recordedBy and identifiedBy)</p>
+<pre class="r"><code>occurrence %&gt;% select (raw_survey_event_comment) %&gt;%
+  distinct(raw_survey_event_comment) %&gt;%
+  arrange (raw_survey_event_comment) %&gt;%
+  kable()</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left">raw_survey_event_comment</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">2004_KreeftenBBICalc_Warmoes</td>
+</tr>
+<tr class="even">
+<td align="left">2004_niet_BBICacl - Warmoes</td>
+</tr>
+<tr class="odd">
+<td align="left">Claudio Salvo</td>
+</tr>
+<tr class="even">
+<td align="left">D’udekem D’Acoz</td>
+</tr>
+<tr class="odd">
+<td align="left">databank VMM</td>
+</tr>
+<tr class="even">
+<td align="left">Dirk en Walda Hennebel</td>
+</tr>
+<tr class="odd">
+<td align="left">eigen data VMM</td>
+</tr>
+<tr class="even">
+<td align="left">extra stalen</td>
+</tr>
+<tr class="odd">
+<td align="left">Frank de Block-Burij</td>
+</tr>
+<tr class="even">
+<td align="left">Geert Vanloot</td>
+</tr>
+<tr class="odd">
+<td align="left">Gérard</td>
+</tr>
+<tr class="even">
+<td align="left">Gérard, 1986</td>
+</tr>
+<tr class="odd">
+<td align="left">Gunter Flipkens</td>
+</tr>
+<tr class="even">
+<td align="left">Hans de Blauwe</td>
+</tr>
+<tr class="odd">
+<td align="left">Herwig Mees</td>
+</tr>
+<tr class="even">
+<td align="left">IRSNB-Karel Wouters, 2002</td>
+</tr>
+<tr class="odd">
+<td align="left">Johan Auwerx</td>
+</tr>
+<tr class="even">
+<td align="left">Joost Mertens</td>
+</tr>
+<tr class="odd">
+<td align="left">Kobe Janssen</td>
+</tr>
+<tr class="even">
+<td align="left">koen</td>
+</tr>
+<tr class="odd">
+<td align="left">Koen Maes</td>
+</tr>
+<tr class="even">
+<td align="left">Leloup L.</td>
+</tr>
+<tr class="odd">
+<td align="left">LIN - Belpaire - Cammaerts</td>
+</tr>
+<tr class="even">
+<td align="left">LISEC - Neven &amp; Beckers</td>
+</tr>
+<tr class="odd">
+<td align="left">Lot Hebbelinck</td>
+</tr>
+<tr class="even">
+<td align="left">Luc Van Assche</td>
+</tr>
+<tr class="odd">
+<td align="left">Marjolein</td>
+</tr>
+<tr class="even">
+<td align="left">Paul van sanden</td>
+</tr>
+<tr class="odd">
+<td align="left">Pieter Cox</td>
+</tr>
+<tr class="even">
+<td align="left">Pieter Van Dorsselaer</td>
+</tr>
+<tr class="odd">
+<td align="left">Rik Clicque</td>
+</tr>
+<tr class="even">
+<td align="left">Roeland Croket</td>
+</tr>
+<tr class="odd">
+<td align="left">Thomas Gyselinck</td>
+</tr>
+<tr class="even">
+<td align="left">Tom Van den Neucker</td>
+</tr>
+<tr class="odd">
+<td align="left">Verslycke Tim</td>
+</tr>
+<tr class="even">
+<td align="left">VMM</td>
+</tr>
+<tr class="odd">
+<td align="left">VMM - Joost</td>
+</tr>
+<tr class="even">
+<td align="left">VMM - Joost, 2004_KreeftenBBICalc_Warmoes</td>
+</tr>
+<tr class="odd">
+<td align="left">VMM - Wim Gabriels</td>
+</tr>
+<tr class="even">
+<td align="left">VMM - Wim Gabriels, 2004_KreeftenBBICalc_Warmoes</td>
+</tr>
+<tr class="odd">
+<td align="left">VMM - Wim Gabriels, 2004_KreeftenBBICalc_Warmoes, VMM - Joost</td>
+</tr>
+<tr class="even">
+<td align="left">VMM, 2004_KreeftenBBICalc_Warmoes</td>
+</tr>
+<tr class="odd">
+<td align="left">waarnemingen</td>
+</tr>
+<tr class="even">
+<td align="left">waarnemingen - Dirk Hennebel</td>
+</tr>
+<tr class="odd">
+<td align="left">waarnemingen - Hans de Blauwe</td>
+</tr>
+<tr class="even">
+<td align="left">waarnemingen - Hans De Blauwe</td>
+</tr>
+<tr class="odd">
+<td align="left">Waarnemingen - Kevin Lambeets</td>
+</tr>
+<tr class="even">
+<td align="left">waarnemingen - Tom Van de Neucker</td>
+</tr>
+<tr class="odd">
+<td align="left">Warmoes Thierry</td>
+</tr>
+<tr class="even">
+<td align="left">Wouters</td>
+</tr>
+<tr class="odd">
+<td align="left">Wouters, 2002</td>
+</tr>
+<tr class="even">
+<td align="left">Xavier Vermeersch</td>
+</tr>
+<tr class="odd">
+<td align="left">zeehavens</td>
+</tr>
+<tr class="even">
+<td align="left">NA</td>
+</tr>
+</tbody>
+</table>
+<p>replace these records by a (list of) person(s), in the recommended best format for <a href="https://terms.tdwg.org/wiki/dwc:identifiedBy">identifiedBy</a></p>
+<pre class="r"><code>occurrence %&lt;&gt;% mutate (
+  identifiedBy = recode (raw_survey_event_comment,
+                         &quot;2004_KreeftenBBICalc_Warmoes&quot; = &quot;Warmoes T&quot;, 
+                         &quot;VMM, 2004_KreeftenBBICalc_Warmoes&quot; = &quot;&quot;,
+                         &quot;2004_niet_BBICacl - Warmoes&quot; = &quot;&quot;,
+                         &quot;Claudio Salvo&quot; = &quot;Salvo C&quot;,
+                         &quot;D&#39;udekem D&#39;Acoz&quot; = &quot;d&#39;Udekem d&#39;Acoz&quot;,
+                         &quot;databank VMM&quot; = &quot;Boets P&quot;,
+                         &quot;Dirk en Walda Hennebel&quot; = &quot;Hennebel D | Hennebel W&quot;,
+                         &quot;eigen data VMM&quot; = &quot;Boets P&quot;,
+                         &quot;extra stalen&quot; = &quot;Boets P&quot;,
+                         &quot;Frank de Block-Burij&quot; = &quot;de Block-Burij F&quot;,
+                         &quot;Geert Vanloot&quot; = &quot;Vanloot G&quot;,
+                         &quot;GÃ©rard&quot; = &quot;GÃ©rard&quot;,
+                         &quot;GÃ©rard, 1986&quot; = &quot;GÃ©rard&quot;,
+                         &quot;Gunter Flipkens&quot; = &quot;Flipkens G&quot;,
+                         &quot;Hans de Blauwe&quot; = &quot;de Blauwe H&quot;,
+                         &quot;Herwig Mees&quot; = &quot;Mees H&quot;,
+                         &quot;IRSNB-Karel Wouters, 2002&quot; = &quot;Wouters K&quot;,
+                         &quot;Johan Auwerx&quot; = &quot;Boets P&quot;,
+                         &quot;Joost Mertens&quot; = &quot;Mertens J&quot;,
+                         &quot;Kobe Janssen&quot; = &quot;Janssen K&quot;,
+                         &quot;koen&quot; = &quot;Lock K&quot;,
+                         &quot;Koen Maes&quot; = &quot;Maes K&quot;,
+                         &quot;Leloup L.&quot; = &quot;Leloup L&quot;,
+                         &quot;LIN - Belpaire - Cammaerts&quot; = &quot;Belpaire | Cammaerts&quot;,
+                         &quot;LISEC - Neven &amp; Beckers&quot; = &quot;Neven | Beckers&quot;,
+                         &quot;Lot Hebbelinck&quot; = &quot;Hebbelinck L&quot;,
+                         &quot;Luc Van Assche&quot; = &quot;Van Assche L&quot;,
+                         &quot;Marjolein&quot; = &quot;Messiaen M&quot;,
+                         &quot;NULL&quot; = &quot;&quot;,
+                         &quot;Paul van sanden&quot; = &quot;Van Sanden P&quot;,
+                         &quot;Pieter Cox&quot; = &quot;Cox P&quot;,
+                         &quot;Pieter Van Dorsselaer&quot; = &quot;Van Dorsselaer P&quot;,
+                         &quot;Rik Clicque&quot; = &quot;Clicque R&quot;,
+                         &quot;Roeland Croket&quot; = &quot;Croket R&quot;,
+                         &quot;Thomas Gyselinck&quot; = &quot;Gyselinck T&quot;,
+                         &quot;Tom Van den Neucker&quot; = &quot;Van den Neucker T&quot;,
+                         &quot;Verslycke Tim&quot; = &quot;Verslycke T&quot;,
+                         &quot;VMM&quot; = &quot;Boets P&quot;,
+                         &quot;VMM - Joost&quot; = &quot;Mertens J&quot;,
+                         &quot;VMM - Joost, 2004_KreeftenBBICalc_Warmoes&quot; = &quot;&quot;,
+                         &quot;VMM - Wim Gabriels&quot; = &quot;Gabriels W&quot;,
+                         &quot;VMM - Wim Gabriels, 2004_KreeftenBBICalc_Warmoes&quot; = &quot;Gabriels W&quot;,
+                         &quot;VMM - Wim Gabriels, 2004_KreeftenBBICalc_Warmoes, VMM - Joost&quot; = &quot;Gabriels W&quot;,
+                         &quot;waarnemingen&quot; = &quot;waarnemingen.be&quot;,
+                         &quot;waarnemingen - Dirk Hennebel&quot; = &quot;Hennebel D&quot;,
+                         &quot;waarnemingen - Hans de Blauwe&quot; = &quot;de Blauwe H&quot;,
+                         &quot;waarnemingen - Hans De Blauwe&quot; = &quot;de Blauwe H&quot;,
+                         &quot;Waarnemingen - Kevin Lambeets&quot; = &quot;Lambeets K&quot;,
+                         &quot;waarnemingen - Tom Van den Neucker&quot; = &quot;Van den Neucker T&quot;,
+                         &quot;Warmoes Thierry&quot; = &quot;Warmoes T&quot;,
+                         &quot;Wouters&quot; = &quot;Wouters K&quot;,
+                         &quot;Wouters, 2002&quot; = &quot;Wouters K&quot;,
+                         &quot;Xavier Vermeersch&quot; = &quot;Vermeersch X&quot;,
+                         &quot;zeehavens&quot; = &quot;Boets P&quot;,
+                         .default = &quot;&quot;,
+                         .missing = &quot;&quot;))</code></pre>
+</div>
+<div id="dateidentified" class="section level4">
+<h4>dateIdentified</h4>
+</div>
+<div id="identificationreferences" class="section level4">
+<h4>identificationReferences</h4>
+</div>
+<div id="identificationverificationstatus" class="section level4">
+<h4>identificationVerificationStatus</h4>
+</div>
+<div id="identificationremarks" class="section level4">
+<h4>identificationRemarks</h4>
+<hr />
+</div>
+<div id="taxonid" class="section level4">
+<h4>taxonID</h4>
+</div>
+<div id="scientificnameid" class="section level4">
+<h4>scientificNameID</h4>
+</div>
+<div id="acceptednameusageid" class="section level4">
+<h4>acceptedNameUsageID</h4>
+</div>
+<div id="parentnameusageid" class="section level4">
+<h4>parentNameUsageID</h4>
+</div>
+<div id="originalnameusageid" class="section level4">
+<h4>originalNameUsageID</h4>
+</div>
+<div id="nameaccordingtoid" class="section level4">
+<h4>nameAccordingToID</h4>
+</div>
+<div id="namepublishedinid" class="section level4">
+<h4>namePublishedInID</h4>
+</div>
+<div id="taxonconceptid" class="section level4">
+<h4>taxonConceptID</h4>
+</div>
+<div id="scientificname" class="section level4">
+<h4>scientificName</h4>
+<p>Dreissena (Dreissena) polymorpha is the only scientific name with the subgenus mentioned in the name. This doesn’t add much information and is removed (see <a href="https://github.com/trias-project/alien-macroinvertebrates/issues/9">issue #9</a>)</p>
+<pre class="r"><code>occurrence %&lt;&gt;% mutate (scientificName = 
+                          case_when (
+                            raw_nameserver_recommended_scientific_name == &quot;Dreissena (Dreissena) polymorpha&quot; ~ &quot;Dreissena polymorpha&quot;,
+                            raw_nameserver_recommended_scientific_name != &quot;Dreissena (Dreissena) polymorpha&quot; ~ raw_nameserver_recommended_scientific_name
+                          ) )</code></pre>
+</div>
+<div id="acceptednameusage" class="section level4">
+<h4>acceptedNameUsage</h4>
+</div>
+<div id="parentnameusage" class="section level4">
+<h4>parentNameUsage</h4>
+</div>
+<div id="originalnameusage" class="section level4">
+<h4>originalNameUsage</h4>
+</div>
+<div id="nameaccordingto" class="section level4">
+<h4>nameAccordingTo</h4>
+</div>
+<div id="namepublishedin" class="section level4">
+<h4>namePublishedIn</h4>
+</div>
+<div id="namepublishedinyear" class="section level4">
+<h4>namePublishedInYear</h4>
+</div>
+<div id="higherclassification" class="section level4">
+<h4>higherClassification</h4>
+</div>
+<div id="kingdom" class="section level4">
+<h4>kingdom</h4>
+<pre class="r"><code>occurrence %&lt;&gt;% mutate (kingdom = &quot;Animalia&quot;)</code></pre>
+</div>
+<div id="phylum" class="section level4">
+<h4>phylum</h4>
+</div>
+<div id="class" class="section level4">
+<h4>class</h4>
+</div>
+<div id="order" class="section level4">
+<h4>order</h4>
+</div>
+<div id="family" class="section level4">
+<h4>family</h4>
+</div>
+<div id="genus" class="section level4">
+<h4>genus</h4>
+</div>
+<div id="subgenus" class="section level4">
+<h4>subgenus</h4>
+</div>
+<div id="specificepithet" class="section level4">
+<h4>specificEpithet</h4>
+</div>
+<div id="infraspecificepithet" class="section level4">
+<h4>infraspecificEpithet</h4>
+</div>
+<div id="taxonrank" class="section level4">
+<h4>taxonRank</h4>
+<p>raw_nameserver_recommended_name_rank contains two values: “Spp” and “SubSpp” –&gt; This should be “Species” and “Subspecies”:</p>
+<pre class="r"><code>occurrence %&lt;&gt;% mutate (taxonRank = 
+                          case_when (
+                            raw_nameserver_recommended_name_rank == &quot;Spp&quot; ~ &quot;species&quot;,
+                            raw_nameserver_recommended_name_rank == &quot;SubSpp&quot; ~ &quot;subspecies&quot;
+                          ) )</code></pre>
+</div>
+<div id="verbatimtaxonrank" class="section level4">
+<h4>verbatimTaxonRank</h4>
+</div>
+<div id="scientificnameauthorship" class="section level4">
+<h4>scientificNameAuthorship</h4>
+<pre class="r"><code>occurrence %&lt;&gt;% mutate (scientificNameAuthorship = raw_nameserver_recommended_name_authority)</code></pre>
+</div>
+<div id="vernacularname" class="section level4">
+<h4>vernacularName</h4>
+</div>
+<div id="nomenclaturalcode" class="section level4">
+<h4>nomenclaturalCode</h4>
+<pre class="r"><code>occurrence %&lt;&gt;% mutate (nomenclaturalCode = &quot;ICZN&quot;)</code></pre>
+</div>
+<div id="taxonomicstatus" class="section level4">
+<h4>taxonomicStatus</h4>
+</div>
+<div id="nomenclaturalstatus" class="section level4">
+<h4>nomenclaturalStatus</h4>
+</div>
+<div id="taxonremarks" class="section level4">
+<h4>taxonRemarks</h4>
+</div>
+</div>
+<div id="post-processing" class="section level3">
+<h3>Post-processing</h3>
+<p>Remove the original columns:</p>
+<pre class="r"><code>occurrence %&lt;&gt;% select(-one_of(raw_colnames))</code></pre>
+<p>Preview data:</p>
+<pre class="r"><code>kable(head(occurrence))</code></pre>
+<table style="width:100%;">
+<colgroup>
+<col width="0%" />
+<col width="1%" />
+<col width="6%" />
+<col width="4%" />
+<col width="5%" />
+<col width="4%" />
+<col width="2%" />
+<col width="6%" />
+<col width="2%" />
+<col width="2%" />
+<col width="1%" />
+<col width="3%" />
+<col width="1%" />
+<col width="2%" />
+<col width="1%" />
+<col width="1%" />
+<col width="1%" />
+<col width="13%" />
+<col width="2%" />
+<col width="2%" />
+<col width="1%" />
+<col width="4%" />
+<col width="2%" />
+<col width="2%" />
+<col width="3%" />
+<col width="2%" />
+<col width="1%" />
+<col width="3%" />
+<col width="1%" />
+<col width="1%" />
+<col width="3%" />
+<col width="2%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">type</th>
+<th align="left">language</th>
+<th align="left">license</th>
+<th align="left">rightsHolder</th>
+<th align="left">accessRights</th>
+<th align="left">datasetID</th>
+<th align="left">institutionCode</th>
+<th align="left">datasetName</th>
+<th align="left">basisOfRecord</th>
+<th align="left">occurrenceID</th>
+<th align="left">recordedBy</th>
+<th align="left">otherCatalogNumbers</th>
+<th align="left">eventDate</th>
+<th align="left">verbatimEventDate</th>
+<th align="left">continent</th>
+<th align="left">countryCode</th>
+<th align="left">municipality</th>
+<th align="left">verbatimLocality</th>
+<th align="right">decimalLatitude</th>
+<th align="right">decimalLongitude</th>
+<th align="left">geodeticDatum</th>
+<th align="left">coordinateUncertaintyInMeters</th>
+<th align="left">verbatimLongitude</th>
+<th align="left">verbatimLatitude</th>
+<th align="left">verbatimCoordinateSystem</th>
+<th align="left">verbatimSRS</th>
+<th align="left">identifiedBy</th>
+<th align="left">scientificName</th>
+<th align="left">kingdom</th>
+<th align="left">taxonRank</th>
+<th align="left">scientificNameAuthorship</th>
+<th align="left">nomenclaturalCode</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Event</td>
+<td align="left">en</td>
+<td align="left"><a href="http://creativecommons.org/publicdomain/zero/1.0/" class="uri">http://creativecommons.org/publicdomain/zero/1.0/</a></td>
+<td align="left">Ghent University Aquatic Ecology</td>
+<td align="left"><a href="http://www.inbo.be/en/norms-for-data-use" class="uri">http://www.inbo.be/en/norms-for-data-use</a></td>
+<td align="left"><a href="https://doi.org/10.15468/xjtfoo" class="uri">https://doi.org/10.15468/xjtfoo</a></td>
+<td align="left">INBO</td>
+<td align="left">Alien macroinvertebrates in Flanders, Belgium</td>
+<td align="left">HumanObservation</td>
+<td align="left">PB:Ugent:AqE:1078</td>
+<td align="left">VMM</td>
+<td align="left">INBO:NBN:BFN0017900009RAD</td>
+<td align="left">2000-08-19</td>
+<td align="left"></td>
+<td align="left">Europe</td>
+<td align="left">BE</td>
+<td align="left">Gent</td>
+<td align="left">Oostakker, Moervaartkaai, tussen Cargill en Dynea</td>
+<td align="right">51.13824</td>
+<td align="right">3.78624</td>
+<td align="left">WGS84</td>
+<td align="left">30</td>
+<td align="left">109231</td>
+<td align="left">203291</td>
+<td align="left">Belgium Lambert 72</td>
+<td align="left">Belgian Datum 1972</td>
+<td align="left">Boets P</td>
+<td align="left">Gammarus tigrinus</td>
+<td align="left">Animalia</td>
+<td align="left">species</td>
+<td align="left">Sexton, 1939</td>
+<td align="left">ICZN</td>
+</tr>
+<tr class="even">
+<td align="left">Event</td>
+<td align="left">en</td>
+<td align="left"><a href="http://creativecommons.org/publicdomain/zero/1.0/" class="uri">http://creativecommons.org/publicdomain/zero/1.0/</a></td>
+<td align="left">Ghent University Aquatic Ecology</td>
+<td align="left"><a href="http://www.inbo.be/en/norms-for-data-use" class="uri">http://www.inbo.be/en/norms-for-data-use</a></td>
+<td align="left"><a href="https://doi.org/10.15468/xjtfoo" class="uri">https://doi.org/10.15468/xjtfoo</a></td>
+<td align="left">INBO</td>
+<td align="left">Alien macroinvertebrates in Flanders, Belgium</td>
+<td align="left">HumanObservation</td>
+<td align="left">PB:Ugent:AqE:2669</td>
+<td align="left">VMM</td>
+<td align="left">INBO:NBN:BFN0017900009RI7</td>
+<td align="left">1999-07-24</td>
+<td align="left"></td>
+<td align="left">Europe</td>
+<td align="left">BE</td>
+<td align="left">Knokke-Heist</td>
+<td align="left">Hazegrasstraat, Schapersdijk</td>
+<td align="right">51.34525</td>
+<td align="right">3.33294</td>
+<td align="left">WGS84</td>
+<td align="left">30</td>
+<td align="left">77828</td>
+<td align="left">226666</td>
+<td align="left">Belgium Lambert 72</td>
+<td align="left">Belgian Datum 1972</td>
+<td align="left">Boets P</td>
+<td align="left">Potamopyrgus antipodarum</td>
+<td align="left">Animalia</td>
+<td align="left">species</td>
+<td align="left">(J.E. Gray, 1843)</td>
+<td align="left">ICZN</td>
+</tr>
+<tr class="odd">
+<td align="left">Event</td>
+<td align="left">en</td>
+<td align="left"><a href="http://creativecommons.org/publicdomain/zero/1.0/" class="uri">http://creativecommons.org/publicdomain/zero/1.0/</a></td>
+<td align="left">Ghent University Aquatic Ecology</td>
+<td align="left"><a href="http://www.inbo.be/en/norms-for-data-use" class="uri">http://www.inbo.be/en/norms-for-data-use</a></td>
+<td align="left"><a href="https://doi.org/10.15468/xjtfoo" class="uri">https://doi.org/10.15468/xjtfoo</a></td>
+<td align="left">INBO</td>
+<td align="left">Alien macroinvertebrates in Flanders, Belgium</td>
+<td align="left">HumanObservation</td>
+<td align="left">PB:Ugent:AqE:264</td>
+<td align="left">VMM</td>
+<td align="left">INBO:NBN:BFN0017900009R6M</td>
+<td align="left">2004-08-27</td>
+<td align="left"></td>
+<td align="left">Europe</td>
+<td align="left">BE</td>
+<td align="left">Evergem</td>
+<td align="left">Molendreef, Enaamse</td>
+<td align="right">51.15032</td>
+<td align="right">3.73218</td>
+<td align="left">WGS84</td>
+<td align="left">30</td>
+<td align="left">105459</td>
+<td align="left">204666</td>
+<td align="left">Belgium Lambert 72</td>
+<td align="left">Belgian Datum 1972</td>
+<td align="left">Boets P</td>
+<td align="left">Crangonyx pseudogracilis</td>
+<td align="left">Animalia</td>
+<td align="left">species</td>
+<td align="left">Bousfield, 1958</td>
+<td align="left">ICZN</td>
+</tr>
+<tr class="even">
+<td align="left">Event</td>
+<td align="left">en</td>
+<td align="left"><a href="http://creativecommons.org/publicdomain/zero/1.0/" class="uri">http://creativecommons.org/publicdomain/zero/1.0/</a></td>
+<td align="left">Ghent University Aquatic Ecology</td>
+<td align="left"><a href="http://www.inbo.be/en/norms-for-data-use" class="uri">http://www.inbo.be/en/norms-for-data-use</a></td>
+<td align="left"><a href="https://doi.org/10.15468/xjtfoo" class="uri">https://doi.org/10.15468/xjtfoo</a></td>
+<td align="left">INBO</td>
+<td align="left">Alien macroinvertebrates in Flanders, Belgium</td>
+<td align="left">HumanObservation</td>
+<td align="left">PB:Ugent:AqE:1451</td>
+<td align="left">VMM</td>
+<td align="left">INBO:NBN:BFN0017900009RPP</td>
+<td align="left">2007-08-31</td>
+<td align="left"></td>
+<td align="left">Europe</td>
+<td align="left">BE</td>
+<td align="left">Nieuwpoort</td>
+<td align="left">Sint-Joris, Ramskapellestraat</td>
+<td align="right">51.12485</td>
+<td align="right">2.76741</td>
+<td align="left">WGS84</td>
+<td align="left">30</td>
+<td align="left">37900</td>
+<td align="left">202850</td>
+<td align="left">Belgium Lambert 72</td>
+<td align="left">Belgian Datum 1972</td>
+<td align="left">Boets P</td>
+<td align="left">Gammarus tigrinus</td>
+<td align="left">Animalia</td>
+<td align="left">species</td>
+<td align="left">Sexton, 1939</td>
+<td align="left">ICZN</td>
+</tr>
+<tr class="odd">
+<td align="left">Event</td>
+<td align="left">en</td>
+<td align="left"><a href="http://creativecommons.org/publicdomain/zero/1.0/" class="uri">http://creativecommons.org/publicdomain/zero/1.0/</a></td>
+<td align="left">Ghent University Aquatic Ecology</td>
+<td align="left"><a href="http://www.inbo.be/en/norms-for-data-use" class="uri">http://www.inbo.be/en/norms-for-data-use</a></td>
+<td align="left"><a href="https://doi.org/10.15468/xjtfoo" class="uri">https://doi.org/10.15468/xjtfoo</a></td>
+<td align="left">INBO</td>
+<td align="left">Alien macroinvertebrates in Flanders, Belgium</td>
+<td align="left">HumanObservation</td>
+<td align="left">PB:Ugent:AqE:1265</td>
+<td align="left">VMM</td>
+<td align="left">INBO:NBN:BFN0017900009RE8</td>
+<td align="left">1991-10-05</td>
+<td align="left"></td>
+<td align="left">Europe</td>
+<td align="left">BE</td>
+<td align="left">Herentals</td>
+<td align="left">FC: zijweg Geelsebaan (einde zandweg tgo Honingstr.), 30m afw. Prima-Lux, BIO: houten steiger na sas</td>
+<td align="right">51.17161</td>
+<td align="right">4.85111</td>
+<td align="left">WGS84</td>
+<td align="left">30</td>
+<td align="left">183735</td>
+<td align="left">206954</td>
+<td align="left">Belgium Lambert 72</td>
+<td align="left">Belgian Datum 1972</td>
+<td align="left">Boets P</td>
+<td align="left">Gammarus tigrinus</td>
+<td align="left">Animalia</td>
+<td align="left">species</td>
+<td align="left">Sexton, 1939</td>
+<td align="left">ICZN</td>
+</tr>
+<tr class="even">
+<td align="left">Event</td>
+<td align="left">en</td>
+<td align="left"><a href="http://creativecommons.org/publicdomain/zero/1.0/" class="uri">http://creativecommons.org/publicdomain/zero/1.0/</a></td>
+<td align="left">Ghent University Aquatic Ecology</td>
+<td align="left"><a href="http://www.inbo.be/en/norms-for-data-use" class="uri">http://www.inbo.be/en/norms-for-data-use</a></td>
+<td align="left"><a href="https://doi.org/10.15468/xjtfoo" class="uri">https://doi.org/10.15468/xjtfoo</a></td>
+<td align="left">INBO</td>
+<td align="left">Alien macroinvertebrates in Flanders, Belgium</td>
+<td align="left">HumanObservation</td>
+<td align="left">PB:Ugent:AqE:1519</td>
+<td align="left">VMM</td>
+<td align="left">INBO:NBN:BFN0017900009SM6</td>
+<td align="left">2008-11-05</td>
+<td align="left"></td>
+<td align="left">Europe</td>
+<td align="left">BE</td>
+<td align="left">Oostende</td>
+<td align="left">Zandvoordestraat</td>
+<td align="right">51.21327</td>
+<td align="right">2.94688</td>
+<td align="left">WGS84</td>
+<td align="left">30</td>
+<td align="left">50650</td>
+<td align="left">212429</td>
+<td align="left">Belgium Lambert 72</td>
+<td align="left">Belgian Datum 1972</td>
+<td align="left">Boets P</td>
+<td align="left">Gammarus tigrinus</td>
+<td align="left">Animalia</td>
+<td align="left">species</td>
+<td align="left">Sexton, 1939</td>
+<td align="left">ICZN</td>
+</tr>
+</tbody>
+</table>
+<p>Save to CSV:</p>
+<pre class="r"><code>write.csv(occurrence, file = dwc_occurrence_file, na = &quot;&quot;, row.names = FALSE, fileEncoding = &quot;UTF-8&quot;)</code></pre>
+</div>
+</div>
+</div>
+
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
