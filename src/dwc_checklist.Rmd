@@ -50,6 +50,7 @@ sources_file = "../data/raw/sources.tsv"
 # Processed files:
 dwc_taxon_file = "../data/processed/dwc_checklist/taxon.csv"
 dwc_distribution_file = "../data/processed/dwc_checklist/distribution.csv"
+dwc_profile_file = "../data/processed/dwc_checklist/speciesprofile.csv"
 dwc_description_file = "../data/processed/dwc_checklist/description.csv"
 ```
 
@@ -365,6 +366,101 @@ Save to CSV:
 
 ```{r}
 write.csv(distribution, file = dwc_distribution_file, na = "", row.names = FALSE, fileEncoding = "UTF-8")
+```
+
+# Create species profile extension
+
+In this extension will express broad habitat characteristics (e.g. `isMarine`) of the species.
+
+```{r start_species_profile}
+species_profile <- raw_data
+```
+
+Habitat information can be found in `raw_salinity_zone`, which describes whether a species is found in brackish (`B`), freshwater (`F`), marine (`M`) or combined (`B/M` or `F/B`) salinity zones.
+
+Show unique values:
+
+```{r}
+species_profile %>%
+  distinct(raw_salinity_zone) %>%
+  arrange(raw_salinity_zone)
+```
+
+This is a manually created overview of how we will map the `raw_salinity_zone` to `isMarine`, `isFreshwater` and `isTerrestrial`. Note: the latter term is added for completeness, but will be `FALSE` for all species in this dataset:
+
+```{r, echo = FALSE}
+as.data.frame(matrix(data = c(
+  "F", "FALSE", "TRUE", "FALSE",
+  "M", "TRUE", "FALSE", "FALSE",
+  "B/M", "TRUE", "FALSE", "FALSE",
+  "F/B", "FALSE", "TRUE", "FALSE",
+  "B", "TRUE", "TRUE", "FALSE"),
+  nrow = 5, ncol = 4, byrow = TRUE,
+  dimnames = list (c(1:5), c("salinity zone", "isMarine", "isFreshwater", "isTerrestrial"))
+))
+```
+
+## Term mapping
+
+Map the data to [Species Profile](http://rs.gbif.org/extension/gbif/1.0/speciesprofile.xml).
+
+### taxonID
+
+```{r}
+species_profile %<>% mutate(taxonID = raw_taxon_id)
+```
+
+### isMarine
+
+```{r}
+species_profile %<>% mutate(isMarine = case_when(
+  raw_salinity_zone == "M" | raw_salinity_zone == "B/M" | raw_salinity_zone == "B" ~ "TRUE",
+  TRUE ~ "FALSE"
+))
+```
+
+### isFreshwater
+
+```{r}
+species_profile %<>% mutate(isFreshwater = case_when(
+  raw_salinity_zone == "F" | raw_salinity_zone == "F/B" | raw_salinity_zone == "B" ~ "TRUE",
+  TRUE ~"FALSE"
+))
+```
+
+### isTerrestrial
+
+```{r}
+species_profile %<>% mutate(isTerrestrial = "FALSE")
+```
+
+Show mapped values:
+
+```{r}
+species_profile %>%
+  select(raw_salinity_zone, isMarine, isFreshwater, isTerrestrial) %>%
+  group_by_all() %>%
+  summarize(records = n())
+```
+
+## Post-processing
+
+Remove the original columns:
+
+```{r}
+species_profile %<>% select(-starts_with("raw_"))
+```
+
+Preview data:
+
+```{r}
+species_profile %>% head()
+```
+
+Save to CSV:
+
+```{r}
+write.csv(species_profile, file = dwc_profile_file, na = "", row.names = FALSE, fileEncoding = "UTF-8")
 ```
 
 # Create description extension
