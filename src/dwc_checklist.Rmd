@@ -36,7 +36,7 @@ library(tidyverse) # To transform data
 library(magrittr)  # For %<>% pipes
 library(janitor)   # To clean input data
 library(readxl)    # To read Excel files
-library(stringr)   # to perform string operations
+library(stringr)   # To perform string operations
 library(digest)    # To generate hashes
 ```
 
