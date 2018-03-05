@@ -243,7 +243,7 @@ Remove the original columns:
 taxon %<>% select(-starts_with("raw_"))
 ```
 
-Sort on taxonID:
+Sort on `taxonID`:
 
 ```{r}
 taxon %<>% arrange(taxonID)
@@ -366,7 +366,7 @@ Remove the original columns:
 distribution %<>% select(-starts_with("raw_"), -start_year, -end_year)
 ```
 
-Sort on taxonID:
+Sort on `taxonID`:
 
 ```{r}
 distribution %<>% arrange(taxonID)
@@ -469,7 +469,7 @@ Remove the original columns:
 species_profile %<>% select(-starts_with("raw_"))
 ```
 
-Sort on species_profile:
+Sort on `taxonID`:
 
 ```{r}
 species_profile %<>% arrange(taxonID)
