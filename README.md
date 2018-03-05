@@ -9,7 +9,7 @@ This repository contains the functionality to standardize the data of [Boets et 
 * Checklist dataset: [source data](https://github.com/trias-project/alien-macroinvertebrates/blob/master/data/raw/AI_2016_Boets_etal_Supplement.xls) → Darwin Core [mapping script](http://trias-project.github.io/alien-macroinvertebrates/dwc_checklist.html) → generated [Darwin Core files](https://github.com/trias-project/alien-macroinvertebrates/blob/master/data/processed/dwc_checklist)
 * Occurrence dataset: [source data](https://github.com/trias-project/alien-macroinvertebrates/blob/master/data/raw/denormalized_observations.csv) → Darwin Core [mapping script](http://trias-project.github.io/alien-macroinvertebrates/dwc_occurrence.html) → generated [Darwin Core files](https://github.com/trias-project/alien-macroinvertebrates/tree/master/data/processed/dwc_occurrence)
 
-## Published dataset
+## Published datasets
 
 * [Checklist dataset on the IPT](https://ipt.inbo.be/resource?r=alien-macroinvertebrates-checklist)
 * [Checklist dataset on GBIF](https://doi.org/10.15468/yxcq07)
@@ -18,7 +18,6 @@ This repository contains the functionality to standardize the data of [Boets et 
 
 * [Occurrence dataset on the IPT](https://ipt.inbo.be/resource?r=alien-macroinvertebrate-occurrences)
 * [Occurrence dataset on GBIF](https://doi.org/10.15468/xjtfoo)
-* [Boets et al. 2016](http://www.aquaticinvasions.net/2016/AI_2016_Boets_etal.pdf): Data paper describing the occurrence dataset and methodology
 
 ## Repo structure
 
