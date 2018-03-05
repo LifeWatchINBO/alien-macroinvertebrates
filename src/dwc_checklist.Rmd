@@ -54,7 +54,7 @@ dwc_profile_file = "../data/processed/dwc_checklist/speciesprofile.csv"
 dwc_description_file = "../data/processed/dwc_checklist/description.csv"
 ```
 
-# Read data
+# Read and pre-process raw data
 
 Create a data frame `raw_data` from the source data:
 
@@ -62,12 +62,16 @@ Create a data frame `raw_data` from the source data:
 # Read the source data:
 raw_data <- read_excel(raw_data_file, sheet = "checklist", na = "NA") 
 sources <- read.table(sources_file, sep = "\t", quote = "", colClasses = "character",  fileEncoding = "UTF8", header = T)
+```
 
-# Clean the data somewhat: remove empty rows if present
+Clean the data somewhat: remove empty rows if present:
+
+```{r}
 raw_data %<>%
   remove_empty_rows() %>%     # Remove empty rows
   clean_names()               # Have sensible (lowercase) column names
 ```
+
 
 ## Generate taxonID
 
@@ -113,6 +117,8 @@ raw_data %>%
   summarize(records = n()) %>%
   arrange(reference)
 ```
+
+## Further pre-processing:
 
 Add prefix `raw_` to all column names to avoid name clashes with Darwin Core terms:
 
