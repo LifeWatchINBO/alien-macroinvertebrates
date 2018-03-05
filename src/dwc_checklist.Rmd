@@ -489,11 +489,21 @@ write.csv(species_profile, file = dwc_profile_file, na = "", row.names = FALSE, 
 
 # Create description extension
 
-In the description extension we want to include several important characteristics about the species.
- 
+In the description extension we want to include several important characteristics (hereafter refered to as descriptors) about the species:
+
+* Native range
+* Pathway of introduction
+* Invasion stage
+
+The structure of the description extension is slightly different from the other core/extension files: information for a specific taxon (linked to taxonID) is provided in **multipele** lines within the csv file: one line per taxon per descriptor. In this way, we are able to include multipele descriptors for each species. 
+
+For each descriptor, we create a separate dataframe to process the specific information. We always specify *which descriptor* we map (`type` column) and its *specific content* (`description` column). After the mapping of these Darwin Core terms `type` and `value`, we merge the dataframes to generate one single description extension. We than continue the mapping process by adding the other Darwin Core terms (which content is independent of the type of descriptor, such as `language`).
+
 ## Native range
 
-Native range information (e.g. `South-America`) can be found in `raw_origin`. We create a separate dataframe to process this information:
+Native range information (e.g. `South-America`) can be found in `raw_origin`. 
+
+Create separate dataframe:
 
 ```{r start_native_range}
 native_range <- raw_data
@@ -577,7 +587,9 @@ native_range %<>% mutate(type = "native range")
 
 ## Pathway of introduction
 
-Pathway information (e.g. `aquaculture`) can be found in `raw_pathway_of_introduction`. This original information was interpreted by @timadriaens to a more standardized value in `raw_pathway_mapping` (with remarks about this transformation in `raw_pathway_mapping_remarks`). We create a separate dataframe to process this information:
+Pathway information (e.g. `aquaculture`) can be found in `raw_pathway_of_introduction`. This original information was interpreted by @timadriaens to a more standardized value in `raw_pathway_mapping` (with remarks about this transformation in `raw_pathway_mapping_remarks`). 
+
+Create separate dataframe:
 
 ```{r start_pathway}
 pathway <- raw_data
@@ -664,7 +676,9 @@ pathway %<>% mutate(type = "pathway")
 
 ### Invasion stage
 
-There is no invasion stage information (e.g. `casual`) in the raw data, but we want to add it none the less. We create a separate dataframe to process this information:
+There is no invasion stage information (e.g. `casual`) in the raw data, but we want to add it none the less. 
+
+Create separate dataframe:
 
 ```{r start_invasion_stage}
 invasion_stage <- raw_data
