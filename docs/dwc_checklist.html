@@ -13,7 +13,7 @@
 <meta name="author" content="Peter Desmet" />
 <meta name="author" content="Dimitri Brosens" />
 
-<meta name="date" content="2018-03-01" />
+<meta name="date" content="2018-03-05" />
 
 <title>Darwin Core mapping</title>
 
@@ -27,8 +27,8 @@
 <link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
 <script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
-<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
-<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/highlightjs-1.1/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-1.1/highlight.js"></script>
 <link href="site_libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet" />
 <script src="site_libs/pagedtable-1.1/js/pagedtable.js"></script>
 <link href="site_libs/font-awesome-4.5.0/css/font-awesome.min.css" rel="stylesheet" />
@@ -40,12 +40,10 @@
   }
 </style>
 <script type="text/javascript">
-if (window.hljs) {
-  hljs.configure({languages: []});
-  hljs.initHighlightingOnLoad();
-  if (document.readyState && document.readyState === "complete") {
-    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
-  }
+if (window.hljs && document.readyState && document.readyState === "complete") {
+   window.setTimeout(function() {
+      hljs.initHighlighting();
+   }, 0);
 }
 </script>
 
@@ -78,7 +76,7 @@ h6 {
 }
 </style>
 
-<link rel="stylesheet" href="static/css/trias.css" type="text/css" />
+<link rel="stylesheet" href="static\css\trias.css" type="text/css" />
 
 </head>
 
@@ -323,7 +321,7 @@ div.tocify {
 <h4 class="author"><em>Lien Reyserhove</em></h4>
 <h4 class="author"><em>Peter Desmet</em></h4>
 <h4 class="author"><em>Dimitri Brosens</em></h4>
-<h4 class="date"><em>2018-03-01</em></h4>
+<h4 class="date"><em>2018-03-05</em></h4>
 
 </div>
 
@@ -334,13 +332,13 @@ div.tocify {
 <p>Set locale (so we use UTF-8 character encoding):</p>
 <pre class="r"><code># This works on Mac OS X, might not work on other OS
 Sys.setlocale(&quot;LC_CTYPE&quot;, &quot;en_US.UTF-8&quot;)</code></pre>
-<pre><code>## [1] &quot;en_US.UTF-8&quot;</code></pre>
+<pre><code>## [1] &quot;&quot;</code></pre>
 <p>Load libraries:</p>
 <pre class="r"><code>library(tidyverse) # To transform data
 library(magrittr)  # For %&lt;&gt;% pipes
 library(janitor)   # To clean input data
 library(readxl)    # To read Excel files
-library(stringr)   # to perform string operations
+library(stringr)   # To perform string operations
 library(digest)    # To generate hashes</code></pre>
 <p>Set file paths (all paths should be relative to this script):</p>
 <pre class="r"><code># Raw files:
@@ -353,15 +351,14 @@ dwc_distribution_file = &quot;../data/processed/dwc_checklist/distribution.csv&q
 dwc_profile_file = &quot;../data/processed/dwc_checklist/speciesprofile.csv&quot;
 dwc_description_file = &quot;../data/processed/dwc_checklist/description.csv&quot;</code></pre>
 </div>
-<div id="read-data" class="section level1">
-<h1><span class="header-section-number">2</span> Read data</h1>
+<div id="read-and-pre-process-raw-data" class="section level1">
+<h1><span class="header-section-number">2</span> Read and pre-process raw data</h1>
 <p>Create a data frame <code>raw_data</code> from the source data:</p>
 <pre class="r"><code># Read the source data:
 raw_data &lt;- read_excel(raw_data_file, sheet = &quot;checklist&quot;, na = &quot;NA&quot;) 
-sources &lt;- read.table(sources_file, sep = &quot;\t&quot;, quote = &quot;&quot;, colClasses = &quot;character&quot;,  fileEncoding = &quot;UTF8&quot;, header = T)
-
-# Clean the data somewhat: remove empty rows if present
-raw_data %&lt;&gt;%
+sources &lt;- read.table(sources_file, sep = &quot;\t&quot;, quote = &quot;&quot;, colClasses = &quot;character&quot;,  fileEncoding = &quot;UTF8&quot;, header = T)</code></pre>
+<p>Clean the data somewhat: remove empty rows if present:</p>
+<pre class="r"><code>raw_data %&lt;&gt;%
   remove_empty_rows() %&gt;%     # Remove empty rows
   clean_names()               # Have sensible (lowercase) column names</code></pre>
 <div id="generate-taxonid" class="section level2">
@@ -395,9 +392,12 @@ raw_data %&lt;&gt;% mutate(taxon_id = paste(&quot;alien-macroinvertebrates-check
   arrange(reference)</code></pre>
 <div data-pagedtable="false">
 <script data-pagedtable-source type="application/json">
-{"columns":[{"label":["reference"],"name":[1],"type":["chr"],"align":["left"]},{"label":["full_reference"],"name":[2],"type":["chr"],"align":["left"]},{"label":["records"],"name":[3],"type":["int"],"align":["right"]}],"data":[{"1":"Adam 1947","2":"Adam W (1947) Revision des Mollusques de la Belgiq","3":"4"},{"1":"Adam and Leloup 1934","2":"Adam W, Leloup E (1934) Sur la présence du gastéro","3":"1"},{"1":"Backeljau 1986","2":"Backeljau T (1986) Lijst van de recente mariene mo","3":"1"},{"1":"Boets et al. 2009","2":"Boets P, Lock K, Cammaerts R, Plu D, Goethals PLM","3":"1"},{"1":"Boets et al. 2010b","2":"Boets P, Lock K, Goethals PLM (2010b) First record","3":"1"},{"1":"Boets et al. 2011b","2":"Boets P, Lock K, Goethals PLM (2011b) Shifts in th","3":"1"},{"1":"Boets et al. 2012c","2":"Boets P, Lock K, Tempelman D, Van Haaren T, Platvo","3":"1"},{"1":"Boets et al. 2016","2":"Boets P, Brosens D, Lock K, Adriaens T, Aelterman","3":"1"},{"1":"Boets et al. unpub data","2":"Boets et al. unpublished data","3":"1"},{"1":"Collection RBINS","2":"Collection RBINS","3":"2"},{"1":"Cook et al. 2007","2":"Cook EJ, Jahnke M, Kerckhof F, Minchin D, Faasse M","3":"1"},{"1":"Damas 1938","2":"Damas H (1938) Sur la presence dans la Meuse belge","3":"1"},{"1":"Dewicke 2002","2":"Dewicke A (2002) Hyperbenthic communities of the N","3":"1"},{"1":"Dumoulin 2004","2":"Dumoulin E (2004) Snelle areaaluitbreiding van het","3":"1"},{"1":"Faasse and Van Moorsel 2003","2":"Faasse M, Van Moorsel G (2003) The North-American","3":"2"},{"1":"Gerard 1986","2":"Gérard P (1986) Les différentes espèces d'écreviss","3":"2"},{"1":"Keppens and Mienis 2004","2":"Keppens M, Mienis HK (2004) A propos de la présenc","3":"1"},{"1":"Kerckhof and Catrijsse 2001","2":"Kerckhof F, Cattrijsse A (2001) Exotic Cirripedia","3":"5"},{"1":"Kerckhof and Dumoulin 1987","2":"Kerckhof F, Dumoulin E (1987) Eerste vondsten van","3":"1"},{"1":"Kerckhof et al. 2007","2":"Kerckhof F, Haelters J, Gollasch S (2007) Alien sp","3":"1"},{"1":"Leloup 1971","2":"Leloup E (1971) Recherches sur l'ostréiculture dan","3":"1"},{"1":"Leloup and Lefevre 1952","2":"Leloup E, Lefevere S (1952) Sur la présence dans l","3":"2"},{"1":"Lock et al. 2007","2":"Lock K, Van Wichelen J, Packet J, Simoens I, Van L","3":"1"},{"1":"Loppens 1902","2":"Loppens K (1902) Petricola pholadiformis L. Annale","3":"1"},{"1":"Messiaen et al. 2010","2":"Messiaen M, Lock K, Gabriels W, Vercauteren T, Wou","3":"3"},{"1":"Nuyttens et al. 2006","2":"Nuyttens F, Versele G, Loones MA (2006) De aanwezi","3":"1"},{"1":"Nyst 1835 | Adam 1947","2":"Nyst HJP (1835) Mollusques. Bulletin des Academies","3":"1"},{"1":"Sablon et al. 2010a","2":"Sablon R, Vercauteren T, Lammens S, Ghyselbrecht E","3":"1"},{"1":"Sablon et al. 2010b","2":"Sablon R, Vercauteren T, Jacobs P (2010b) De quagg","3":"1"},{"1":"Sellius 1733","2":"Sellius G (1733) Historia naturalis teredinis seu","3":"1"},{"1":"Seys et al. 1999","2":"Seys J, Vincx M, Meire P (1999) Spatial distributi","3":"1"},{"1":"Soors et al. 2010","2":"Soors J, Faasse M, Stevens M, Verbessem I, De Regg","3":"1"},{"1":"Soors et al. 2013","2":"Soors J, van Haaren T, Timm T, Speybroeck J (2013)","3":"8"},{"1":"Swinnen et al. 1998","2":"Swinnen F, Leynen M, Sablon R, Duvivier L, Vanmael","3":"2"},{"1":"Van Damme and Maes 1993","2":"Van Damme P, Maes J (1993) De Blauwe Zwemkrab Call","3":"1"},{"1":"Van Damme et al. 1992","2":"Van Damme P, Mees J, Maebe S (1992) Voorkomen van","3":"1"},{"1":"Van Goethem and Sablon 1986","2":"Van Goethem JL, Sablon R (1986) Ferrissia wautieri","3":"1"},{"1":"Vandepitte et al. 2012","2":"Vandepitte L, De Poorter D, Lescrauweart A-N, Fock","3":"1"},{"1":"Vercauteren et al. 2005","2":"Vercauteren T, De Smedt S, Warmoes T, Goddeeris B,","3":"2"},{"1":"Vercauteren et al. 2006","2":"Vercauteren T, Sablon S, Wouters K (2006) Exotisch","3":"2"},{"1":"Verslycke et al. 2000","2":"Verslycke T, Janssen C, Lock K, Mees J (2000) Firs","3":"1"},{"1":"Verween et al. 2006","2":"Verween A, Kerckhof F, Vincx M, Degraer S (2006) F","3":"1"},{"1":"Wouters 2002","2":"Wouters K (2002) On the distribution of alien non-","3":"6"},{"1":"Ysebaert et al. 1997","2":"Ysebaert T, Meire P, De Block M, De Regge N, Soors","3":"1"},{"1":"van Haaren and Soors 2009","2":"van Haaren T, Soors J (2009) Sinelobus stanfordi (","3":"1"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+{"columns":[{"label":["reference"],"name":[1],"type":["chr"],"align":["left"]},{"label":["full_reference"],"name":[2],"type":["chr"],"align":["left"]},{"label":["records"],"name":[3],"type":["int"],"align":["right"]}],"data":[{"1":"Adam 1947","2":"Adam W (1947) Revision des Mollusques de la Belgiq","3":"4"},{"1":"Adam and Leloup 1934","2":"Adam W, Leloup E (1934) Sur la présence du gastéro","3":"1"},{"1":"Backeljau 1986","2":"Backeljau T (1986) Lijst van de recente mariene mo","3":"1"},{"1":"Boets et al. 2009","2":"Boets P, Lock K, Cammaerts R, Plu D, Goethals PLM","3":"1"},{"1":"Boets et al. 2010b","2":"Boets P, Lock K, Goethals PLM (2010b) First record","3":"1"},{"1":"Boets et al. 2011b","2":"Boets P, Lock K, Goethals PLM (2011b) Shifts in th","3":"1"},{"1":"Boets et al. 2012c","2":"Boets P, Lock K, Tempelman D, Van Haaren T, Platvo","3":"1"},{"1":"Boets et al. 2016","2":"Boets P, Brosens D, Lock K, Adriaens T, Aelterman","3":"1"},{"1":"Boets et al. unpub data","2":"Boets et al. unpublished data","3":"1"},{"1":"Collection RBINS","2":"Collection RBINS","3":"2"},{"1":"Cook et al. 2007","2":"Cook EJ, Jahnke M, Kerckhof F, Minchin D, Faasse M","3":"1"},{"1":"Damas 1938","2":"Damas H (1938) Sur la presence dans la Meuse belge","3":"1"},{"1":"Dewicke 2002","2":"Dewicke A (2002) Hyperbenthic communities of the N","3":"1"},{"1":"Dumoulin 2004","2":"Dumoulin E (2004) Snelle areaaluitbreiding van het","3":"1"},{"1":"Faasse and Van Moorsel 2003","2":"Faasse M, Van Moorsel G (2003) The North-American","3":"2"},{"1":"Gerard 1986","2":"Gérard P (1986) Les différentes espèces d'écreviss","3":"2"},{"1":"Keppens and Mienis 2004","2":"Keppens M, Mienis HK (2004) A propos de la présenc","3":"1"},{"1":"Kerckhof and Catrijsse 2001","2":"Kerckhof F, Cattrijsse A (2001) Exotic Cirripedia","3":"5"},{"1":"Kerckhof and Dumoulin 1987","2":"Kerckhof F, Dumoulin E (1987) Eerste vondsten van","3":"1"},{"1":"Kerckhof et al. 2007","2":"Kerckhof F, Haelters J, Gollasch S (2007) Alien sp","3":"1"},{"1":"Leloup 1971","2":"Leloup E (1971) Recherches sur l'ostréiculture dan","3":"1"},{"1":"Leloup and Lefevre 1952","2":"Leloup E, Lefevere S (1952) Sur la présence dans l","3":"2"},{"1":"Lock et al. 2007","2":"Lock K, Van Wichelen J, Packet J, Simoens I, Van L","3":"1"},{"1":"Loppens 1902","2":"Loppens K (1902) Petricola pholadiformis L. Annale","3":"1"},{"1":"Messiaen et al. 2010","2":"Messiaen M, Lock K, Gabriels W, Vercauteren T, Wou","3":"3"},{"1":"Nuyttens et al. 2006","2":"Nuyttens F, Versele G, Loones MA (2006) De aanwezi","3":"1"},{"1":"Nyst 1835 | Adam 1947","2":"Nyst HJP (1835) Mollusques. Bulletin des Academies","3":"1"},{"1":"Sablon et al. 2010a","2":"Sablon R, Vercauteren T, Lammens S, Ghyselbrecht E","3":"1"},{"1":"Sablon et al. 2010b","2":"Sablon R, Vercauteren T, Jacobs P (2010b) De quagg","3":"1"},{"1":"Sellius 1733","2":"Sellius G (1733) Historia naturalis teredinis seu","3":"1"},{"1":"Seys et al. 1999","2":"Seys J, Vincx M, Meire P (1999) Spatial distributi","3":"1"},{"1":"Soors et al. 2010","2":"Soors J, Faasse M, Stevens M, Verbessem I, De Regg","3":"1"},{"1":"Soors et al. 2013","2":"Soors J, van Haaren T, Timm T, Speybroeck J (2013)","3":"8"},{"1":"Swinnen et al. 1998","2":"Swinnen F, Leynen M, Sablon R, Duvivier L, Vanmael","3":"2"},{"1":"Van Damme and Maes 1993","2":"Van Damme P, Maes J (1993) De Blauwe Zwemkrab Call","3":"1"},{"1":"Van Damme et al. 1992","2":"Van Damme P, Mees J, Maebe S (1992) Voorkomen van","3":"1"},{"1":"Van Goethem and Sablon 1986","2":"Van Goethem JL, Sablon R (1986) Ferrissia wautieri","3":"1"},{"1":"van Haaren and Soors 2009","2":"van Haaren T, Soors J (2009) Sinelobus stanfordi (","3":"1"},{"1":"Vandepitte et al. 2012","2":"Vandepitte L, De Poorter D, Lescrauweart A-N, Fock","3":"1"},{"1":"Vercauteren et al. 2005","2":"Vercauteren T, De Smedt S, Warmoes T, Goddeeris B,","3":"2"},{"1":"Vercauteren et al. 2006","2":"Vercauteren T, Sablon S, Wouters K (2006) Exotisch","3":"2"},{"1":"Verslycke et al. 2000","2":"Verslycke T, Janssen C, Lock K, Mees J (2000) Firs","3":"1"},{"1":"Verween et al. 2006","2":"Verween A, Kerckhof F, Vincx M, Degraer S (2006) F","3":"1"},{"1":"Wouters 2002","2":"Wouters K (2002) On the distribution of alien non-","3":"6"},{"1":"Ysebaert et al. 1997","2":"Ysebaert T, Meire P, De Block M, De Regge N, Soors","3":"1"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
   </script>
 </div>
+</div>
+<div id="further-pre-processing" class="section level2">
+<h2><span class="header-section-number">2.3</span> Further pre-processing:</h2>
 <p>Add prefix <code>raw_</code> to all column names to avoid name clashes with Darwin Core terms:</p>
 <pre class="r"><code>colnames(raw_data) &lt;- paste0(&quot;raw_&quot;, colnames(raw_data))</code></pre>
 <p>Preview data:</p>
@@ -484,11 +484,13 @@ raw_data %&lt;&gt;% mutate(taxon_id = paste(&quot;alien-macroinvertebrates-check
 <h2><span class="header-section-number">3.2</span> Post-processing</h2>
 <p>Remove the original columns:</p>
 <pre class="r"><code>taxon %&lt;&gt;% select(-starts_with(&quot;raw_&quot;))</code></pre>
+<p>Sort on taxonID:</p>
+<pre class="r"><code>taxon %&lt;&gt;% arrange(taxonID)</code></pre>
 <p>Preview data:</p>
 <pre class="r"><code>head(taxon)</code></pre>
 <div data-pagedtable="false">
 <script data-pagedtable-source type="application/json">
-{"columns":[{"label":["language"],"name":[1],"type":["chr"],"align":["left"]},{"label":["license"],"name":[2],"type":["chr"],"align":["left"]},{"label":["rightsHolder"],"name":[3],"type":["chr"],"align":["left"]},{"label":["datasetID"],"name":[4],"type":["chr"],"align":["left"]},{"label":["datasetName"],"name":[5],"type":["chr"],"align":["left"]},{"label":["taxonID"],"name":[6],"type":["chr"],"align":["left"]},{"label":["scientificName"],"name":[7],"type":["chr"],"align":["left"]},{"label":["kingdom"],"name":[8],"type":["chr"],"align":["left"]},{"label":["phylum"],"name":[9],"type":["chr"],"align":["left"]},{"label":["order"],"name":[10],"type":["chr"],"align":["left"]},{"label":["family"],"name":[11],"type":["chr"],"align":["left"]},{"label":["taxonRank"],"name":[12],"type":["chr"],"align":["left"]},{"label":["nomenclaturalCode"],"name":[13],"type":["chr"],"align":["left"]}],"data":[{"1":"en","2":"http://creativecommons.org/publicdomain/zero/1.0/","3":"Ghent University Aquatic Ecology","4":"https://doi.org/10.15468/yxcq07","5":"Inventory of alien macroinvertebrates in Flanders, Belgium","6":"alien-macroinvertebrates-checklist:taxon:cebedf4407f487b424807ccd5478bfe6","7":"Amphibalanus amphitrite","8":"Animalia","9":"Arthropoda","10":"Sessilia","11":"Balanidae","12":"species","13":"ICZN"},{"1":"en","2":"http://creativecommons.org/publicdomain/zero/1.0/","3":"Ghent University Aquatic Ecology","4":"https://doi.org/10.15468/yxcq07","5":"Inventory of alien macroinvertebrates in Flanders, Belgium","6":"alien-macroinvertebrates-checklist:taxon:db1c88330fce94a3483451f1e0fbc6af","7":"Amphibalanus improvisus","8":"Animalia","9":"Arthropoda","10":"Sessilia","11":"Balanidae","12":"species","13":"ICZN"},{"1":"en","2":"http://creativecommons.org/publicdomain/zero/1.0/","3":"Ghent University Aquatic Ecology","4":"https://doi.org/10.15468/yxcq07","5":"Inventory of alien macroinvertebrates in Flanders, Belgium","6":"alien-macroinvertebrates-checklist:taxon:d9c2fd07436f56f3824955c88261e76e","7":"Amphibalanus reticulatus","8":"Animalia","9":"Arthropoda","10":"Sessilia","11":"Balanidae","12":"species","13":"ICZN"},{"1":"en","2":"http://creativecommons.org/publicdomain/zero/1.0/","3":"Ghent University Aquatic Ecology","4":"https://doi.org/10.15468/yxcq07","5":"Inventory of alien macroinvertebrates in Flanders, Belgium","6":"alien-macroinvertebrates-checklist:taxon:464f0edd615ac93ab279f425dc1060a3","7":"Astacus leptodactylus","8":"Animalia","9":"Arthropoda","10":"Decapoda","11":"Astacidae","12":"species","13":"ICZN"},{"1":"en","2":"http://creativecommons.org/publicdomain/zero/1.0/","3":"Ghent University Aquatic Ecology","4":"https://doi.org/10.15468/yxcq07","5":"Inventory of alien macroinvertebrates in Flanders, Belgium","6":"alien-macroinvertebrates-checklist:taxon:54cca150e1e0b7c0b3f5b152ae64d62b","7":"Atyaephyra desmaresti","8":"Animalia","9":"Arthropoda","10":"Decapoda","11":"Atyidae","12":"species","13":"ICZN"},{"1":"en","2":"http://creativecommons.org/publicdomain/zero/1.0/","3":"Ghent University Aquatic Ecology","4":"https://doi.org/10.15468/yxcq07","5":"Inventory of alien macroinvertebrates in Flanders, Belgium","6":"alien-macroinvertebrates-checklist:taxon:f9953a68ec0b35fb531b3d1917df59c7","7":"Austrominius modestus","8":"Animalia","9":"Arthropoda","10":"Sessilia","11":"Austrobalanidae","12":"species","13":"ICZN"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+{"columns":[{"label":["language"],"name":[1],"type":["chr"],"align":["left"]},{"label":["license"],"name":[2],"type":["chr"],"align":["left"]},{"label":["rightsHolder"],"name":[3],"type":["chr"],"align":["left"]},{"label":["datasetID"],"name":[4],"type":["chr"],"align":["left"]},{"label":["datasetName"],"name":[5],"type":["chr"],"align":["left"]},{"label":["taxonID"],"name":[6],"type":["chr"],"align":["left"]},{"label":["scientificName"],"name":[7],"type":["chr"],"align":["left"]},{"label":["kingdom"],"name":[8],"type":["chr"],"align":["left"]},{"label":["phylum"],"name":[9],"type":["chr"],"align":["left"]},{"label":["order"],"name":[10],"type":["chr"],"align":["left"]},{"label":["family"],"name":[11],"type":["chr"],"align":["left"]},{"label":["taxonRank"],"name":[12],"type":["chr"],"align":["left"]},{"label":["nomenclaturalCode"],"name":[13],"type":["chr"],"align":["left"]}],"data":[{"1":"en","2":"http://creativecommons.org/publicdomain/zero/1.0/","3":"Ghent University Aquatic Ecology","4":"https://doi.org/10.15468/yxcq07","5":"Inventory of alien macroinvertebrates in Flanders, Belgium","6":"alien-macroinvertebrates-checklist:taxon:0396fe0cb30083ee34d8692802dbfc3a","7":"Sinelobus vanhaareni","8":"Animalia","9":"Arthropoda","10":"Tanaidacea","11":"Tanaidae","12":"species","13":"ICZN"},{"1":"en","2":"http://creativecommons.org/publicdomain/zero/1.0/","3":"Ghent University Aquatic Ecology","4":"https://doi.org/10.15468/yxcq07","5":"Inventory of alien macroinvertebrates in Flanders, Belgium","6":"alien-macroinvertebrates-checklist:taxon:05e1226fad2eec66ff6c70764ecf047a","7":"Pacifastacus leniusculus","8":"Animalia","9":"Arthropoda","10":"Decapoda","11":"Astacidae","12":"species","13":"ICZN"},{"1":"en","2":"http://creativecommons.org/publicdomain/zero/1.0/","3":"Ghent University Aquatic Ecology","4":"https://doi.org/10.15468/yxcq07","5":"Inventory of alien macroinvertebrates in Flanders, Belgium","6":"alien-macroinvertebrates-checklist:taxon:06b1921ec41577a8c4516c91837ea594","7":"Caprella mutica","8":"Animalia","9":"Arthropoda","10":"Amphipoda","11":"Caprellidae","12":"species","13":"ICZN"},{"1":"en","2":"http://creativecommons.org/publicdomain/zero/1.0/","3":"Ghent University Aquatic Ecology","4":"https://doi.org/10.15468/yxcq07","5":"Inventory of alien macroinvertebrates in Flanders, Belgium","6":"alien-macroinvertebrates-checklist:taxon:0737719f7e273373da08c01c8dc6162f","7":"Orconectes limosus","8":"Animalia","9":"Arthropoda","10":"Decapoda","11":"Cambaridae","12":"species","13":"ICZN"},{"1":"en","2":"http://creativecommons.org/publicdomain/zero/1.0/","3":"Ghent University Aquatic Ecology","4":"https://doi.org/10.15468/yxcq07","5":"Inventory of alien macroinvertebrates in Flanders, Belgium","6":"alien-macroinvertebrates-checklist:taxon:13883300ac884d3398e25f29b89a6513","7":"Callinectes sapidus","8":"Animalia","9":"Arthropoda","10":"Decapoda","11":"Portunidae","12":"species","13":"ICZN"},{"1":"en","2":"http://creativecommons.org/publicdomain/zero/1.0/","3":"Ghent University Aquatic Ecology","4":"https://doi.org/10.15468/yxcq07","5":"Inventory of alien macroinvertebrates in Flanders, Belgium","6":"alien-macroinvertebrates-checklist:taxon:151b9f1f8474dc7154761d78ba5f67e9","7":"Crassostrea gigas","8":"Animalia","9":"Mollusca","10":"Ostreoida","11":"Ostreidae","12":"species","13":"ICZN"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
   </script>
 </div>
 <p>Save to CSV:</p>
@@ -535,7 +537,7 @@ raw_data %&lt;&gt;% mutate(taxon_id = paste(&quot;alien-macroinvertebrates-check
   arrange(raw_first_occurrence_in_flanders)</code></pre>
 <div data-pagedtable="false">
 <script data-pagedtable-source type="application/json">
-{"columns":[{"label":["raw_first_occurrence_in_flanders"],"name":[1],"type":["chr"],"align":["left"]}],"data":[{"1":"1730-1732"},{"1":"1834"},{"1":"1835"},{"1":"1869"},{"1":"1895"},{"1":"1899"},{"1":"1911"},{"1":"1924"},{"1":"1925"},{"1":"1927"},{"1":"1931"},{"1":"1933"},{"1":"1937"},{"1":"1945"},{"1":"1950"},{"1":"1952"},{"1":"1969"},{"1":"1977"},{"1":"1986"},{"1":"1987"},{"1":"1990"},{"1":"1991"},{"1":"1992"},{"1":"1993"},{"1":"1995"},{"1":"1996"},{"1":"1997"},{"1":"1998"},{"1":"1999"},{"1":"2000"},{"1":"2001"},{"1":"2002"},{"1":"2003"},{"1":"2004"},{"1":"2005"},{"1":"2006"},{"1":"2007"},{"1":"2008"},{"1":"2009"},{"1":"2010"},{"1":"2014"},{"1":"< 1700"},{"1":"<1600"},{"1":"before 1700"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+{"columns":[{"label":["raw_first_occurrence_in_flanders"],"name":[1],"type":["chr"],"align":["left"]}],"data":[{"1":"< 1700"},{"1":"<1600"},{"1":"1730-1732"},{"1":"1834"},{"1":"1835"},{"1":"1869"},{"1":"1895"},{"1":"1899"},{"1":"1911"},{"1":"1924"},{"1":"1925"},{"1":"1927"},{"1":"1931"},{"1":"1933"},{"1":"1937"},{"1":"1945"},{"1":"1950"},{"1":"1952"},{"1":"1969"},{"1":"1977"},{"1":"1986"},{"1":"1987"},{"1":"1990"},{"1":"1991"},{"1":"1992"},{"1":"1993"},{"1":"1995"},{"1":"1996"},{"1":"1997"},{"1":"1998"},{"1":"1999"},{"1":"2000"},{"1":"2001"},{"1":"2002"},{"1":"2003"},{"1":"2004"},{"1":"2005"},{"1":"2006"},{"1":"2007"},{"1":"2008"},{"1":"2009"},{"1":"2010"},{"1":"2014"},{"1":"before 1700"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
   </script>
 </div>
 <p>We remove the special characters from <code>raw_first_occurrence_in_flanders</code> and save as <code>year</code>:</p>
@@ -555,7 +557,7 @@ raw_data %&lt;&gt;% mutate(taxon_id = paste(&quot;alien-macroinvertebrates-check
   arrange(raw_first_occurrence_in_flanders)</code></pre>
 <div data-pagedtable="false">
 <script data-pagedtable-source type="application/json">
-{"columns":[{"label":["raw_first_occurrence_in_flanders"],"name":[1],"type":["chr"],"align":["left"]},{"label":["eventDate"],"name":[2],"type":["chr"],"align":["left"]}],"data":[{"1":"1730-1732","2":"1730/1732"},{"1":"1834","2":"1834/2016"},{"1":"1835","2":"1835/2016"},{"1":"1869","2":"1869/2016"},{"1":"1895","2":"1895/2016"},{"1":"1899","2":"1899/2016"},{"1":"1911","2":"1911/2016"},{"1":"1924","2":"1924/2016"},{"1":"1925","2":"1925/2016"},{"1":"1927","2":"1927/2016"},{"1":"1931","2":"1931/2016"},{"1":"1933","2":"1933/2016"},{"1":"1937","2":"1937/2016"},{"1":"1945","2":"1945/2016"},{"1":"1950","2":"1950/2016"},{"1":"1952","2":"1952/2016"},{"1":"1969","2":"1969/2016"},{"1":"1977","2":"1977/2016"},{"1":"1986","2":"1986/2016"},{"1":"1987","2":"1987/2016"},{"1":"1990","2":"1990/2016"},{"1":"1991","2":"1991/2016"},{"1":"1992","2":"1992/2016"},{"1":"1993","2":"1993/2016"},{"1":"1995","2":"1995/2016"},{"1":"1996","2":"1996/2016"},{"1":"1997","2":"1997/2016"},{"1":"1998","2":"1998/2016"},{"1":"1999","2":"1999/2016"},{"1":"2000","2":"2000/2016"},{"1":"2001","2":"2001/2016"},{"1":"2002","2":"2002/2016"},{"1":"2003","2":"2003/2016"},{"1":"2004","2":"2004/2016"},{"1":"2005","2":"2005/2016"},{"1":"2006","2":"2006/2016"},{"1":"2007","2":"2007/2016"},{"1":"2008","2":"2008/2016"},{"1":"2009","2":"2009/2016"},{"1":"2010","2":"2010/2016"},{"1":"2014","2":"2014/2016"},{"1":"< 1700","2":"1700/2016"},{"1":"<1600","2":"1600/2016"},{"1":"before 1700","2":"1700/2016"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+{"columns":[{"label":["raw_first_occurrence_in_flanders"],"name":[1],"type":["chr"],"align":["left"]},{"label":["eventDate"],"name":[2],"type":["chr"],"align":["left"]}],"data":[{"1":"< 1700","2":"1700/2016"},{"1":"<1600","2":"1600/2016"},{"1":"1730-1732","2":"1730/1732"},{"1":"1834","2":"1834/2016"},{"1":"1835","2":"1835/2016"},{"1":"1869","2":"1869/2016"},{"1":"1895","2":"1895/2016"},{"1":"1899","2":"1899/2016"},{"1":"1911","2":"1911/2016"},{"1":"1924","2":"1924/2016"},{"1":"1925","2":"1925/2016"},{"1":"1927","2":"1927/2016"},{"1":"1931","2":"1931/2016"},{"1":"1933","2":"1933/2016"},{"1":"1937","2":"1937/2016"},{"1":"1945","2":"1945/2016"},{"1":"1950","2":"1950/2016"},{"1":"1952","2":"1952/2016"},{"1":"1969","2":"1969/2016"},{"1":"1977","2":"1977/2016"},{"1":"1986","2":"1986/2016"},{"1":"1987","2":"1987/2016"},{"1":"1990","2":"1990/2016"},{"1":"1991","2":"1991/2016"},{"1":"1992","2":"1992/2016"},{"1":"1993","2":"1993/2016"},{"1":"1995","2":"1995/2016"},{"1":"1996","2":"1996/2016"},{"1":"1997","2":"1997/2016"},{"1":"1998","2":"1998/2016"},{"1":"1999","2":"1999/2016"},{"1":"2000","2":"2000/2016"},{"1":"2001","2":"2001/2016"},{"1":"2002","2":"2002/2016"},{"1":"2003","2":"2003/2016"},{"1":"2004","2":"2004/2016"},{"1":"2005","2":"2005/2016"},{"1":"2006","2":"2006/2016"},{"1":"2007","2":"2007/2016"},{"1":"2008","2":"2008/2016"},{"1":"2009","2":"2009/2016"},{"1":"2010","2":"2010/2016"},{"1":"2014","2":"2014/2016"},{"1":"before 1700","2":"1700/2016"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
   </script>
 </div>
 </div>
@@ -568,13 +570,15 @@ raw_data %&lt;&gt;% mutate(taxon_id = paste(&quot;alien-macroinvertebrates-check
 <h2><span class="header-section-number">4.2</span> Post-processing</h2>
 <p>Remove the original columns:</p>
 <pre class="r"><code>distribution %&lt;&gt;% select(-starts_with(&quot;raw_&quot;), -start_year, -end_year)</code></pre>
+<p>Sort on taxonID:</p>
+<pre class="r"><code>distribution %&lt;&gt;% arrange(taxonID)</code></pre>
 <p>Preview data:</p>
 <pre class="r"><code>distribution %&gt;%
   mutate(source = substr(source, 1, 10)) %&gt;% # Shorten source to make it easier to display
   head()</code></pre>
 <div data-pagedtable="false">
 <script data-pagedtable-source type="application/json">
-{"columns":[{"label":["taxonID"],"name":[1],"type":["chr"],"align":["left"]},{"label":["locationID"],"name":[2],"type":["chr"],"align":["left"]},{"label":["locality"],"name":[3],"type":["chr"],"align":["left"]},{"label":["countryCode"],"name":[4],"type":["chr"],"align":["left"]},{"label":["occurrenceStatus"],"name":[5],"type":["chr"],"align":["left"]},{"label":["establishmentMeans"],"name":[6],"type":["chr"],"align":["left"]},{"label":["eventDate"],"name":[7],"type":["chr"],"align":["left"]},{"label":["source"],"name":[8],"type":["chr"],"align":["left"]}],"data":[{"1":"alien-macroinvertebrates-checklist:taxon:cebedf4407f487b424807ccd5478bfe6","2":"ISO_3166-2:BE-VLG","3":"Flemish Region","4":"BE","5":"present","6":"introduced","7":"1952/2016","8":"Kerckhof F"},{"1":"alien-macroinvertebrates-checklist:taxon:db1c88330fce94a3483451f1e0fbc6af","2":"ISO_3166-2:BE-VLG","3":"Flemish Region","4":"BE","5":"present","6":"introduced","7":"1700/2016","8":"Kerckhof F"},{"1":"alien-macroinvertebrates-checklist:taxon:d9c2fd07436f56f3824955c88261e76e","2":"ISO_3166-2:BE-VLG","3":"Flemish Region","4":"BE","5":"present","6":"introduced","7":"1997/2016","8":"Kerckhof F"},{"1":"alien-macroinvertebrates-checklist:taxon:464f0edd615ac93ab279f425dc1060a3","2":"ISO_3166-2:BE-VLG","3":"Flemish Region","4":"BE","5":"present","6":"introduced","7":"1986/2016","8":"Gérard P ("},{"1":"alien-macroinvertebrates-checklist:taxon:54cca150e1e0b7c0b3f5b152ae64d62b","2":"ISO_3166-2:BE-VLG","3":"Flemish Region","4":"BE","5":"present","6":"introduced","7":"1895/2016","8":"Wouters K"},{"1":"alien-macroinvertebrates-checklist:taxon:f9953a68ec0b35fb531b3d1917df59c7","2":"ISO_3166-2:BE-VLG","3":"Flemish Region","4":"BE","5":"present","6":"introduced","7":"1950/2016","8":"Leloup E,"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+{"columns":[{"label":["taxonID"],"name":[1],"type":["chr"],"align":["left"]},{"label":["locationID"],"name":[2],"type":["chr"],"align":["left"]},{"label":["locality"],"name":[3],"type":["chr"],"align":["left"]},{"label":["countryCode"],"name":[4],"type":["chr"],"align":["left"]},{"label":["occurrenceStatus"],"name":[5],"type":["chr"],"align":["left"]},{"label":["establishmentMeans"],"name":[6],"type":["chr"],"align":["left"]},{"label":["eventDate"],"name":[7],"type":["chr"],"align":["left"]},{"label":["source"],"name":[8],"type":["chr"],"align":["left"]}],"data":[{"1":"alien-macroinvertebrates-checklist:taxon:0396fe0cb30083ee34d8692802dbfc3a","2":"ISO_3166-2:BE-VLG","3":"Flemish Region","4":"BE","5":"present","6":"introduced","7":"2007/2016","8":"van Haaren"},{"1":"alien-macroinvertebrates-checklist:taxon:05e1226fad2eec66ff6c70764ecf047a","2":"ISO_3166-2:BE-VLG","3":"Flemish Region","4":"BE","5":"present","6":"introduced","7":"1986/2016","8":"Gérard P ("},{"1":"alien-macroinvertebrates-checklist:taxon:06b1921ec41577a8c4516c91837ea594","2":"ISO_3166-2:BE-VLG","3":"Flemish Region","4":"BE","5":"present","6":"introduced","7":"1998/2016","8":"Cook EJ, J"},{"1":"alien-macroinvertebrates-checklist:taxon:0737719f7e273373da08c01c8dc6162f","2":"ISO_3166-2:BE-VLG","3":"Flemish Region","4":"BE","5":"present","6":"introduced","7":"1977/2016","8":"Wouters K"},{"1":"alien-macroinvertebrates-checklist:taxon:13883300ac884d3398e25f29b89a6513","2":"ISO_3166-2:BE-VLG","3":"Flemish Region","4":"BE","5":"present","6":"introduced","7":"1993/2016","8":"Van Damme"},{"1":"alien-macroinvertebrates-checklist:taxon:151b9f1f8474dc7154761d78ba5f67e9","2":"ISO_3166-2:BE-VLG","3":"Flemish Region","4":"BE","5":"present","6":"introduced","7":"1969/2016","8":"Leloup E ("}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
   </script>
 </div>
 <p>Save to CSV:</p>
@@ -598,7 +602,7 @@ raw_data %&lt;&gt;% mutate(taxon_id = paste(&quot;alien-macroinvertebrates-check
 <p>This is a manually created overview of how we will map the <code>raw_salinity_zone</code> to <code>isMarine</code>, <code>isFreshwater</code> and <code>isTerrestrial</code>. Note: the latter term is added for completeness, but will be <code>FALSE</code> for all species in this dataset:</p>
 <div data-pagedtable="false">
 <script data-pagedtable-source type="application/json">
-{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["salinity zone"],"name":[1],"type":["fctr"],"align":["left"]},{"label":["isMarine"],"name":[2],"type":["fctr"],"align":["left"]},{"label":["isFreshwater"],"name":[3],"type":["fctr"],"align":["left"]},{"label":["isTerrestrial"],"name":[4],"type":["fctr"],"align":["left"]}],"data":[{"1":"F","2":"FALSE","3":"TRUE","4":"FALSE","_rn_":"1"},{"1":"M","2":"TRUE","3":"FALSE","4":"FALSE","_rn_":"2"},{"1":"B/M","2":"TRUE","3":"FALSE","4":"FALSE","_rn_":"3"},{"1":"F/B","2":"FALSE","3":"TRUE","4":"FALSE","_rn_":"4"},{"1":"B","2":"TRUE","3":"TRUE","4":"FALSE","_rn_":"5"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+{"columns":[{"label":["salinity zone"],"name":[1],"type":["fctr"],"align":["left"]},{"label":["isMarine"],"name":[2],"type":["fctr"],"align":["left"]},{"label":["isFreshwater"],"name":[3],"type":["fctr"],"align":["left"]},{"label":["isTerrestrial"],"name":[4],"type":["fctr"],"align":["left"]}],"data":[{"1":"F","2":"FALSE","3":"TRUE","4":"FALSE"},{"1":"M","2":"TRUE","3":"FALSE","4":"FALSE"},{"1":"B/M","2":"TRUE","3":"FALSE","4":"FALSE"},{"1":"F/B","2":"FALSE","3":"TRUE","4":"FALSE"},{"1":"B","2":"TRUE","3":"TRUE","4":"FALSE"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
   </script>
 </div>
 <div id="term-mapping-2" class="section level2">
@@ -641,11 +645,13 @@ raw_data %&lt;&gt;% mutate(taxon_id = paste(&quot;alien-macroinvertebrates-check
 <h2><span class="header-section-number">5.2</span> Post-processing</h2>
 <p>Remove the original columns:</p>
 <pre class="r"><code>species_profile %&lt;&gt;% select(-starts_with(&quot;raw_&quot;))</code></pre>
+<p>Sort on species_profile:</p>
+<pre class="r"><code>species_profile %&lt;&gt;% arrange(taxonID)</code></pre>
 <p>Preview data:</p>
 <pre class="r"><code>species_profile %&gt;% head()</code></pre>
 <div data-pagedtable="false">
 <script data-pagedtable-source type="application/json">
-{"columns":[{"label":["taxonID"],"name":[1],"type":["chr"],"align":["left"]},{"label":["isMarine"],"name":[2],"type":["chr"],"align":["left"]},{"label":["isFreshwater"],"name":[3],"type":["chr"],"align":["left"]},{"label":["isTerrestrial"],"name":[4],"type":["chr"],"align":["left"]}],"data":[{"1":"alien-macroinvertebrates-checklist:taxon:cebedf4407f487b424807ccd5478bfe6","2":"TRUE","3":"FALSE","4":"FALSE"},{"1":"alien-macroinvertebrates-checklist:taxon:db1c88330fce94a3483451f1e0fbc6af","2":"TRUE","3":"FALSE","4":"FALSE"},{"1":"alien-macroinvertebrates-checklist:taxon:d9c2fd07436f56f3824955c88261e76e","2":"TRUE","3":"FALSE","4":"FALSE"},{"1":"alien-macroinvertebrates-checklist:taxon:464f0edd615ac93ab279f425dc1060a3","2":"FALSE","3":"TRUE","4":"FALSE"},{"1":"alien-macroinvertebrates-checklist:taxon:54cca150e1e0b7c0b3f5b152ae64d62b","2":"FALSE","3":"TRUE","4":"FALSE"},{"1":"alien-macroinvertebrates-checklist:taxon:f9953a68ec0b35fb531b3d1917df59c7","2":"TRUE","3":"FALSE","4":"FALSE"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+{"columns":[{"label":["taxonID"],"name":[1],"type":["chr"],"align":["left"]},{"label":["isMarine"],"name":[2],"type":["chr"],"align":["left"]},{"label":["isFreshwater"],"name":[3],"type":["chr"],"align":["left"]},{"label":["isTerrestrial"],"name":[4],"type":["chr"],"align":["left"]}],"data":[{"1":"alien-macroinvertebrates-checklist:taxon:0396fe0cb30083ee34d8692802dbfc3a","2":"TRUE","3":"TRUE","4":"FALSE"},{"1":"alien-macroinvertebrates-checklist:taxon:05e1226fad2eec66ff6c70764ecf047a","2":"FALSE","3":"TRUE","4":"FALSE"},{"1":"alien-macroinvertebrates-checklist:taxon:06b1921ec41577a8c4516c91837ea594","2":"TRUE","3":"FALSE","4":"FALSE"},{"1":"alien-macroinvertebrates-checklist:taxon:0737719f7e273373da08c01c8dc6162f","2":"FALSE","3":"TRUE","4":"FALSE"},{"1":"alien-macroinvertebrates-checklist:taxon:13883300ac884d3398e25f29b89a6513","2":"TRUE","3":"FALSE","4":"FALSE"},{"1":"alien-macroinvertebrates-checklist:taxon:151b9f1f8474dc7154761d78ba5f67e9","2":"TRUE","3":"FALSE","4":"FALSE"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
   </script>
 </div>
 <p>Save to CSV:</p>
@@ -654,10 +660,18 @@ raw_data %&lt;&gt;% mutate(taxon_id = paste(&quot;alien-macroinvertebrates-check
 </div>
 <div id="create-description-extension" class="section level1">
 <h1><span class="header-section-number">6</span> Create description extension</h1>
-<p>In the description extension we want to include several important characteristics about the species.</p>
+<p>In the description extension we want to include several important characteristics (hereafter refered to as descriptors) about the species:</p>
+<ul>
+<li>Native range</li>
+<li>Pathway of introduction</li>
+<li>Invasion stage</li>
+</ul>
+<p>The structure of the description extension is slightly different from the other core/extension files: information for a specific taxon (linked to taxonID) is provided in <strong>multipele</strong> lines within the csv file: one line per taxon per descriptor. In this way, we are able to include multipele descriptors for each species.</p>
+<p>For each descriptor, we create a separate dataframe to process the specific information. We always specify <em>which descriptor</em> we map (<code>type</code> column) and its <em>specific content</em> (<code>description</code> column). After the mapping of these Darwin Core terms <code>type</code> and <code>value</code>, we merge the dataframes to generate one single description extension. We than continue the mapping process by adding the other Darwin Core terms (which content is independent of the type of descriptor, such as <code>language</code>).</p>
 <div id="native-range" class="section level2">
 <h2><span class="header-section-number">6.1</span> Native range</h2>
-<p>Native range information (e.g. <code>South-America</code>) can be found in <code>raw_origin</code>. We create a separate dataframe to process this information:</p>
+<p>Native range information (e.g. <code>South-America</code>) can be found in <code>raw_origin</code>.</p>
+<p>Create separate dataframe:</p>
 <pre class="r"><code>native_range &lt;- raw_data</code></pre>
 <p>Show unique values:</p>
 <pre class="r"><code>native_range %&gt;%
@@ -720,7 +734,8 @@ raw_data %&lt;&gt;% mutate(taxon_id = paste(&quot;alien-macroinvertebrates-check
 </div>
 <div id="pathway-of-introduction" class="section level2">
 <h2><span class="header-section-number">6.2</span> Pathway of introduction</h2>
-<p>Pathway information (e.g. <code>aquaculture</code>) can be found in <code>raw_pathway_of_introduction</code>. This original information was interpreted by <span class="citation">@timadriaens</span> to a more standardized value in <code>raw_pathway_mapping</code> (with remarks about this transformation in <code>raw_pathway_mapping_remarks</code>). We create a separate dataframe to process this information:</p>
+<p>Pathway information (e.g. <code>aquaculture</code>) can be found in <code>raw_pathway_of_introduction</code>. This original information was interpreted by <span class="citation">@timadriaens</span> to a more standardized value in <code>raw_pathway_mapping</code> (with remarks about this transformation in <code>raw_pathway_mapping_remarks</code>).</p>
+<p>Create separate dataframe:</p>
 <pre class="r"><code>pathway &lt;- raw_data</code></pre>
 <p>Show unique values:</p>
 <pre class="r"><code>native_range %&gt;%
@@ -780,7 +795,8 @@ raw_data %&lt;&gt;% mutate(taxon_id = paste(&quot;alien-macroinvertebrates-check
 <pre class="r"><code>pathway %&lt;&gt;% mutate(type = &quot;pathway&quot;)</code></pre>
 <div id="invasion-stage" class="section level3">
 <h3><span class="header-section-number">6.2.1</span> Invasion stage</h3>
-<p>There is no invasion stage information (e.g. <code>casual</code>) in the raw data, but we want to add it none the less. We create a separate dataframe to process this information:</p>
+<p>There is no invasion stage information (e.g. <code>casual</code>) in the raw data, but we want to add it none the less.</p>
+<p>Create separate dataframe:</p>
 <pre class="r"><code>invasion_stage &lt;- raw_data</code></pre>
 <p>We use the <a href="http://doc.rero.ch/record/24725/files/bach_puf.pdf">invasion stage vocabulary from Blackburn et al. (2011)</a> to standardize this information.</p>
 <p>Here, we consider all species to be <code>established</code> as they come from live samples in running waters. We decided <strong>not</strong> to use the terms <code>naturalized</code> (because often, there’s no sensible criterium to distinguish between casual/naturalized of naturalized/established) and <code>invasive</code> (which is a term that can only be applied after a risk assessment).</p>
