@@ -35,3 +35,4 @@ vignettes/*.pdf
 
 # Mac OS X
 .DS_Store
+draft.R
