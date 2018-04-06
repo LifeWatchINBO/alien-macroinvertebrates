@@ -42,7 +42,12 @@ The repository structure is based on [Cookiecutter Data Science](http://drivenda
 
 ## Installation
 
-See the installation section of [alien-plants-belgium](https://github.com/trias-project/alien-plants-belgium/blob/master/README.md#installation).
+1. Clone this repository to your computer
+2. Open the RStudio project file
+3. Open the `dwc_checklist.Rmd` or `dwc_occurrence.Rmd` [R Markdown file](https://rmarkdown.rstudio.com/) in RStudio
+4. Install any required packages
+5. Click `Run > Run All` to generate the processed data
+6. Alternatively, click `Build > Build website` to generated the processed data and build the website in `/docs`
 
 ## Contributors
 
