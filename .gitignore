@@ -16,6 +16,7 @@
 
 # RStudio files
 .Rproj.user/
+.Rproj.user
 
 # produced vignettes
 vignettes/*.html
@@ -34,9 +35,4 @@ vignettes/*.pdf
 
 # Mac OS X
 .DS_Store
-
-# Draft testfiles
-draft*
-.Rproj.user
-src/*.html
-
+draft.R

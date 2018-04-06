@@ -231,8 +231,8 @@ occurrence %>% select (raw_survey_event_comment) %>%
 |extra stalen                                                  |
 |Frank de Block-Burij                                          |
 |Geert Vanloot                                                 |
-|G�rard                                                        |
-|G�rard, 1986                                                  |
+|Gérard                                                        |
+|Gérard, 1986                                                  |
 |Gunter Flipkens                                               |
 |Hans de Blauwe                                                |
 |Herwig Mees                                                   |
@@ -293,8 +293,8 @@ occurrence %<>% mutate (
                        "extra stalen" = "Boets P",
                        "Frank de Block-Burij" = "de Block-Burij F",
                        "Geert Vanloot" = "Vanloot G",
-                       "Gérard" = "Gérard",
-                       "Gérard, 1986" = "Gérard",
+                       "GÃ©rard" = "GÃ©rard",
+                       "GÃ©rard, 1986" = "GÃ©rard",
                        "Gunter Flipkens" = "Flipkens G",
                        "Hans de Blauwe" = "de Blauwe H",
                        "Herwig Mees" = "Mees H",
@@ -670,8 +670,8 @@ occurrence %>% select (raw_survey_event_comment) %>%
 |extra stalen                                                  |
 |Frank de Block-Burij                                          |
 |Geert Vanloot                                                 |
-|G�rard                                                        |
-|G�rard, 1986                                                  |
+|Gérard                                                        |
+|Gérard, 1986                                                  |
 |Gunter Flipkens                                               |
 |Hans de Blauwe                                                |
 |Herwig Mees                                                   |
@@ -732,8 +732,8 @@ occurrence %<>% mutate (
                          "extra stalen" = "Boets P",
                          "Frank de Block-Burij" = "de Block-Burij F",
                          "Geert Vanloot" = "Vanloot G",
-                         "Gérard" = "Gérard",
-                         "Gérard, 1986" = "Gérard",
+                         "GÃ©rard" = "GÃ©rard",
+                         "GÃ©rard, 1986" = "GÃ©rard",
                          "Gunter Flipkens" = "Flipkens G",
                          "Hans de Blauwe" = "de Blauwe H",
                          "Herwig Mees" = "Mees H",
