@@ -497,7 +497,7 @@ In the description extension we want to include several important characteristic
 
 The structure of the description extension is slightly different from the other core/extension files: information for a specific taxon (linked to taxonID) is provided in **multipele** lines within the csv file: one line per taxon per descriptor. In this way, we are able to include multipele descriptors for each species. 
 
-For each descriptor, we create a separate dataframe to process the specific information. We always specify *which descriptor* we map (`type` column) and its *specific content* (`description` column). After the mapping of these Darwin Core terms `type` and `value`, we merge the dataframes to generate one single description extension. We than continue the mapping process by adding the other Darwin Core terms (which content is independent of the type of descriptor, such as `language`).
+For each descriptor, we create a separate dataframe to process the specific information. We always specify *which descriptor* we map (`type` column) and its *specific content* (`description` column). After the mapping of these Darwin Core terms `type` and `value`, we merge the dataframes to generate one single description extension. We then continue the mapping process by adding the other Darwin Core terms (which content is independent of the type of descriptor, such as `language`).
 
 ## Native range
 

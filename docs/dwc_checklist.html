@@ -13,7 +13,7 @@
 <meta name="author" content="Peter Desmet" />
 <meta name="author" content="Dimitri Brosens" />
 
-<meta name="date" content="2018-03-05" />
+<meta name="date" content="2018-03-06" />
 
 <title>Darwin Core mapping</title>
 
@@ -321,7 +321,7 @@ div.tocify {
 <h4 class="author"><em>Lien Reyserhove</em></h4>
 <h4 class="author"><em>Peter Desmet</em></h4>
 <h4 class="author"><em>Dimitri Brosens</em></h4>
-<h4 class="date"><em>2018-03-05</em></h4>
+<h4 class="date"><em>2018-03-06</em></h4>
 
 </div>
 
@@ -484,7 +484,7 @@ raw_data %&lt;&gt;% mutate(taxon_id = paste(&quot;alien-macroinvertebrates-check
 <h2><span class="header-section-number">3.2</span> Post-processing</h2>
 <p>Remove the original columns:</p>
 <pre class="r"><code>taxon %&lt;&gt;% select(-starts_with(&quot;raw_&quot;))</code></pre>
-<p>Sort on taxonID:</p>
+<p>Sort on <code>taxonID</code>:</p>
 <pre class="r"><code>taxon %&lt;&gt;% arrange(taxonID)</code></pre>
 <p>Preview data:</p>
 <pre class="r"><code>head(taxon)</code></pre>
@@ -570,7 +570,7 @@ raw_data %&lt;&gt;% mutate(taxon_id = paste(&quot;alien-macroinvertebrates-check
 <h2><span class="header-section-number">4.2</span> Post-processing</h2>
 <p>Remove the original columns:</p>
 <pre class="r"><code>distribution %&lt;&gt;% select(-starts_with(&quot;raw_&quot;), -start_year, -end_year)</code></pre>
-<p>Sort on taxonID:</p>
+<p>Sort on <code>taxonID</code>:</p>
 <pre class="r"><code>distribution %&lt;&gt;% arrange(taxonID)</code></pre>
 <p>Preview data:</p>
 <pre class="r"><code>distribution %&gt;%
@@ -645,7 +645,7 @@ raw_data %&lt;&gt;% mutate(taxon_id = paste(&quot;alien-macroinvertebrates-check
 <h2><span class="header-section-number">5.2</span> Post-processing</h2>
 <p>Remove the original columns:</p>
 <pre class="r"><code>species_profile %&lt;&gt;% select(-starts_with(&quot;raw_&quot;))</code></pre>
-<p>Sort on species_profile:</p>
+<p>Sort on <code>taxonID</code>:</p>
 <pre class="r"><code>species_profile %&lt;&gt;% arrange(taxonID)</code></pre>
 <p>Preview data:</p>
 <pre class="r"><code>species_profile %&gt;% head()</code></pre>
@@ -667,7 +667,7 @@ raw_data %&lt;&gt;% mutate(taxon_id = paste(&quot;alien-macroinvertebrates-check
 <li>Invasion stage</li>
 </ul>
 <p>The structure of the description extension is slightly different from the other core/extension files: information for a specific taxon (linked to taxonID) is provided in <strong>multipele</strong> lines within the csv file: one line per taxon per descriptor. In this way, we are able to include multipele descriptors for each species.</p>
-<p>For each descriptor, we create a separate dataframe to process the specific information. We always specify <em>which descriptor</em> we map (<code>type</code> column) and its <em>specific content</em> (<code>description</code> column). After the mapping of these Darwin Core terms <code>type</code> and <code>value</code>, we merge the dataframes to generate one single description extension. We than continue the mapping process by adding the other Darwin Core terms (which content is independent of the type of descriptor, such as <code>language</code>).</p>
+<p>For each descriptor, we create a separate dataframe to process the specific information. We always specify <em>which descriptor</em> we map (<code>type</code> column) and its <em>specific content</em> (<code>description</code> column). After the mapping of these Darwin Core terms <code>type</code> and <code>value</code>, we merge the dataframes to generate one single description extension. We then continue the mapping process by adding the other Darwin Core terms (which content is independent of the type of descriptor, such as <code>language</code>).</p>
 <div id="native-range" class="section level2">
 <h2><span class="header-section-number">6.1</span> Native range</h2>
 <p>Native range information (e.g. <code>South-America</code>) can be found in <code>raw_origin</code>.</p>
