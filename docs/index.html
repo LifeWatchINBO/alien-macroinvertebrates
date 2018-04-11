@@ -233,8 +233,8 @@ $(document).ready(function () {
 <li>Occurrence dataset: <a href="https://github.com/trias-project/alien-macroinvertebrates/blob/master/data/raw/denormalized_observations.csv">source data</a> → Darwin Core <a href="http://trias-project.github.io/alien-macroinvertebrates/dwc_occurrence.html">mapping script</a> → generated <a href="https://github.com/trias-project/alien-macroinvertebrates/tree/master/data/processed/dwc_occurrence">Darwin Core files</a></li>
 </ul>
 </div>
-<div id="published-dataset" class="section level2">
-<h2>Published dataset</h2>
+<div id="published-datasets" class="section level2">
+<h2>Published datasets</h2>
 <ul>
 <li><a href="https://ipt.inbo.be/resource?r=alien-macroinvertebrates-checklist">Checklist dataset on the IPT</a></li>
 <li><a href="https://doi.org/10.15468/yxcq07">Checklist dataset on GBIF</a></li>
@@ -243,7 +243,6 @@ $(document).ready(function () {
 <ul>
 <li><a href="https://ipt.inbo.be/resource?r=alien-macroinvertebrate-occurrences">Occurrence dataset on the IPT</a></li>
 <li><a href="https://doi.org/10.15468/xjtfoo">Occurrence dataset on GBIF</a></li>
-<li><a href="http://www.aquaticinvasions.net/2016/AI_2016_Boets_etal.pdf">Boets et al. 2016</a>: Data paper describing the occurrence dataset and methodology</li>
 </ul>
 </div>
 <div id="repo-structure" class="section level2">
@@ -259,6 +258,8 @@ $(document).ready(function () {
 │
 ├── docs              : Repository website GENERATED
 │
+├── specifications    : Data specifications for the Darwin Core files
+│
 └── src
     ├── dwc_checklist.Rmd  : Darwin Core mapping script for checklist dataset
     ├── dwc_occurrence.Rmd : Darwin Core mapping script for occurrence dataset
@@ -266,7 +267,14 @@ $(document).ready(function () {
 </div>
 <div id="installation" class="section level2">
 <h2>Installation</h2>
-<p>See the installation section of <a href="https://github.com/trias-project/alien-plants-belgium/blob/master/README.md#installation">alien-plants-belgium</a>.</p>
+<ol style="list-style-type: decimal">
+<li>Clone this repository to your computer</li>
+<li>Open the RStudio project file</li>
+<li>Open the <code>dwc_checklist.Rmd</code> or <code>dwc_occurrence.Rmd</code> <a href="https://rmarkdown.rstudio.com/">R Markdown file</a> in RStudio</li>
+<li>Install any required packages</li>
+<li>Click <code>Run &gt; Run All</code> to generate the processed data</li>
+<li>Alternatively, click <code>Build &gt; Build website</code> to generate the processed data and build the website in <code>/docs</code></li>
+</ol>
 </div>
 <div id="contributors" class="section level2">
 <h2>Contributors</h2>

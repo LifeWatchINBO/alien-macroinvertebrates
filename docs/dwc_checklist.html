@@ -13,7 +13,7 @@
 <meta name="author" content="Peter Desmet" />
 <meta name="author" content="Dimitri Brosens" />
 
-<meta name="date" content="2018-03-06" />
+<meta name="date" content="2018-04-11" />
 
 <title>Darwin Core mapping</title>
 
@@ -27,8 +27,8 @@
 <link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
 <script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
-<link href="site_libs/highlightjs-1.1/default.css" rel="stylesheet" />
-<script src="site_libs/highlightjs-1.1/highlight.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
 <link href="site_libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet" />
 <script src="site_libs/pagedtable-1.1/js/pagedtable.js"></script>
 <link href="site_libs/font-awesome-4.5.0/css/font-awesome.min.css" rel="stylesheet" />
@@ -40,10 +40,12 @@
   }
 </style>
 <script type="text/javascript">
-if (window.hljs && document.readyState && document.readyState === "complete") {
-   window.setTimeout(function() {
-      hljs.initHighlighting();
-   }, 0);
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
 }
 </script>
 
@@ -76,7 +78,7 @@ h6 {
 }
 </style>
 
-<link rel="stylesheet" href="static\css\trias.css" type="text/css" />
+<link rel="stylesheet" href="static/css/trias.css" type="text/css" />
 
 </head>
 
@@ -321,7 +323,7 @@ div.tocify {
 <h4 class="author"><em>Lien Reyserhove</em></h4>
 <h4 class="author"><em>Peter Desmet</em></h4>
 <h4 class="author"><em>Dimitri Brosens</em></h4>
-<h4 class="date"><em>2018-03-06</em></h4>
+<h4 class="date"><em>2018-04-11</em></h4>
 
 </div>
 
@@ -332,7 +334,7 @@ div.tocify {
 <p>Set locale (so we use UTF-8 character encoding):</p>
 <pre class="r"><code># This works on Mac OS X, might not work on other OS
 Sys.setlocale(&quot;LC_CTYPE&quot;, &quot;en_US.UTF-8&quot;)</code></pre>
-<pre><code>## [1] &quot;&quot;</code></pre>
+<pre><code>## [1] &quot;en_US.UTF-8&quot;</code></pre>
 <p>Load libraries:</p>
 <pre class="r"><code>library(tidyverse) # To transform data
 library(magrittr)  # For %&lt;&gt;% pipes
@@ -359,7 +361,7 @@ raw_data &lt;- read_excel(raw_data_file, sheet = &quot;checklist&quot;, na = &qu
 sources &lt;- read.table(sources_file, sep = &quot;\t&quot;, quote = &quot;&quot;, colClasses = &quot;character&quot;,  fileEncoding = &quot;UTF8&quot;, header = T)</code></pre>
 <p>Clean the data somewhat: remove empty rows if present:</p>
 <pre class="r"><code>raw_data %&lt;&gt;%
-  remove_empty_rows() %&gt;%     # Remove empty rows
+  remove_empty(&quot;rows&quot;) %&gt;%    # Remove empty rows
   clean_names()               # Have sensible (lowercase) column names</code></pre>
 <div id="generate-taxonid" class="section level2">
 <h2><span class="header-section-number">2.1</span> Generate taxonID</h2>
@@ -392,7 +394,7 @@ raw_data %&lt;&gt;% mutate(taxon_id = paste(&quot;alien-macroinvertebrates-check
   arrange(reference)</code></pre>
 <div data-pagedtable="false">
 <script data-pagedtable-source type="application/json">
-{"columns":[{"label":["reference"],"name":[1],"type":["chr"],"align":["left"]},{"label":["full_reference"],"name":[2],"type":["chr"],"align":["left"]},{"label":["records"],"name":[3],"type":["int"],"align":["right"]}],"data":[{"1":"Adam 1947","2":"Adam W (1947) Revision des Mollusques de la Belgiq","3":"4"},{"1":"Adam and Leloup 1934","2":"Adam W, Leloup E (1934) Sur la présence du gastéro","3":"1"},{"1":"Backeljau 1986","2":"Backeljau T (1986) Lijst van de recente mariene mo","3":"1"},{"1":"Boets et al. 2009","2":"Boets P, Lock K, Cammaerts R, Plu D, Goethals PLM","3":"1"},{"1":"Boets et al. 2010b","2":"Boets P, Lock K, Goethals PLM (2010b) First record","3":"1"},{"1":"Boets et al. 2011b","2":"Boets P, Lock K, Goethals PLM (2011b) Shifts in th","3":"1"},{"1":"Boets et al. 2012c","2":"Boets P, Lock K, Tempelman D, Van Haaren T, Platvo","3":"1"},{"1":"Boets et al. 2016","2":"Boets P, Brosens D, Lock K, Adriaens T, Aelterman","3":"1"},{"1":"Boets et al. unpub data","2":"Boets et al. unpublished data","3":"1"},{"1":"Collection RBINS","2":"Collection RBINS","3":"2"},{"1":"Cook et al. 2007","2":"Cook EJ, Jahnke M, Kerckhof F, Minchin D, Faasse M","3":"1"},{"1":"Damas 1938","2":"Damas H (1938) Sur la presence dans la Meuse belge","3":"1"},{"1":"Dewicke 2002","2":"Dewicke A (2002) Hyperbenthic communities of the N","3":"1"},{"1":"Dumoulin 2004","2":"Dumoulin E (2004) Snelle areaaluitbreiding van het","3":"1"},{"1":"Faasse and Van Moorsel 2003","2":"Faasse M, Van Moorsel G (2003) The North-American","3":"2"},{"1":"Gerard 1986","2":"Gérard P (1986) Les différentes espèces d'écreviss","3":"2"},{"1":"Keppens and Mienis 2004","2":"Keppens M, Mienis HK (2004) A propos de la présenc","3":"1"},{"1":"Kerckhof and Catrijsse 2001","2":"Kerckhof F, Cattrijsse A (2001) Exotic Cirripedia","3":"5"},{"1":"Kerckhof and Dumoulin 1987","2":"Kerckhof F, Dumoulin E (1987) Eerste vondsten van","3":"1"},{"1":"Kerckhof et al. 2007","2":"Kerckhof F, Haelters J, Gollasch S (2007) Alien sp","3":"1"},{"1":"Leloup 1971","2":"Leloup E (1971) Recherches sur l'ostréiculture dan","3":"1"},{"1":"Leloup and Lefevre 1952","2":"Leloup E, Lefevere S (1952) Sur la présence dans l","3":"2"},{"1":"Lock et al. 2007","2":"Lock K, Van Wichelen J, Packet J, Simoens I, Van L","3":"1"},{"1":"Loppens 1902","2":"Loppens K (1902) Petricola pholadiformis L. Annale","3":"1"},{"1":"Messiaen et al. 2010","2":"Messiaen M, Lock K, Gabriels W, Vercauteren T, Wou","3":"3"},{"1":"Nuyttens et al. 2006","2":"Nuyttens F, Versele G, Loones MA (2006) De aanwezi","3":"1"},{"1":"Nyst 1835 | Adam 1947","2":"Nyst HJP (1835) Mollusques. Bulletin des Academies","3":"1"},{"1":"Sablon et al. 2010a","2":"Sablon R, Vercauteren T, Lammens S, Ghyselbrecht E","3":"1"},{"1":"Sablon et al. 2010b","2":"Sablon R, Vercauteren T, Jacobs P (2010b) De quagg","3":"1"},{"1":"Sellius 1733","2":"Sellius G (1733) Historia naturalis teredinis seu","3":"1"},{"1":"Seys et al. 1999","2":"Seys J, Vincx M, Meire P (1999) Spatial distributi","3":"1"},{"1":"Soors et al. 2010","2":"Soors J, Faasse M, Stevens M, Verbessem I, De Regg","3":"1"},{"1":"Soors et al. 2013","2":"Soors J, van Haaren T, Timm T, Speybroeck J (2013)","3":"8"},{"1":"Swinnen et al. 1998","2":"Swinnen F, Leynen M, Sablon R, Duvivier L, Vanmael","3":"2"},{"1":"Van Damme and Maes 1993","2":"Van Damme P, Maes J (1993) De Blauwe Zwemkrab Call","3":"1"},{"1":"Van Damme et al. 1992","2":"Van Damme P, Mees J, Maebe S (1992) Voorkomen van","3":"1"},{"1":"Van Goethem and Sablon 1986","2":"Van Goethem JL, Sablon R (1986) Ferrissia wautieri","3":"1"},{"1":"van Haaren and Soors 2009","2":"van Haaren T, Soors J (2009) Sinelobus stanfordi (","3":"1"},{"1":"Vandepitte et al. 2012","2":"Vandepitte L, De Poorter D, Lescrauweart A-N, Fock","3":"1"},{"1":"Vercauteren et al. 2005","2":"Vercauteren T, De Smedt S, Warmoes T, Goddeeris B,","3":"2"},{"1":"Vercauteren et al. 2006","2":"Vercauteren T, Sablon S, Wouters K (2006) Exotisch","3":"2"},{"1":"Verslycke et al. 2000","2":"Verslycke T, Janssen C, Lock K, Mees J (2000) Firs","3":"1"},{"1":"Verween et al. 2006","2":"Verween A, Kerckhof F, Vincx M, Degraer S (2006) F","3":"1"},{"1":"Wouters 2002","2":"Wouters K (2002) On the distribution of alien non-","3":"6"},{"1":"Ysebaert et al. 1997","2":"Ysebaert T, Meire P, De Block M, De Regge N, Soors","3":"1"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+{"columns":[{"label":["reference"],"name":[1],"type":["chr"],"align":["left"]},{"label":["full_reference"],"name":[2],"type":["chr"],"align":["left"]},{"label":["records"],"name":[3],"type":["int"],"align":["right"]}],"data":[{"1":"Adam 1947","2":"Adam W (1947) Revision des Mollusques de la Belgiq","3":"4"},{"1":"Adam and Leloup 1934","2":"Adam W, Leloup E (1934) Sur la présence du gastéro","3":"1"},{"1":"Backeljau 1986","2":"Backeljau T (1986) Lijst van de recente mariene mo","3":"1"},{"1":"Boets et al. 2009","2":"Boets P, Lock K, Cammaerts R, Plu D, Goethals PLM","3":"1"},{"1":"Boets et al. 2010b","2":"Boets P, Lock K, Goethals PLM (2010b) First record","3":"1"},{"1":"Boets et al. 2011b","2":"Boets P, Lock K, Goethals PLM (2011b) Shifts in th","3":"1"},{"1":"Boets et al. 2012c","2":"Boets P, Lock K, Tempelman D, Van Haaren T, Platvo","3":"1"},{"1":"Boets et al. 2016","2":"Boets P, Brosens D, Lock K, Adriaens T, Aelterman","3":"1"},{"1":"Boets et al. unpub data","2":"Boets et al. unpublished data","3":"1"},{"1":"Collection RBINS","2":"Collection RBINS","3":"2"},{"1":"Cook et al. 2007","2":"Cook EJ, Jahnke M, Kerckhof F, Minchin D, Faasse M","3":"1"},{"1":"Damas 1938","2":"Damas H (1938) Sur la presence dans la Meuse belge","3":"1"},{"1":"Dewicke 2002","2":"Dewicke A (2002) Hyperbenthic communities of the N","3":"1"},{"1":"Dumoulin 2004","2":"Dumoulin E (2004) Snelle areaaluitbreiding van het","3":"1"},{"1":"Faasse and Van Moorsel 2003","2":"Faasse M, Van Moorsel G (2003) The North-American","3":"2"},{"1":"Gerard 1986","2":"Gérard P (1986) Les différentes espèces d'écreviss","3":"2"},{"1":"Keppens and Mienis 2004","2":"Keppens M, Mienis HK (2004) A propos de la présenc","3":"1"},{"1":"Kerckhof and Catrijsse 2001","2":"Kerckhof F, Cattrijsse A (2001) Exotic Cirripedia","3":"5"},{"1":"Kerckhof and Dumoulin 1987","2":"Kerckhof F, Dumoulin E (1987) Eerste vondsten van","3":"1"},{"1":"Kerckhof et al. 2007","2":"Kerckhof F, Haelters J, Gollasch S (2007) Alien sp","3":"1"},{"1":"Leloup 1971","2":"Leloup E (1971) Recherches sur l'ostréiculture dan","3":"1"},{"1":"Leloup and Lefevre 1952","2":"Leloup E, Lefevere S (1952) Sur la présence dans l","3":"2"},{"1":"Lock et al. 2007","2":"Lock K, Van Wichelen J, Packet J, Simoens I, Van L","3":"1"},{"1":"Loppens 1902","2":"Loppens K (1902) Petricola pholadiformis L. Annale","3":"1"},{"1":"Messiaen et al. 2010","2":"Messiaen M, Lock K, Gabriels W, Vercauteren T, Wou","3":"3"},{"1":"Nuyttens et al. 2006","2":"Nuyttens F, Versele G, Loones MA (2006) De aanwezi","3":"1"},{"1":"Nyst 1835 | Adam 1947","2":"Nyst HJP (1835) Mollusques. Bulletin des Academies","3":"1"},{"1":"Sablon et al. 2010a","2":"Sablon R, Vercauteren T, Lammens S, Ghyselbrecht E","3":"1"},{"1":"Sablon et al. 2010b","2":"Sablon R, Vercauteren T, Jacobs P (2010b) De quagg","3":"1"},{"1":"Sellius 1733","2":"Sellius G (1733) Historia naturalis teredinis seu","3":"1"},{"1":"Seys et al. 1999","2":"Seys J, Vincx M, Meire P (1999) Spatial distributi","3":"1"},{"1":"Soors et al. 2010","2":"Soors J, Faasse M, Stevens M, Verbessem I, De Regg","3":"1"},{"1":"Soors et al. 2013","2":"Soors J, van Haaren T, Timm T, Speybroeck J (2013)","3":"8"},{"1":"Swinnen et al. 1998","2":"Swinnen F, Leynen M, Sablon R, Duvivier L, Vanmael","3":"2"},{"1":"Van Damme and Maes 1993","2":"Van Damme P, Maes J (1993) De Blauwe Zwemkrab Call","3":"1"},{"1":"Van Damme et al. 1992","2":"Van Damme P, Mees J, Maebe S (1992) Voorkomen van","3":"1"},{"1":"Van Goethem and Sablon 1986","2":"Van Goethem JL, Sablon R (1986) Ferrissia wautieri","3":"1"},{"1":"Vandepitte et al. 2012","2":"Vandepitte L, De Poorter D, Lescrauweart A-N, Fock","3":"1"},{"1":"Vercauteren et al. 2005","2":"Vercauteren T, De Smedt S, Warmoes T, Goddeeris B,","3":"2"},{"1":"Vercauteren et al. 2006","2":"Vercauteren T, Sablon S, Wouters K (2006) Exotisch","3":"2"},{"1":"Verslycke et al. 2000","2":"Verslycke T, Janssen C, Lock K, Mees J (2000) Firs","3":"1"},{"1":"Verween et al. 2006","2":"Verween A, Kerckhof F, Vincx M, Degraer S (2006) F","3":"1"},{"1":"Wouters 2002","2":"Wouters K (2002) On the distribution of alien non-","3":"6"},{"1":"Ysebaert et al. 1997","2":"Ysebaert T, Meire P, De Block M, De Regge N, Soors","3":"1"},{"1":"van Haaren and Soors 2009","2":"van Haaren T, Soors J (2009) Sinelobus stanfordi (","3":"1"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
   </script>
 </div>
 </div>
@@ -537,7 +539,7 @@ raw_data %&lt;&gt;% mutate(taxon_id = paste(&quot;alien-macroinvertebrates-check
   arrange(raw_first_occurrence_in_flanders)</code></pre>
 <div data-pagedtable="false">
 <script data-pagedtable-source type="application/json">
-{"columns":[{"label":["raw_first_occurrence_in_flanders"],"name":[1],"type":["chr"],"align":["left"]}],"data":[{"1":"< 1700"},{"1":"<1600"},{"1":"1730-1732"},{"1":"1834"},{"1":"1835"},{"1":"1869"},{"1":"1895"},{"1":"1899"},{"1":"1911"},{"1":"1924"},{"1":"1925"},{"1":"1927"},{"1":"1931"},{"1":"1933"},{"1":"1937"},{"1":"1945"},{"1":"1950"},{"1":"1952"},{"1":"1969"},{"1":"1977"},{"1":"1986"},{"1":"1987"},{"1":"1990"},{"1":"1991"},{"1":"1992"},{"1":"1993"},{"1":"1995"},{"1":"1996"},{"1":"1997"},{"1":"1998"},{"1":"1999"},{"1":"2000"},{"1":"2001"},{"1":"2002"},{"1":"2003"},{"1":"2004"},{"1":"2005"},{"1":"2006"},{"1":"2007"},{"1":"2008"},{"1":"2009"},{"1":"2010"},{"1":"2014"},{"1":"before 1700"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+{"columns":[{"label":["raw_first_occurrence_in_flanders"],"name":[1],"type":["chr"],"align":["left"]}],"data":[{"1":"1730-1732"},{"1":"1834"},{"1":"1835"},{"1":"1869"},{"1":"1895"},{"1":"1899"},{"1":"1911"},{"1":"1924"},{"1":"1925"},{"1":"1927"},{"1":"1931"},{"1":"1933"},{"1":"1937"},{"1":"1945"},{"1":"1950"},{"1":"1952"},{"1":"1969"},{"1":"1977"},{"1":"1986"},{"1":"1987"},{"1":"1990"},{"1":"1991"},{"1":"1992"},{"1":"1993"},{"1":"1995"},{"1":"1996"},{"1":"1997"},{"1":"1998"},{"1":"1999"},{"1":"2000"},{"1":"2001"},{"1":"2002"},{"1":"2003"},{"1":"2004"},{"1":"2005"},{"1":"2006"},{"1":"2007"},{"1":"2008"},{"1":"2009"},{"1":"2010"},{"1":"2014"},{"1":"< 1700"},{"1":"<1600"},{"1":"before 1700"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
   </script>
 </div>
 <p>We remove the special characters from <code>raw_first_occurrence_in_flanders</code> and save as <code>year</code>:</p>
@@ -557,7 +559,7 @@ raw_data %&lt;&gt;% mutate(taxon_id = paste(&quot;alien-macroinvertebrates-check
   arrange(raw_first_occurrence_in_flanders)</code></pre>
 <div data-pagedtable="false">
 <script data-pagedtable-source type="application/json">
-{"columns":[{"label":["raw_first_occurrence_in_flanders"],"name":[1],"type":["chr"],"align":["left"]},{"label":["eventDate"],"name":[2],"type":["chr"],"align":["left"]}],"data":[{"1":"< 1700","2":"1700/2016"},{"1":"<1600","2":"1600/2016"},{"1":"1730-1732","2":"1730/1732"},{"1":"1834","2":"1834/2016"},{"1":"1835","2":"1835/2016"},{"1":"1869","2":"1869/2016"},{"1":"1895","2":"1895/2016"},{"1":"1899","2":"1899/2016"},{"1":"1911","2":"1911/2016"},{"1":"1924","2":"1924/2016"},{"1":"1925","2":"1925/2016"},{"1":"1927","2":"1927/2016"},{"1":"1931","2":"1931/2016"},{"1":"1933","2":"1933/2016"},{"1":"1937","2":"1937/2016"},{"1":"1945","2":"1945/2016"},{"1":"1950","2":"1950/2016"},{"1":"1952","2":"1952/2016"},{"1":"1969","2":"1969/2016"},{"1":"1977","2":"1977/2016"},{"1":"1986","2":"1986/2016"},{"1":"1987","2":"1987/2016"},{"1":"1990","2":"1990/2016"},{"1":"1991","2":"1991/2016"},{"1":"1992","2":"1992/2016"},{"1":"1993","2":"1993/2016"},{"1":"1995","2":"1995/2016"},{"1":"1996","2":"1996/2016"},{"1":"1997","2":"1997/2016"},{"1":"1998","2":"1998/2016"},{"1":"1999","2":"1999/2016"},{"1":"2000","2":"2000/2016"},{"1":"2001","2":"2001/2016"},{"1":"2002","2":"2002/2016"},{"1":"2003","2":"2003/2016"},{"1":"2004","2":"2004/2016"},{"1":"2005","2":"2005/2016"},{"1":"2006","2":"2006/2016"},{"1":"2007","2":"2007/2016"},{"1":"2008","2":"2008/2016"},{"1":"2009","2":"2009/2016"},{"1":"2010","2":"2010/2016"},{"1":"2014","2":"2014/2016"},{"1":"before 1700","2":"1700/2016"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+{"columns":[{"label":["raw_first_occurrence_in_flanders"],"name":[1],"type":["chr"],"align":["left"]},{"label":["eventDate"],"name":[2],"type":["chr"],"align":["left"]}],"data":[{"1":"1730-1732","2":"1730/1732"},{"1":"1834","2":"1834/2016"},{"1":"1835","2":"1835/2016"},{"1":"1869","2":"1869/2016"},{"1":"1895","2":"1895/2016"},{"1":"1899","2":"1899/2016"},{"1":"1911","2":"1911/2016"},{"1":"1924","2":"1924/2016"},{"1":"1925","2":"1925/2016"},{"1":"1927","2":"1927/2016"},{"1":"1931","2":"1931/2016"},{"1":"1933","2":"1933/2016"},{"1":"1937","2":"1937/2016"},{"1":"1945","2":"1945/2016"},{"1":"1950","2":"1950/2016"},{"1":"1952","2":"1952/2016"},{"1":"1969","2":"1969/2016"},{"1":"1977","2":"1977/2016"},{"1":"1986","2":"1986/2016"},{"1":"1987","2":"1987/2016"},{"1":"1990","2":"1990/2016"},{"1":"1991","2":"1991/2016"},{"1":"1992","2":"1992/2016"},{"1":"1993","2":"1993/2016"},{"1":"1995","2":"1995/2016"},{"1":"1996","2":"1996/2016"},{"1":"1997","2":"1997/2016"},{"1":"1998","2":"1998/2016"},{"1":"1999","2":"1999/2016"},{"1":"2000","2":"2000/2016"},{"1":"2001","2":"2001/2016"},{"1":"2002","2":"2002/2016"},{"1":"2003","2":"2003/2016"},{"1":"2004","2":"2004/2016"},{"1":"2005","2":"2005/2016"},{"1":"2006","2":"2006/2016"},{"1":"2007","2":"2007/2016"},{"1":"2008","2":"2008/2016"},{"1":"2009","2":"2009/2016"},{"1":"2010","2":"2010/2016"},{"1":"2014","2":"2014/2016"},{"1":"< 1700","2":"1700/2016"},{"1":"<1600","2":"1600/2016"},{"1":"before 1700","2":"1700/2016"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
   </script>
 </div>
 </div>
@@ -602,7 +604,7 @@ raw_data %&lt;&gt;% mutate(taxon_id = paste(&quot;alien-macroinvertebrates-check
 <p>This is a manually created overview of how we will map the <code>raw_salinity_zone</code> to <code>isMarine</code>, <code>isFreshwater</code> and <code>isTerrestrial</code>. Note: the latter term is added for completeness, but will be <code>FALSE</code> for all species in this dataset:</p>
 <div data-pagedtable="false">
 <script data-pagedtable-source type="application/json">
-{"columns":[{"label":["salinity zone"],"name":[1],"type":["fctr"],"align":["left"]},{"label":["isMarine"],"name":[2],"type":["fctr"],"align":["left"]},{"label":["isFreshwater"],"name":[3],"type":["fctr"],"align":["left"]},{"label":["isTerrestrial"],"name":[4],"type":["fctr"],"align":["left"]}],"data":[{"1":"F","2":"FALSE","3":"TRUE","4":"FALSE"},{"1":"M","2":"TRUE","3":"FALSE","4":"FALSE"},{"1":"B/M","2":"TRUE","3":"FALSE","4":"FALSE"},{"1":"F/B","2":"FALSE","3":"TRUE","4":"FALSE"},{"1":"B","2":"TRUE","3":"TRUE","4":"FALSE"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["salinity zone"],"name":[1],"type":["fctr"],"align":["left"]},{"label":["isMarine"],"name":[2],"type":["fctr"],"align":["left"]},{"label":["isFreshwater"],"name":[3],"type":["fctr"],"align":["left"]},{"label":["isTerrestrial"],"name":[4],"type":["fctr"],"align":["left"]}],"data":[{"1":"F","2":"FALSE","3":"TRUE","4":"FALSE","_rn_":"1"},{"1":"M","2":"TRUE","3":"FALSE","4":"FALSE","_rn_":"2"},{"1":"B/M","2":"TRUE","3":"FALSE","4":"FALSE","_rn_":"3"},{"1":"F/B","2":"FALSE","3":"TRUE","4":"FALSE","_rn_":"4"},{"1":"B","2":"TRUE","3":"TRUE","4":"FALSE","_rn_":"5"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
   </script>
 </div>
 <div id="term-mapping-2" class="section level2">
