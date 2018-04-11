@@ -68,7 +68,7 @@ Clean the data somewhat: remove empty rows if present:
 
 ```{r}
 raw_data %<>%
-  remove_empty_rows() %>%     # Remove empty rows
+  remove_empty("rows") %>%    # Remove empty rows
   clean_names()               # Have sensible (lowercase) column names
 ```
 
