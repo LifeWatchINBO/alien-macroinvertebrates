@@ -14,7 +14,7 @@ output:
     number_sections: true
 ---
 
-This document describes how we map the checklist data to Darwin Core. The source file for this document can be found [here](https://github.com/trias-project/alien-fishes-checklist/blob/master/src/dwc_checklist.Rmd).
+This document describes how we map the checklist data to Darwin Core. The source file for this document can be found [here](https://github.com/trias-project/alien-macroinvertebrates/blob/master/src/dwc_checklist.Rmd).
 
 # Setup
 
