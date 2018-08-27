@@ -81,16 +81,11 @@ decimalLongitude:
   min: 2.53 # NW Belgium
   max: 5.94 # SE Flanders
 
-2.53, 49.49
-
-6.41, , 51.51
-
-
 geodeticDatum:
   allowed: WGS84
 
 coordinateUncertaintyInMeters:
-  allowed: 30 # both decimal degrees and Belgian Lambert considered GPS
+  allowed: '30' # both decimal degrees and Belgian Lambert considered GPS
 
 verbatimLatitude:
   if:
