@@ -23,7 +23,7 @@ occurrenceStatus:
 eventDate:
   delimitedvalues:
     delimiter: /
-    type: integer
+    numberformat: x
     min: 1600
     max: 2017
 
