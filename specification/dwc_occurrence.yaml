@@ -70,13 +70,11 @@ verbatimLocality:
   empty: true
 
 decimalLatitude:
-  type: float
   numberformat: '.5'
   min: 50.67 # SE Flanders
   max: 51.51 # NW Belgium
 
 decimalLongitude:
-  type: float
   numberformat: '.5'
   min: 2.53 # NW Belgium
   max: 5.94 # SE Flanders
@@ -94,7 +92,7 @@ verbatimLatitude:
       regex: '\d\d.\d+N' # e.g. 51.12857222N
     - verbatimCoordinateSystem:
         allowed: Belgium Lambert 72
-      type: integer # e.g. 214233 (= Y)
+      numberformat: x
       min: 152221 # SE Flanders
       max: 246072 # NW Belgium
 
@@ -105,12 +103,12 @@ verbatimLongitude:
       regex: '\d.\d+E' # e.g. 4.432371E
     - verbatimCoordinateSystem:
         allowed: Belgium Lambert 72
-      type: integer # e.g. 166957 (= X)
+      numberformat: x
       min: 22344 # NW Belgium
       max: 261064 # SE Flanders
 
 verbatimCoordinateSystem:
-  allowed: [decimal degrees, Belgian Lambert 72]
+  allowed: decimal degrees, Belgian Lambert 72
 
 verbatimSRS:
   if:
