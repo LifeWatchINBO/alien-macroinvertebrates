@@ -18,7 +18,7 @@ accessRights:
   allowed: http://www.inbo.be/en/norms-for-data-use
 
 datasetID:
-  allowed: 
+  empty: false
 
 datasetName:
   allowed: Inventory of alien macroinvertebrates in Flanders, Belgium
@@ -36,7 +36,7 @@ phylum:
   allowed: [Annelida, Arthropoda, Mollusca, Platyhelminthes]
 
 order:
-  empty: [Amphipoda, Decapoda, Euheterodonta, Haplotaxida, Isopoda, Littorinimorpha, Myoida, Mysida, Neotaenioglossa, Ostreoida, Pulmonata, Sabellida, Seriata, Sessilia, Spionida, Tanaidacea, Terebellida, Unionoida, Venerida]
+  allowed: [Amphipoda, Decapoda, Euheterodonta, Haplotaxida, Isopoda, Littorinimorpha, Myoida, Mysida, Neotaenioglossa, Ostreoida, Pulmonata, Sabellida, Seriata, Sessilia, Spionida, Tanaidacea, Terebellida, Unionoida, Venerida]
 
 family:
   empty: false
