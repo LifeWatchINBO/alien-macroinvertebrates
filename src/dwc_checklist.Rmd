@@ -318,12 +318,13 @@ We remove the special characters from `raw_first_occurrence_in_flanders` and sav
 distribution %<>% mutate(year = str_replace_all(raw_first_occurrence_in_flanders, "(< |before |<)", ""))
 ```
 
-Then, we split the information on `-` to get a `start_year` and `end_year`. Most records won't have an `end_year`. For those we'll consider the publication year of Boets et al. (2016) as the date when the presence of the species was last verified:
+Then, we split the information on `-` to get a `start_year` and `end_year`. Most records won't have an `end_year`. For those we'll consider the publication year of Boets et al. (2016) as the date when the presence of the species was last verified, except for those taxa added to the checklist **after** the publication in 2016. In this case, `end_year` equals the date of re-publication.
 
 ```{r}
 distribution %<>%
   separate(year, into = c("start_year", "end_year"), sep = "-") %>% # Separate year
   mutate(end_year = case_when(
+    start_year > 2016 ~ format(Sys.Date(), "%Y"),
     is.na(end_year) ~ "2016",
     TRUE ~ end_year)
   )
